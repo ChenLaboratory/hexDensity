@@ -1,12 +1,11 @@
 library(hexbin)
 dyn.load("hbin.so")
-
-hexbinFull <-
-    function(x, y = NULL, xbins = 30, shape = 1,
+#modified hexbin that give full grid (include hex with no count) of regular hex
+hexbinFullRegular <-
+    function(x, y = NULL, xbins = 30,
 	     xbnds = range(x), ybnds = range(y),
 	     xlab = NULL, ylab = NULL, IDs = FALSE)
 {
-    print("Yo")
     call <- match.call()
     ## (x,y, xlab, ylab) dealing
     xl <- if (!missing(x)) deparse(substitute(x))
@@ -19,7 +18,8 @@ hexbinFull <-
         stop("xlab must be a character or expression")
     if(! (is.character(ylab) || is.expression(ylab)))
         stop("ylab must be a character or expression")
-
+    
+    
     x <- xy$x
     y <- xy$y
     n <- length(x)
@@ -43,6 +43,7 @@ hexbinFull <-
 	stop("'ybnds' must encompass range(y)")
     jmax <- floor(xbins + 1.5001)
     #imax <- 2 * floor((xbins * shape)/sqrt(3) + 1.5001)
+    shape = diff(range(y))/diff(range(x))
     c1 <- 2 * floor((xbins *shape)/sqrt(3) + 1.5001)
     imax <- trunc((jmax*c1 -1)/jmax + 1)
     lmax <- jmax * imax

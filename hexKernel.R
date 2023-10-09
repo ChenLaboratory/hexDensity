@@ -3,7 +3,7 @@ library(spatstat.explore)
 source("hexbinFull.R")
 
 hexKernel = function(x, xbins = 128, sigma = 1) {
-  hbin = hexbinFull(x,xbins=xbins) #128 is the magic number in pixellate of spatstat
+  hbin = hexbinFullRegular(x,xbins=xbins) #128 is the magic number in pixellate of spatstat
   row = hbin@dimen[1]
   col = hbin@dimen[2]
   #convert hexbin representation to staggered bin
@@ -37,7 +37,6 @@ hexKernel = function(x, xbins = 128, sigma = 1) {
   fK = fft2D(kernel.inv)
   fY = fft2D(staggeredBin)
   sm = fft2D(fY*fK,inverse = TRUE)/(2*row*(2*col+row-1))
-  #sm = convolve(staggeredBin,kernel.inv)#/(2*row*(2*col+row-1))
 
   #extract back to hexbin class
   count = c()
@@ -45,7 +44,7 @@ hexKernel = function(x, xbins = 128, sigma = 1) {
     count = Re(append(count,sm[i,(1+(row-i)/2):(col+(row-i)/2)]))
     count = Re(append(count,sm[i-1,(1+(row-i)/2):(col+(row-i)/2)]))
   }
-  #print(count)
+
   hbin@count = count
   
   return(hbin)
