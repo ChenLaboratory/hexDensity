@@ -1,9 +1,9 @@
-library(hexbin)
 library(spatstat.data)
 library(spatstat.explore)
+source("hexbinFull.R")
 
-hexKernel = function(x, sigma = 1) {
-  hbin = hexbin(x,xbins=128) #128 is the magic number in pixellate of spatstat
+hexKernel = function(x, xbins = 128, sigma = 1) {
+  hbin = hexbinFull(x,xbins=xbins) #128 is the magic number in pixellate of spatstat
   row = hbin@dimen[1]
   col = hbin@dimen[2]
   #convert hexbin representation to staggered bin
@@ -23,7 +23,7 @@ hexKernel = function(x, sigma = 1) {
       kernel[i*2-1,q] = dnorm(distance(center.q,center.r,q,2*i-1),sd=sigma) * dnorm(0,sd=sigma)
     }
   } 
-  #print(sum(kernel))
+  print(sum(kernel))
   kernel = kernel/sum(kernel)
   
   #inverse the kernel
@@ -57,30 +57,3 @@ distance = function(q1,r1,q2,r2) {
          + abs(q1+r1-q2-r2)
          +abs(r1-r2))/2)
 }
-data = bei
-bins = hexbin(data$x, data$y,xbins=13)
-b=density.ppp(data,sigma=1)
-b2=density.ppp(data,sigma=10)
-plot(b)
-plot(b2)
-plot(density.ppp(data,sigma=100))
-hexbin::plot(bins)
-a = pixellate(bei,padzero = TRUE)
-plot(data)
-plot(bins)
-
-test = hexKernel(data)
-test2 = hexKernel(data,sigma=3)
-plot(test)
-plot(test2)
-
-
-nr=6
-nc=5
-xcol.ker = c(0:(nc-1),-(nc:1))
-yrow.ker = c(0:(nr-1),-(nr:1))
-densX.ker <- dnorm(xcol.ker, sd=1)
-densY.ker <- dnorm(yrow.ker, sd=1)
-Kern <- outer(densY.ker, densX.ker, "*")
-Kern = Kern/sum(Kern)
-
