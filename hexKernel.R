@@ -6,6 +6,8 @@ hexKernel = function(x, xbins = 128, sigma = 1) {
   hbin = hexbinFullRegular(x,xbins=xbins) #128 is the magic number in pixellate of spatstat
   row = hbin@dimen[1]
   col = hbin@dimen[2]
+  hexSize = diff(hbin@xbnds)/xbins
+  
   #convert hexbin representation to staggered bin
   staggeredBin = matrix(0,nrow = 2*row, ncol = 2*col+row-1)
   for (i in seq(1, row, by=2)) {
@@ -19,8 +21,8 @@ hexKernel = function(x, xbins = 128, sigma = 1) {
   for (i in seq(1, row)) {
     for (j in seq(1,2*col)) {
       q = j+row-i
-      kernel[i*2,q] = dnorm(distance(center.q,center.r,q,2*i),sd=sigma) * dnorm(0,sd=sigma)
-      kernel[i*2-1,q] = dnorm(distance(center.q,center.r,q,2*i-1),sd=sigma) * dnorm(0,sd=sigma)
+      kernel[i*2,q] = dnorm(hexSize*euclidDistance(center.q,center.r,q,2*i),sd=sigma) * dnorm(0,sd=sigma)
+      kernel[i*2-1,q] = dnorm(hexSize*euclidDistance(center.q,center.r,q,2*i-1),sd=sigma) * dnorm(0,sd=sigma)
     }
   } 
   print(sum(kernel))
@@ -55,4 +57,14 @@ distance = function(q1,r1,q2,r2) {
   return((abs(q1-q2)
          + abs(q1+r1-q2-r2)
          +abs(r1-r2))/2)
+}
+
+euclidDistance = function(q1,r1,q2,r2) {
+  x1 = sqrt(3)*q1 +(sqrt(3)/2) *r1
+  y1 = (3/2)*r1
+  
+  x2 = sqrt(3)*q2 +(sqrt(3)/2) *r2
+  y2 = (3/2)*r2
+  
+  return (sqrt((x1-x2)**2 + (y1-y2)**2))
 }
