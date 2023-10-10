@@ -1,6 +1,6 @@
 library(spatstat.data)
 library(spatstat.explore)
-source("hexbinFull.R")
+source("hexbinFullRegular.R")
 
 hexKernel = function(x, xbins = 128, sigma = 1) {
   hbin = hexbinFullRegular(x,xbins=xbins) #128 is the magic number in pixellate of spatstat
