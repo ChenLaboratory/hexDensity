@@ -2,7 +2,7 @@ library(hexbin)
 dyn.load("hbin.so")
 #modified hexbin that give full grid (include hex with no count) of regular hex
 hexbinFullRegular <-
-    function(x, y = NULL, xbins = 30,
+    function(x, y = NULL, xbins = 128,
 	     xbnds = range(x), ybnds = range(y),
 	     xlab = NULL, ylab = NULL, IDs = FALSE)
 {

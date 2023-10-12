@@ -2,8 +2,8 @@ library(spatstat.data)
 library(spatstat.explore)
 source("hexbinFullRegular.R")
 
-hexKernel = function(x, xbins = 128, sigma = 1) {
-  hbin = hexbinFullRegular(x,xbins=xbins) #128 is the magic number in pixellate of spatstat
+hexKernel = function(x,y=NULL, xbins = 128, sigma = 1) {
+  hbin = hexbinFullRegular(x,y=NULL,xbins=xbins) #128 is the magic number in pixellate of spatstat
   row = hbin@dimen[1]
   col = hbin@dimen[2]
   hexSize = diff(hbin@xbnds)/xbins
@@ -48,7 +48,7 @@ hexKernel = function(x, xbins = 128, sigma = 1) {
   }
 
   hbin@count = count
-  
+  print("done")
   return(hbin)
   
 }
