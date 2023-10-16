@@ -2,10 +2,15 @@ library(spatstat.data)
 library(spatstat.explore)
 source("hexbinFullRegular.R")
 
-hexKernel = function(x,y=NULL, xbins = 128, sigma = 1) {
+hexKernel = function(x,y=NULL, 
+                     xbins = 128, 
+                     sigma = 1,
+                     edge = TRUE) {
   hbin = hexbinFullRegular(x,y=NULL,xbins=xbins) #128 is the magic number in pixellate of spatstat
   row = hbin@dimen[1]
   col = hbin@dimen[2]
+  print(row)
+  print(col)
   hexSize = diff(hbin@xbnds)/xbins
   
   #convert hexbin representation to staggered bin
@@ -25,7 +30,7 @@ hexKernel = function(x,y=NULL, xbins = 128, sigma = 1) {
       kernel[i*2-1,q] = dnorm(hexSize*euclidDistance(center.q,center.r,q,2*i-1),sd=sigma) * dnorm(0,sd=sigma)
     }
   } 
-  print(sum(kernel))
+  #print(sum(kernel))
   kernel = kernel/sum(kernel)
   
   #inverse the kernel
@@ -40,15 +45,34 @@ hexKernel = function(x,y=NULL, xbins = 128, sigma = 1) {
   fY = fft2D(staggeredBin)
   sm = fft2D(fY*fK,inverse = TRUE)/(2*row*(2*col+row-1))
 
+  if (edge) {
+    mask = matrix(0,nrow = 2*row, ncol = 2*col+row-1)
+    for (i in seq(1, row, by=2)) {
+      mask[i:(i+1),((row-i+1)/2):((row-i+1)/2+col-1)] = matrix(1,2,col)
+    }
+    fM = fft2D(mask)
+    con = fft2D(fM * fK, inverse=TRUE)
+    con = con/(2*row*(2*col+row-1))
+    edg <- Mod(con[1:row, 1:(col+(row-1)/2)])
+    print(edg)
+  }
+  
   #extract back to hexbin class
   count = c()
-  for (i in seq(row,1,by=-2)) {
-    count = Re(append(count,sm[i,(1+(row-i)/2):(col+(row-i)/2)]))
-    count = Re(append(count,sm[i-1,(1+(row-i)/2):(col+(row-i)/2)]))
+  if(edge){
+    for (i in seq(row,1,by=-2)) {
+      count = append(count,Re(sm[i,(1+(row-i)/2):(col+(row-i)/2)]/edg[i,(1+(row-i)/2):(col+(row-i)/2)]))
+      count = append(count,Re(sm[i-1,(1+(row-i)/2):(col+(row-i)/2)]/edg[i-1,(1+(row-i)/2):(col+(row-i)/2)]))
+    }
+  } else{
+    for (i in seq(row,1,by=-2)) {
+      count = append(count,Re(sm[i,(1+(row-i)/2):(col+(row-i)/2)]))
+      count = append(count,Re(sm[i-1,(1+(row-i)/2):(col+(row-i)/2)]))
+    }
   }
 
   hbin@count = count
-  print("done")
+  #print("done")
   return(hbin)
   
 }
