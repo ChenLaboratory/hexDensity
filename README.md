@@ -17,7 +17,7 @@ xbins: number of bins in row
 sigma: bandwidth for kernel density calculation
 
 ### plotKernel: plot result from hexDensity
-Adapted from plotting function of hexbin. Hacky workaround since hexbin plot things into discrete bins whereas results from hexKernel is more like a gradient. Will be changed in the future.
+Adapted from plotting function of hexbin. Hacky workaround since hexbin plot things into discrete bins whereas results from hexKernel is more like a gradient and need a continuous color spectrum. Will be changed in the future.
 ```
 plotKernel(
   kernel,
@@ -82,28 +82,60 @@ density = hexKernel(data,sigma=20)
 ```
 
 ### Plot result
+As mentioned in the Functions section, plotKernel adapted the plotting function from hexbin which is used to plot discrete data instead of the continuous range of KDE so the image may not accurately reflect the underlying value. 
 ```
 plotKernel(density)
 ```
-![hexkernel](https://github.com/ChenLaboratory/Hoang/assets/99466326/5db9d6f4-64c1-4c29-bff7-6bbb3fe46832)
+![hexKernelViridis](https://github.com/ChenLaboratory/Hoang/assets/99466326/fae15009-0b42-49d4-885e-30a36b94a5eb)
+
 
 Comparing to density.ppp by spatstat which use square-grid (sigma and color may need to be tweaked for better visual match)
 ```
 library(spatstat.explore)
-density = density.ppp(cdat.inhibitory.ppp,sigma=20)
-plot.im(density)
+#Turning off edge correction for better comparision to the current hexKernel capacity, and also make grid squares instead of rectangle 
+density = density.ppp(cdat.inhibitory.ppp,sigma=20,edge=FALSE, eps=diff(range(data$x))/128)
+plot.im(density,col=colorRampPalette(viridis::viridis(11)))
 ```
-![spatstatkernel](https://github.com/ChenLaboratory/Hoang/assets/99466326/a8c77cb5-b566-4061-b144-e69cdbcdd8ed)
+![densitypppViridis](https://github.com/ChenLaboratory/Hoang/assets/99466326/76668f60-8657-4edf-b5f1-391b6dc97074)
+
+Comparison to SpatialKDE package which can also do hexagonal kernel density but really slow to compute and plot. Selected "bandwidth" and "cell size" values are chosen to best fit with the above examples but may not match perfectly. Note that SpatialKDE does not have option for Gaussian kernel or edge correction.
+
+```
+library(SpatialKDE)
+library(dplyr)
+library(sp)
+library(sf)
+library(tmap)
+#Prepare data
+bei <- data.frame(bei) %>%
+  st_as_sf(coords = c("x", "y"), dim = "XY") %>%
+  st_set_crs(28992) %>%
+  select()
+cell_size <- 8
+band_width <- 35
+#Create grid
+grid_bei <- bei %>%
+  create_grid_hexagonal(cell_size = cell_size, side_offset = band_width)
+#Calculate KDE
+kde <- bei %>%
+  kde(band_width = band_width, kernel = "quartic", grid = grid_bei)
+#Plot
+tm_shape(kde) +
+  tm_polygons(col = "kde_value",style="cont", palette = "viridis", title = "KDE Estimate",legend.show=FALSE)
+```
+![SpatialKDEViridis](https://github.com/ChenLaboratory/Hoang/assets/99466326/380d7e48-9529-4fbf-81a3-067b4415d695)
 
 Using MERFISH dataset
 ```
 plotKernel(hexKernel(cdat.inhibitory,sigma=20))
 ```
-![b](https://github.com/ChenLaboratory/Hoang/assets/99466326/56a462c1-2ba7-46df-8157-0e7d4e615d4c)
+![MerfishHexKernelViridis](https://github.com/ChenLaboratory/Hoang/assets/99466326/40317115-51b3-46e0-a3e6-7d531a32e6dd)
+
 
 and with density.ppp by spatstat
 ```
-plot.im(density.ppp(cdat.inhibitory.ppp,sigma=20))
+plot.im(density.ppp(cdat.inhibitory.ppp,sigma=20,edge=FALSE, eps=diff(range(data$x))/128),col=colorRampPalette(viridis::viridis(11)))
 ```
-![a](https://github.com/ChenLaboratory/Hoang/assets/99466326/cf05ed52-7100-4a6d-940a-f9bf488a98c5)
+![MerfishDensitypppViridis](https://github.com/ChenLaboratory/Hoang/assets/99466326/06a0f595-78db-4893-9120-d02fec1d96f7)
+
 
