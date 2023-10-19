@@ -5,12 +5,13 @@ source("hexbinFullRegular.R")
 hexKernel = function(x,y=NULL, 
                      xbins = 128, 
                      sigma = 1,
-                     edge = TRUE) {
+                     edge = TRUE,
+                     diggle = FALSE) {
   hbin = hexbinFullRegular(x,y=NULL,xbins=xbins) #128 is the magic number in pixellate of spatstat
   row = hbin@dimen[1]
   col = hbin@dimen[2]
-  print(row)
-  print(col)
+  # print(row)
+  # print(col)
   hexSize = diff(hbin@xbnds)/xbins
   
   #convert hexbin representation to staggered bin
@@ -42,9 +43,8 @@ hexKernel = function(x,y=NULL,
   kernel.inv[(row+2):(2*row),1:(col+row/2)] = kernel[1:(row-1),(col+row/2):(2*col+row-1)]
   
   fK = fft2D(kernel.inv)
-  fY = fft2D(staggeredBin)
-  sm = fft2D(fY*fK,inverse = TRUE)/(2*row*(2*col+row-1))
 
+  #edge correction
   if (edge) {
     mask = matrix(0,nrow = 2*row, ncol = 2*col+row-1)
     for (i in seq(1, row, by=2)) {
@@ -54,12 +54,21 @@ hexKernel = function(x,y=NULL,
     con = fft2D(fM * fK, inverse=TRUE)
     con = con/(2*row*(2*col+row-1))
     edg <- Mod(con[1:row, 1:(col+(row-1)/2)])
-    print(edg)
+    # return(edg)
+    # print(edg)
+    if(diggle) {
+      staggeredBin[1:row,1:(col+(row-1)/2)] = staggeredBin[1:row,1:(col+(row-1)/2)]/edg 
+    }
   }
+  
+
+  #KDE calculation
+  fY = fft2D(staggeredBin)
+  sm = fft2D(fY*fK,inverse = TRUE)/(2*row*(2*col+row-1))
   
   #extract back to hexbin class
   count = c()
-  if(edge){
+  if(edge & !diggle){
     for (i in seq(row,1,by=-2)) {
       count = append(count,Re(sm[i,(1+(row-i)/2):(col+(row-i)/2)]/edg[i,(1+(row-i)/2):(col+(row-i)/2)]))
       count = append(count,Re(sm[i-1,(1+(row-i)/2):(col+(row-i)/2)]/edg[i-1,(1+(row-i)/2):(col+(row-i)/2)]))
