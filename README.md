@@ -1,12 +1,15 @@
 # Kernel Density with Hexagon
 ## Functions
 ### hexKernel: calculating kernel density with regular hexagonal grid
+Edge correction has been implemented, including Jones-Diggle algorithm as described in Jones, M.C. (1993) Simple boundary corrections for kernel density estimation. Statistics and Computing 3, 135--146.
 ```
 hexKernel(
   x,
   y=NULL,
   xbins=128,
-  sigma=1
+  sigma=1,
+  edge = TRUE,
+  diggle = FALSE
 )
 ```
 #### Arguments:
@@ -15,6 +18,10 @@ x, y: Coords of the points or a single plotting structure to be passed into hexb
 xbins: number of bins in row
 
 sigma: bandwidth for kernel density calculation
+
+edge: logical value for whether to apply edge correction
+
+diggle: logical value for apply edge correction with the Jones-Diggle improved edge correction which is more accurate. (need 'edge' to be TRUE to take effect).
 
 ### plotKernel: plot result from hexDensity
 Adapted from plotting function of hexbin. Hacky workaround since hexbin plot things into discrete bins whereas results from hexKernel is more like a gradient and need a continuous color spectrum. Will be changed in the future.
@@ -78,25 +85,24 @@ cdat.inhibitory = ppp(cdat.inhibitory$x,cdat.inhibitory$y,window = owin(range(cd
 ### Kernel density
 Calculating kernel density using hexagonal grid
 ```
-density = hexKernel(data,sigma=20)
+density = hexKernel(data,sigma=48)
 ```
 
 ### Plot result
-As mentioned in the Functions section, plotKernel adapted the plotting function from hexbin which is used to plot discrete data instead of the continuous range of KDE so the image may not accurately reflect the underlying value. 
+As mentioned in the Functions section, plotKernel adapted the plotting function from hexbin which is used to plot discrete data instead of the continuous range of KDE so the image's color may not accurately reflect the underlying value. 
 ```
 plotKernel(density)
 ```
-![hexKernelViridis](https://github.com/ChenLaboratory/Hoang/assets/99466326/fae15009-0b42-49d4-885e-30a36b94a5eb)
-
+![hexKernelWEdgeCorrection](https://github.com/ChenLaboratory/Hoang/assets/99466326/1d76789f-045d-47c2-bbae-861e8fd3b271)
 
 Comparing to density.ppp by spatstat which use square-grid (sigma and color may need to be tweaked for better visual match)
 ```
 library(spatstat.explore)
-#Turning off edge correction for better comparision to the current hexKernel capacity, and also make grid squares instead of rectangle 
-density = density.ppp(cdat.inhibitory.ppp,sigma=20,edge=FALSE, eps=diff(range(data$x))/128)
+#eps variable is used to turn the grid square instead of rectangle 
+density = density.ppp(data,sigma=25, eps=diff(range(data$x))/128)
 plot.im(density,col=colorRampPalette(viridis::viridis(11)))
 ```
-![densitypppViridis](https://github.com/ChenLaboratory/Hoang/assets/99466326/76668f60-8657-4edf-b5f1-391b6dc97074)
+![densitypppWEdgeCorrection](https://github.com/ChenLaboratory/Hoang/assets/99466326/88bb3de7-52f1-4e7a-8879-95cb49df4a40)
 
 Comparison to SpatialKDE package which can also do hexagonal kernel density but really slow to compute and plot. Selected "bandwidth" and "cell size" values are chosen to best fit with the above examples but may not match perfectly. Note that SpatialKDE does not have option for Gaussian kernel or edge correction.
 
@@ -129,13 +135,13 @@ Using MERFISH dataset
 ```
 plotKernel(hexKernel(cdat.inhibitory,sigma=20))
 ```
-![MerfishHexKernelViridis](https://github.com/ChenLaboratory/Hoang/assets/99466326/40317115-51b3-46e0-a3e6-7d531a32e6dd)
 
+![MerfishHexWEdgeCorrection](https://github.com/ChenLaboratory/Hoang/assets/99466326/2d637d87-58a4-4ba6-a2ff-86a3121d0014)
 
 and with density.ppp by spatstat
 ```
-plot.im(density.ppp(cdat.inhibitory.ppp,sigma=20,edge=FALSE, eps=diff(range(data$x))/128),col=colorRampPalette(viridis::viridis(11)))
+plot.im(density.ppp(cdat.inhibitory,sigma=20, eps=diff(range(data$x))/128),col=colorRampPalette(viridis::viridis(11)))
 ```
-![MerfishDensitypppViridis](https://github.com/ChenLaboratory/Hoang/assets/99466326/06a0f595-78db-4893-9120-d02fec1d96f7)
+![MerfishDensityWEdgeCorrection](https://github.com/ChenLaboratory/Hoang/assets/99466326/1a0db07c-2339-438c-ba98-653480c84930)
 
 
