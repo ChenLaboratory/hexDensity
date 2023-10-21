@@ -5,7 +5,7 @@ plotKernel = function(kernel,
                       colramp =colorRampPalette(viridis::viridis(11)),
                       main=deparse(substitute(kernel)),
                       legend=F,
-                      colorcut=seq(0,1,length = 2*kernel@ncells)) {
+                      colorcut=seq(0,1,length = 1024)) {
   hexbin::plot(kernel,
                mincnt=-0.0000001, 
                main=main,
