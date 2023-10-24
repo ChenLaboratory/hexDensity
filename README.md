@@ -1,7 +1,13 @@
 # Kernel Density with Hexagon
+Features:
+
+* Fast Kernel Density calculation using hexagonal grid.
+
+* Edge correction including Jones-Diggllle algorithm as described in Jones, M.C. (1993) Simple boundary corrections for kernel density estimation. Statistics and Computing 3, 135--146.
+
+* Bandwidth scales the same as the density calculated by the spatstat.explore package 
 ## Functions
 ### hexKernel: calculating kernel density with regular hexagonal grid
-Edge correction has been implemented, including Jones-Diggle algorithm as described in Jones, M.C. (1993) Simple boundary corrections for kernel density estimation. Statistics and Computing 3, 135--146.
 ```
 hexKernel(
   x,
@@ -60,7 +66,7 @@ hexbinFullRegular(
 )
 ```
 #### Arguments
-See [hexbin](https://www.rdocumentation.org/packages/hexbin/versions/1.29.0/topics/hexbin) function from hexbin package. 'shape' argument is omitted to ensure hexagon is regular.
+See [hexbin](https://www.rdocumentation.org/packages/hexbin/versions/1.29.0/topics/hexbin) function from hexbin package. 'shape' argument is omitted to keep hexagon regular.
 ## Demonstration
 ### Data Preparation
 Using bei spatial dataset from spatstat.explore
@@ -93,7 +99,7 @@ As mentioned in the Functions section, plotKernel adapted the plotting function 
 ```
 plotKernel(density)
 ```
-![hexKernelWEdgeCorrection](https://github.com/ChenLaboratory/Hoang/assets/99466326/1d76789f-045d-47c2-bbae-861e8fd3b271)
+![hexCorrectBandwidth](https://github.com/ChenLaboratory/Hoang/assets/99466326/4574b42d-b6c9-42fa-9fcb-54c51a39d203)
 
 Comparing to density.ppp by spatstat which use square-grid (sigma and color may need to be tweaked for better visual match)
 ```
@@ -102,7 +108,7 @@ library(spatstat.explore)
 density = density.ppp(data,sigma=25, eps=diff(range(data$x))/128)
 plot.im(density,col=colorRampPalette(viridis::viridis(11)))
 ```
-![densitypppWEdgeCorrection](https://github.com/ChenLaboratory/Hoang/assets/99466326/88bb3de7-52f1-4e7a-8879-95cb49df4a40)
+![densitypppCorrectBandwidth](https://github.com/ChenLaboratory/Hoang/assets/99466326/886ae906-7171-474a-a3d8-2e5bd689e236)
 
 Comparison to SpatialKDE package which can also do hexagonal kernel density but really slow to compute and plot. Selected "bandwidth" and "cell size" values are chosen to best fit with the above examples but may not match perfectly. Note that SpatialKDE does not have option for Gaussian kernel or edge correction.
 
@@ -133,15 +139,14 @@ tm_shape(kde) +
 
 Using MERFISH dataset
 ```
-plotKernel(hexKernel(cdat.inhibitory,sigma=20))
+density.inhibitory = hexKernel(cdat.inhibitory,sigma=20)
+plotKernel(density.inhibitory)
 ```
-
-![MerfishHexWEdgeCorrection](https://github.com/ChenLaboratory/Hoang/assets/99466326/2d637d87-58a4-4ba6-a2ff-86a3121d0014)
+![hexInhibitoryCorrectBandwidth](https://github.com/ChenLaboratory/Hoang/assets/99466326/3e688bc6-89a4-4763-8a21-211f45f5a27e)
 
 and with density.ppp by spatstat
 ```
-plot.im(density.ppp(cdat.inhibitory,sigma=20, eps=diff(range(data$x))/128),col=colorRampPalette(viridis::viridis(11)))
+density.inhibitory = density.ppp(cdat.inhibitory,sigma=20, eps=diff(range(cdat.inhibitory$x))/128)
+plot.im(density.inhibitory, col=colorRampPalette(viridis::viridis(11)))
 ```
-![MerfishDensityWEdgeCorrection](https://github.com/ChenLaboratory/Hoang/assets/99466326/1a0db07c-2339-438c-ba98-653480c84930)
-
-
+![densitypppInhibitoryCorrectBandwidth](https://github.com/ChenLaboratory/Hoang/assets/99466326/31778d92-7c2d-4d79-a04f-d8e4379fde8e)
