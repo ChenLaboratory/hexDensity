@@ -1,5 +1,3 @@
-library(spatstat.data)
-library(spatstat.explore)
 source("hexbinFullRegular.R")
 
 hexKernel = function(x,y=NULL, 
@@ -10,16 +8,16 @@ hexKernel = function(x,y=NULL,
   hbin = hexbinFullRegular(x,y=NULL,xbins=xbins) 
   row = hbin@dimen[1]
   col = hbin@dimen[2]
-  # print(row)
-  # print(col)
+  # print(paste("row is:",row))
+  # print(paste("col is:",col))
   hexSize = diff(hbin@xbnds)/xbins
-  
+
   #convert hexbin representation to staggered bin
   staggeredBin = matrix(0,nrow = 2*row, ncol = 2*col+row-1)
-  for (i in seq(1, row, by=2)) {
-    staggeredBin[i:(i+1),((row-i+1)/2):((row-i+1)/2+col-1)] = apply(matrix(rev(rev(hbin@count)[((i-1)*col+1):(col*(i+1))]),2,col,byrow=TRUE),2,rev)
+  for (i in seq(1,row,by=2)) {
+    staggeredBin[i,(i-i%/%2):(i-i%/%2+col-1)] = hbin@count[((row-i)*col+1):((row-i)*col+col)]
+    staggeredBin[i+1,(i-i%/%2):(i-i%/%2+col-1)] = hbin@count[((row-i-1)*col+1):((row-i-1)*col+col)]
   }
-  
   #Make kernel
   
   # Older,slower kernel. Keeping just in case
@@ -33,7 +31,6 @@ hexKernel = function(x,y=NULL,
   #     kernel[i*2-1,q] = dnorm(hexSize*euclidDistance(center.q,center.r,q,2*i-1),sd=sigma) * dnorm(0,sd=sigma)
   #   }
   # }
-
   kernel.left.hori = dnorm(hexSize*c(seq(col,1),seq(0,col-1)),sd=sigma)
   kernel.left.verti = dnorm(hexSize*sqrt(3)*c(seq(row/2-1,0),seq(1,row/2)),sd=sigma)
   kernel.left=outer(kernel.left.verti,kernel.left.hori)
@@ -48,6 +45,7 @@ hexKernel = function(x,y=NULL,
     kernel[i*2,(1+row-i):(1+row-i+2*col-1)] = rev(kernel.left[i,])
   }
 
+  kernel = kernel[,ncol(kernel):1]
   #inverse the kernel
   kernel.inv = matrix(0,nrow = 2*row, ncol = 2*col+row-1)
   #going clock-wise from top-left of inverse kernel
@@ -62,7 +60,7 @@ hexKernel = function(x,y=NULL,
   if (edge) {
     mask = matrix(0,nrow = 2*row, ncol = 2*col+row-1)
     for (i in seq(1, row, by=2)) {
-      mask[i:(i+1),((row-i+1)/2):((row-i+1)/2+col-1)] = matrix(1,2,col)
+      mask[i:(i+1),(i-i%/%2):(i-i%/%2+col-1)] = matrix(1,2,col)
     }
     fM = fft2D(mask)
     con = fft2D(fM * fK, inverse=TRUE)
@@ -73,7 +71,6 @@ hexKernel = function(x,y=NULL,
     }
   }
   
-
   #KDE calculation
   fY = fft2D(staggeredBin)
   sm = fft2D(fY*fK,inverse = TRUE)/(2*row*(2*col+(row-1)))
@@ -81,20 +78,15 @@ hexKernel = function(x,y=NULL,
   #extract back to hexbin class
   count = c()
   if(edge & !diggle){
-    for (i in seq(row,1,by=-2)) {
-      count = append(count,Re(sm[i,(1+(row-i)/2):(col+(row-i)/2)]/edg[i,(1+(row-i)/2):(col+(row-i)/2)]))
-      count = append(count,Re(sm[i-1,(1+(row-i)/2):(col+(row-i)/2)]/edg[i-1,(1+(row-i)/2):(col+(row-i)/2)]))
-    }
-  } else{
-    for (i in seq(row,1,by=-2)) {
-      count = append(count,Re(sm[i,(1+(row-i)/2):(col+(row-i)/2)]))
-      count = append(count,Re(sm[i-1,(1+(row-i)/2):(col+(row-i)/2)]))
-    }
+    sm[1:row,1:(col+(row-1)/2)] = Re(sm[1:row,1:(col+(row-1)/2)])/edg
+  }
+  for (i in seq(row,1,by=-2)) {
+    count = append(count,Re(sm[i,(i-i%/%2):(i-i%/%2+col-1)]))
+    count = append(count,Re(sm[i-1,(i-i%/%2):(i-i%/%2+col-1)]))
   }
 
   hbin@count = count
   return(hbin)
-  
 }
   
 distance = function(q1,r1,q2,r2) {
