@@ -1,6 +1,7 @@
+library(spatstat.explore)
 source("hexbinFullRegular.R")
 
-hexKernel = function(x,y=NULL, 
+hexDensity = function(x,y=NULL, 
                      xbins = 128, #128 is the magic number in pixellate of spatstat
                      sigma = 1,
                      edge = TRUE,
@@ -44,8 +45,11 @@ hexKernel = function(x,y=NULL,
     kernel[i*2-1,(1+row-i):(1+row-i+2*col-1)] = rev(kernel.right[i,])
     kernel[i*2,(1+row-i):(1+row-i+2*col-1)] = rev(kernel.left[i,])
   }
-
+  #This reverse the kernel
   kernel = kernel[,ncol(kernel):1]
+  
+  kernel = kernel/sum(kernel)
+
   #inverse the kernel
   kernel.inv = matrix(0,nrow = 2*row, ncol = 2*col+row-1)
   #going clock-wise from top-left of inverse kernel
@@ -80,12 +84,13 @@ hexKernel = function(x,y=NULL,
   if(edge & !diggle){
     sm[1:row,1:(col+(row-1)/2)] = Re(sm[1:row,1:(col+(row-1)/2)])/edg
   }
+
   for (i in seq(row,1,by=-2)) {
     count = append(count,Re(sm[i,(i-i%/%2):(i-i%/%2+col-1)]))
     count = append(count,Re(sm[i-1,(i-i%/%2):(i-i%/%2+col-1)]))
   }
 
-  hbin@count = count
+  hbin@count = count/hexAreaFromWidth(hexSize)
   return(hbin)
 }
   
@@ -102,4 +107,8 @@ euclidDistance = function(q1,r1,q2,r2) {
   x2 = sqrt(3)*q2 +(sqrt(3)/2) *r2
   y2 = (3/2)*r2
   return (sqrt(((x1-x2)**2 + (y1-y2)**2)/3))
+}
+
+hexAreaFromWidth = function(w) {
+  return((w)**2*sqrt(3)/2)
 }
