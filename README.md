@@ -91,7 +91,7 @@ cdat.inhibitory = ppp(cdat.inhibitory$x,cdat.inhibitory$y,window = owin(range(cd
 ### Kernel density
 Calculating kernel density using hexagonal grid
 ```
-density = hexDensity(data,sigma=48)
+density = hexDensity(data,sigma=25)
 ```
 
 ### Plot result
@@ -99,7 +99,7 @@ As mentioned in the Functions section, plotKernel adapted the plotting function 
 ```
 plotKernel(density)
 ```
-![hexCorrectBandwidth](https://github.com/ChenLaboratory/Hoang/assets/99466326/4574b42d-b6c9-42fa-9fcb-54c51a39d203)
+![Rplot02](https://github.com/ChenLaboratory/Hoang/assets/99466326/736b2a0a-6007-4fb2-8e72-876946215552)
 
 Comparing to density.ppp by spatstat which use square-grid (sigma and color may need to be tweaked for better visual match)
 ```
@@ -108,7 +108,7 @@ library(spatstat.explore)
 density = density.ppp(data,sigma=25, eps=diff(range(data$x))/128)
 plot.im(density,col=colorRampPalette(viridis::viridis(11)))
 ```
-![densitypppCorrectBandwidth](https://github.com/ChenLaboratory/Hoang/assets/99466326/886ae906-7171-474a-a3d8-2e5bd689e236)
+![Rplot01](https://github.com/ChenLaboratory/Hoang/assets/99466326/e9b29732-7f7a-4c4f-abd7-758a03b49450)
 
 Comparison to SpatialKDE package which can also do hexagonal kernel density but really slow to compute and plot. Selected "bandwidth" and "cell size" values are chosen to best fit with the above examples but may not match perfectly. Note that SpatialKDE does not have option for Gaussian kernel or edge correction.
 
@@ -142,11 +142,13 @@ Using MERFISH dataset
 density.inhibitory = hexDensity(cdat.inhibitory,sigma=20)
 plotKernel(density.inhibitory)
 ```
-![hexInhibitoryCorrectBandwidth](https://github.com/ChenLaboratory/Hoang/assets/99466326/3e688bc6-89a4-4763-8a21-211f45f5a27e)
+![Rplot15](https://github.com/ChenLaboratory/Hoang/assets/99466326/f05e7e91-b1ee-44d2-a4fe-48eb5144fe06)
 
 and with density.ppp by spatstat
 ```
 density.inhibitory = density.ppp(cdat.inhibitory,sigma=20, eps=diff(range(cdat.inhibitory$x))/128)
 plot.im(density.inhibitory, col=colorRampPalette(viridis::viridis(11)))
 ```
-![densitypppInhibitoryCorrectBandwidth](https://github.com/ChenLaboratory/Hoang/assets/99466326/31778d92-7c2d-4d79-a04f-d8e4379fde8e)
+![Rplot03](https://github.com/ChenLaboratory/Hoang/assets/99466326/68115c5d-506f-4b28-95cc-ef16def0f855)
+
+
