@@ -1,6 +1,20 @@
-library(spatstat.explore)
-source("hexbinFullRegular.R")
+# library(spatstat.explore)
+#source("hexbinFullRegular.R")
 
+#' Title
+#'
+#' @param x 
+#' @param y 
+#' @param xbins 
+#' @param sigma 
+#' @param edge 
+#' @param diggle 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' @importFrom spatstat.geom fft2D
 hexDensity = function(x,y=NULL, 
                      xbins = 128, #128 is the magic number in pixellate of spatstat
                      sigma = 1,
@@ -12,7 +26,7 @@ hexDensity = function(x,y=NULL,
   # print(paste("row is:",row))
   # print(paste("col is:",col))
   hexSize = diff(hbin@xbnds)/xbins
-
+  
   #convert hexbin representation to staggered bin
   staggeredBin = matrix(0,nrow = 2*row, ncol = 2*col+row-1)
   for (i in seq(1,row,by=2)) {

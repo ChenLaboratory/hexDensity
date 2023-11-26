@@ -1,6 +1,22 @@
-library(hexbin)
-dyn.load("hbin.so")
+# library(hexbin)
+# dyn.load("hbin.so")
 #modified hexbin that give full grid (include hex with no count) of regular hex
+#' Title
+#'
+#' @param x 
+#' @param y 
+#' @param xbins 
+#' @param xbnds 
+#' @param ybnds 
+#' @param xlab 
+#' @param ylab 
+#' @param IDs 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' @importClassesFrom hexbin hexbin
 hexbinFullRegular <-
     function(x, y = NULL, xbins = 128,
 	     xbnds = range(x), ybnds = range(y),
@@ -47,7 +63,7 @@ hexbinFullRegular <-
     c1 <- 2 * floor((xbins *shape)/sqrt(3) + 1.5001)
     imax <- trunc((jmax*c1 -1)/jmax + 1)
     lmax <- jmax * imax
-    ans <- .Fortran("hbin",
+    ans <- .Fortran(`hbin`,
 	      x = as.double(x),
 	      y = as.double(y),
 	      cell = integer(lmax),

@@ -1,7 +1,19 @@
-library(hexbin)
+# library(hexbin)
 # library(RColorBrewer)
 
-plotKernel = function(kernel, 
+#' Title
+#'
+#' @param kernel 
+#' @param colramp 
+#' @param main 
+#' @param legend 
+#' @param colorcut 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+plotHexDensity = function(kernel, 
                       colramp =colorRampPalette(viridis::viridis(11)),
                       main=deparse(substitute(kernel)),
                       legend=F,
