@@ -29,10 +29,10 @@ edge: logical value for whether to apply edge correction
 
 diggle: logical value for apply edge correction with the Jones-Diggle improved edge correction which is more accurate. (need 'edge' to be TRUE to take effect).
 
-### plotKernel: plot result from hexDensity
+### plotHexDensity: plot result from hexDensity
 Adapted from plotting function of hexbin. Hacky workaround since hexbin plot things into discrete bins whereas results from hexDensity is more like a gradient and need a continuous color spectrum. Will be changed in the future.
 ```
-plotKernel(
+plotHexDensity(
   kernel,
   main = deparse(substitute(kernel)),
   legend = F,
@@ -95,9 +95,9 @@ density = hexDensity(data,sigma=25)
 ```
 
 ### Plot result
-As mentioned in the Functions section, plotKernel adapted the plotting function from hexbin which is used to plot discrete data instead of the continuous range of KDE so the image's color may not accurately reflect the underlying value. 
+As mentioned in the Functions section, plotHexDensity adapted the plotting function from hexbin which is used to plot discrete data instead of the continuous range of KDE so the image's color may not accurately reflect the underlying value. 
 ```
-plotKernel(density)
+plotHexDensity(density)
 ```
 ![Rplot02](https://github.com/ChenLaboratory/Hoang/assets/99466326/736b2a0a-6007-4fb2-8e72-876946215552)
 
@@ -140,7 +140,7 @@ tm_shape(kde) +
 Using MERFISH dataset
 ```
 density.inhibitory = hexDensity(cdat.inhibitory,sigma=20)
-plotKernel(density.inhibitory)
+plotHexDensity(density.inhibitory)
 ```
 ![Rplot15](https://github.com/ChenLaboratory/Hoang/assets/99466326/f05e7e91-b1ee-44d2-a4fe-48eb5144fe06)
 
