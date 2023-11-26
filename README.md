@@ -7,9 +7,9 @@ Features:
 
 * Bandwidth scales the same as the density calculated by the spatstat.explore package 
 ## Functions
-### hexKernel: calculating kernel density with regular hexagonal grid
+### hexDensity: calculating kernel density with regular hexagonal grid
 ```
-hexKernel(
+hexDensity(
   x,
   y=NULL,
   xbins=128,
@@ -30,7 +30,7 @@ edge: logical value for whether to apply edge correction
 diggle: logical value for apply edge correction with the Jones-Diggle improved edge correction which is more accurate. (need 'edge' to be TRUE to take effect).
 
 ### plotKernel: plot result from hexDensity
-Adapted from plotting function of hexbin. Hacky workaround since hexbin plot things into discrete bins whereas results from hexKernel is more like a gradient and need a continuous color spectrum. Will be changed in the future.
+Adapted from plotting function of hexbin. Hacky workaround since hexbin plot things into discrete bins whereas results from hexDensity is more like a gradient and need a continuous color spectrum. Will be changed in the future.
 ```
 plotKernel(
   kernel,
@@ -41,7 +41,7 @@ plotKernel(
 ```
 
 #### Arguments:
-kernel: resulting hexbin object from hexKernel
+kernel: resulting hexbin object from hexDensity
 
 main: header of the plot
 
@@ -91,7 +91,7 @@ cdat.inhibitory = ppp(cdat.inhibitory$x,cdat.inhibitory$y,window = owin(range(cd
 ### Kernel density
 Calculating kernel density using hexagonal grid
 ```
-density = hexKernel(data,sigma=48)
+density = hexDensity(data,sigma=48)
 ```
 
 ### Plot result
@@ -139,7 +139,7 @@ tm_shape(kde) +
 
 Using MERFISH dataset
 ```
-density.inhibitory = hexKernel(cdat.inhibitory,sigma=20)
+density.inhibitory = hexDensity(cdat.inhibitory,sigma=20)
 plotKernel(density.inhibitory)
 ```
 ![hexInhibitoryCorrectBandwidth](https://github.com/ChenLaboratory/Hoang/assets/99466326/3e688bc6-89a4-4763-8a21-211f45f5a27e)
