@@ -33,23 +33,23 @@ diggle: logical value for apply edge correction with the Jones-Diggle improved e
 Adapted from plotting function of hexbin. Hacky workaround since hexbin plot things into discrete bins whereas results from hexDensity is more like a gradient and need a continuous color spectrum. Will be changed in the future.
 ```
 plotKernel(
-  kernel,
-  main = deparse(substitute(kernel)),
+  hexDensity,
+  main = deparse(substitute(hexDensity)),
   legend = F,
   colramp = colorRampPalette(rev(brewer.pal(11,'Spectral'))),
-  colcut = seq(0,1,length = 100*kernel@ncells))
+  colcut = seq(0,1,length = 1024))
 ```
 
 #### Arguments:
-kernel: resulting hexbin object from hexDensity
+hexDensity: resulting hexbin object from hexDensity
 
 main: header of the plot
 
 legend: legend. Currently non-functional
 
-colramp: color pallete. function accepting an integer n and return n colors
+colramp: color palete. function accepting an integer n and return n colors
 
-colcut: ignore for now
+colcut: how many colors in the continuous color range. Default 1024 is plenty enough
 
 ### hexbinFullRegular: hexagonal binning with regular hexagon
 Adapted from hexbin to use regular hexagon and also returns hexagon with no counts
