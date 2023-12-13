@@ -1,13 +1,12 @@
-# library(hexbin)
-# library(RColorBrewer)
-
-#' Title
+#' Plot method for hexDensity
 #'
-#' @param kernel 
-#' @param colramp 
-#' @param main 
-#' @param legend 
-#' @param colorcut 
+#' Adapted plotting function for hexbin object. 
+#' 
+#' @param hexDensity hexbin object returned by hexDensity
+#' @param colramp Color function that accept an integer n and return n colors.
+#' @param main Main title
+#' @param legend Legend is currently non-functional and should be ignored.
+#' @param colorcut Vector of values covering [0, 1] that determine hexagon color class boundaries and hexagon legend size boundaries. Alternatively, an integer (<= maxcnt) specifying the number of equispaced colorcut values in [0,1]. See hexbin.
 #'
 #' @return
 #' @export

@@ -2,7 +2,7 @@
 % Please edit documentation in R/hexbinFullRegular.R
 \name{hexbinFullRegular}
 \alias{hexbinFullRegular}
-\title{Title}
+\title{Binning with regular hexagon}
 \usage{
 hexbinFullRegular(
   x,
@@ -16,22 +16,19 @@ hexbinFullRegular(
 )
 }
 \arguments{
-\item{x}{}
+\item{x, y}{Coords of the points or a single plotting structure to be used in binning. See xy.coords.}
 
-\item{y}{}
+\item{xbins}{Number of bins in a row.}
 
-\item{xbins}{}
+\item{xbnds, ybnds}{Horizontal and vertical limits of the binning region in x or y units respectively, must encompass range(x) or range(y) respectively; Vector of length 2}
 
-\item{xbnds}{}
+\item{xlab, ylab}{Optional character strings used as labels for x and y. If NULL, sensible defaults are used.}
 
-\item{ybnds}{}
-
-\item{xlab}{}
-
-\item{ylab}{}
-
-\item{IDs}{}
+\item{IDs}{Logical indicating if the individual cell “IDs” should be returned, see hexbin.}
+}
+\value{
+hexbin object
 }
 \description{
-Title
+Adapted from hexbin to give a full grid (include hexagon with no count) of regular hexagon. See hexbin for more details.
 }

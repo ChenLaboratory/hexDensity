@@ -2,27 +2,27 @@
 % Please edit documentation in R/plotHexDensity.R
 \name{plotHexDensity}
 \alias{plotHexDensity}
-\title{Title}
+\title{Plot method for hexDensity}
 \usage{
 plotHexDensity(
-  kernel,
+  hexDensity,
   colramp = colorRampPalette(viridis::viridis(11)),
-  main = deparse(substitute(kernel)),
+  main = deparse(substitute(hexDensity)),
   legend = F,
   colorcut = seq(0, 1, length = 1024)
 )
 }
 \arguments{
-\item{kernel}{}
+\item{hexDensity}{hexbin object returned by hexDensity}
 
-\item{colramp}{}
+\item{colramp}{Color function that accept an integer n and return n colors.}
 
-\item{main}{}
+\item{main}{Main title}
 
-\item{legend}{}
+\item{legend}{Legend is currently non-functional and should be ignored.}
 
-\item{colorcut}{}
+\item{colorcut}{Vector of values covering [0, 1] that determine hexagon color class boundaries and hexagon legend size boundaries. Alternatively, an integer (<= maxcnt) specifying the number of equispaced colorcut values in [0,1]. See hexbin.}
 }
 \description{
-Title
+Adapted plotting function for hexbin object.
 }

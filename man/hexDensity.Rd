@@ -2,23 +2,24 @@
 % Please edit documentation in R/hexDensity.R
 \name{hexDensity}
 \alias{hexDensity}
-\title{Title}
+\title{Kernel Density Estimation with Hexagonal binning.}
 \usage{
 hexDensity(x, y = NULL, xbins = 128, sigma = 1, edge = TRUE, diggle = FALSE)
 }
 \arguments{
-\item{x}{}
+\item{x, y}{Coords of the points or a single plotting structure to be used in binning. See xy.coords.}
 
-\item{y}{}
+\item{xbins}{Number of bins in a row.}
 
-\item{xbins}{}
+\item{sigma}{Bandwidth for kernel density calculation.}
 
-\item{sigma}{}
+\item{edge}{Logical value for whether to apply edge correction. Default is TRUE.}
 
-\item{edge}{}
-
-\item{diggle}{}
+\item{diggle}{Logical value for apply edge correction with the more accurate Jones-Diggle methor (need 'edge' to be TRUE).}
+}
+\value{
+hexbin object.
 }
 \description{
-Title
+Kernel Density Estimation with Hexagonal binning.
 }

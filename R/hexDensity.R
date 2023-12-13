@@ -1,19 +1,16 @@
-# library(spatstat.explore)
-#source("hexbinFullRegular.R")
-
-#' Title
+#' Kernel Density Estimation with Hexagonal binning.
 #'
-#' @param x 
-#' @param y 
-#' @param xbins 
-#' @param sigma 
-#' @param edge 
-#' @param diggle 
+#' @param x,y Coords of the points or a single plotting structure to be used in binning. See xy.coords.
+#' @param xbins Number of bins in a row.
+#' @param sigma Bandwidth for kernel density calculation.
+#' @param edge Logical value for whether to apply edge correction. Default is TRUE.
+#' @param diggle Logical value for apply edge correction with the more accurate Jones-Diggle methor (need 'edge' to be TRUE).
 #'
-#' @return
+#' @return hexbin object.
 #' @export
 #'
 #' @examples
+#' 
 #' @importFrom spatstat.geom fft2D
 hexDensity = function(x,y=NULL, 
                      xbins = 128, #128 is the magic number in pixellate of spatstat

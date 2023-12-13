@@ -1,18 +1,13 @@
-# library(hexbin)
-# dyn.load("hbin.so")
-#modified hexbin that give full grid (include hex with no count) of regular hex
-#' Title
+#' Binning with regular hexagon
 #'
-#' @param x 
-#' @param y 
-#' @param xbins 
-#' @param xbnds 
-#' @param ybnds 
-#' @param xlab 
-#' @param ylab 
-#' @param IDs 
+#' Adapted from hexbin to give a full grid (include hexagon with no count) of regular hexagon. See hexbin for more details.
+#' @param x,y Coords of the points or a single plotting structure to be used in binning. See xy.coords.
+#' @param xbins Number of bins in a row.
+#' @param xbnds,ybnds Horizontal and vertical limits of the binning region in x or y units respectively, must encompass range(x) or range(y) respectively; Vector of length 2
+#' @param xlab,ylab Optional character strings used as labels for x and y. If NULL, sensible defaults are used.
+#' @param IDs Logical indicating if the individual cell “IDs” should be returned, see hexbin.
 #'
-#' @return
+#' @return hexbin object
 #' @export
 #'
 #' @examples
