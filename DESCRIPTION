@@ -1,7 +1,7 @@
 Package: hexDensity
 Type: Package
 Title: Fast kernel density calculation with hexagonal grid
-Version: 0.1.1
+Version: 0.1.2
 Author: Quoc Hoang Nguyen
 Maintainer: Quoc Hoang Nguyen <nguyen.q@wehi.edu.au>
 Description: More about what it does (maybe more than one line)

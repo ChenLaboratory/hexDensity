@@ -17,7 +17,7 @@ hexDensity = function(x,y=NULL,
                      sigma = 1,
                      edge = TRUE,
                      diggle = FALSE) {
-  hbin = hexbinFullRegular(x,y=NULL,xbins=xbins) 
+  hbin = hexbinFullRegular(x,y,xbins=xbins) 
   row = hbin@dimen[1]
   col = hbin@dimen[2]
   # print(paste("row is:",row))
