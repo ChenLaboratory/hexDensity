@@ -9,7 +9,8 @@ plotHexDensity(
   colramp = colorRampPalette(viridis::viridis(11)),
   main = deparse(substitute(hexDensity)),
   legend = F,
-  colorcut = seq(0, 1, length = 1024)
+  colorcut = seq(0, 1, length = 1024),
+  test = FALSE
 )
 }
 \arguments{
