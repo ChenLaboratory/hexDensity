@@ -18,7 +18,7 @@ plotHexDensity = function(hexDensity,
                       legend=F,
                       colorcut=seq(0,1,length = 1024)) {
   hexbin::plot(hexDensity,
-               mincnt=-0.0000001, 
+               mincnt=min(hexDensity@count), 
                main=main,
                colramp=colramp, 
                legend=legend,
