@@ -7,10 +7,13 @@
 plotHexDensity(
   hexDensity,
   colramp = colorRampPalette(viridis::viridis(11)),
+  mincnt = 0,
+  maxcnt = max(hexDensity@count),
   main = deparse(substitute(hexDensity)),
   legend = F,
   colorcut = seq(0, 1, length = 1024),
-  test = FALSE
+  test = F,
+  verbose = F
 )
 }
 \arguments{

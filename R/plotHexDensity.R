@@ -14,28 +14,33 @@
 #' @examples
 plotHexDensity = function(hexDensity, 
                       colramp =colorRampPalette(viridis::viridis(11)),
+                      mincnt=0,
+                      maxcnt=max(hexDensity@count),
                       main=deparse(substitute(hexDensity)),
                       legend=F,
                       colorcut=seq(0,1,length = 1024),
-                      test=FALSE) {
+                      test=F,
+                      verbose=F) {
   gplot.hexbin(hexDensity,
-               mincnt=-0.0000001, 
+               mincnt=mincnt,
+               maxcnt=maxcnt,
                main=main,
                colramp=colramp, 
                legend=legend,
                colorcut=colorcut,
-               test=test) 
+               test=test,
+               verbose=verbose) 
 }
 
 gplot.hexbin <-
   function(x,
            legend = 1.2, lcex = 1,
-          mincnt = 1, maxcnt = max(x@count),
+           mincnt = 1, maxcnt = max(x@count),
            trans = NULL, inv = NULL,
            colorcut = seq(0, 1, length = min(17, maxcnt)),
            colramp = function(n) LinGray(n, beg = 90, end = 15),
            xlab = NULL, ylab = NULL, main = "", newpage = TRUE,
-           type = TRUE, xaxt = TRUE, yaxt = TRUE,
+           xaxt = TRUE, yaxt = TRUE,
            clip="on", verbose = getOption("verbose"),
            test)
   {
@@ -71,18 +76,17 @@ gplot.hexbin <-
   if(nchar(main) > 0)
     grid.text(main, y = grid::unit(1, "npc") + grid::unit(1.5, "lines"),
               gp = gpar(fontsize = 18))
-  if(type) {
-    if(clip == "on") {
-      grid::upViewport()
-      grid::pushViewport(hv.ob@hexVp.on)
-    }
-    grid.hexagons(x,
-                  mincnt = mincnt, maxcnt = maxcnt, check.erosion = FALSE,
-                  trans = trans, colorcut = colorcut,
-                  colramp = colramp, verbose = verbose,
-                  test=test)
+
+  if(clip == "on") {
+    grid::upViewport()
+    grid::pushViewport(hv.ob@hexVp.on)
   }
-  
+  grid.hexagons(x,
+                mincnt = mincnt, maxcnt = maxcnt, check.erosion = FALSE,
+                trans = trans, colorcut = colorcut,
+                colramp = colramp, verbose = verbose,
+                test=test)
+
   grid::upViewport()# plot
 
 }
@@ -299,16 +303,15 @@ grid.hexagons <-
     rad <- sqrt(dx^2 + dy^2)
     hexC <- hexcoords(dx, dy, sep=NULL)
     ##_______________ Full Cell	 Plotting_____________________
-   if (test) {
-     print("hi")
-     mostFreqPen = names(which.max(table(pen)))
-     grid::grid.rect(gp=gpar(fill=mostFreqPen))
-     notMostFreq=(pen!=mostFreqPen)
-     pen = pen[notMostFreq]
-     xnew = xnew[notMostFreq]
-     ynew = ynew[notMostFreq]
-     print(paste(length(xnew),"hexagons drawn out of",length(dat@count),"hexagons"))
-   }
+   # if (test) {
+   #   mostFreqPen = names(which.max(table(pen)))
+   #   grid::grid.rect(gp=gpar(col=F,fill=mostFreqPen))
+   #   notMostFreq=(pen!=mostFreqPen)
+   #   pen = pen[notMostFreq]
+   #   xnew = xnew[notMostFreq]
+   #   ynew = ynew[notMostFreq]
+   #   if (verbose) print(paste(length(xnew),"hexagons drawn out of",length(dat@count),"hexagons"))
+   # }
    hexpolygon(xnew, ynew, hexC,
               fill = pen)
    ## and that's been all for these styles
