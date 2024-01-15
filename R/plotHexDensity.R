@@ -6,45 +6,29 @@
 #' @param colramp Color function that accept an integer n and return n colors.
 #' @param main Main title
 #' @param legend Legend is currently non-functional and should be ignored.
-#' @param colorcut Vector of values covering [0, 1] that determine hexagon color class boundaries and hexagon legend size boundaries. Alternatively, an integer (<= maxcnt) specifying the number of equispaced colorcut values in [0,1]. See hexbin.
+#' @param colorcut An integer for the number of equi-spaced colorcut in [0,1] to assign colors to values. Alternatively, a vector of custom colorcut spacing between [0, 1] (e.g. c(0,0.5,0.75,1) would assign different colors, as determined by colramp, for the bottom 50% values, the next 25%, and the top 25% values).
 #'
 #' @return
 #' @export
 #'
 #' @examples
-plotHexDensity = function(hexDensity, 
-                      colramp =colorRampPalette(viridis::viridis(11)),
-                      mincnt=0,
-                      maxcnt=max(hexDensity@count),
-                      main=deparse(substitute(hexDensity)),
-                      legend=F,
-                      colorcut=seq(0,1,length = 1024),
-                      test=F,
-                      verbose=F) {
-  gplot.hexbin(hexDensity,
-               mincnt=mincnt,
-               maxcnt=maxcnt,
-               main=main,
-               colramp=colramp, 
-               legend=legend,
-               colorcut=colorcut,
-               test=test,
-               verbose=verbose) 
-}
+#' 
+#' @importFrom grid grid.newpage viewport pushViewport upViewport grid.xaxis grid.yaxis grid.text grid.rect gpar unit
+#' @importFrom hexbin hexcoords hexpolygon hcell2xy
 
-gplot.hexbin <-
-  function(x,
-           legend = 1.2, lcex = 1,
-           mincnt = 1, maxcnt = max(x@count),
-           trans = NULL, inv = NULL,
-           colorcut = seq(0, 1, length = min(17, maxcnt)),
-           colramp = function(n) LinGray(n, beg = 90, end = 15),
-           xlab = NULL, ylab = NULL, main = "", newpage = TRUE,
-           xaxt = TRUE, yaxt = TRUE,
-           clip="on", verbose = getOption("verbose"),
-           test)
-  {
-  if(!is(x,"hexbin"))
+plotHexDensity = function(hexDensity, 
+                      main=deparse(substitute(hexDensity)), xlab=NULL, ylab=NULL,
+                      xaxt=TRUE, yaxt=TRUE,
+                      lcex=1,
+                      colramp = colorRampPalette(viridis::viridis(11)), colorcut=1024,
+                      legend=T, legendWidth=0.05, legendDistance=0.15,
+                      aspectRatio=1/hexDensity@shape,
+                      margin=0.2,
+                      test=F,
+                      newpage=T,
+                      
+                      verbose=getOption("verbose")) {
+  if(!is(hexDensity,"hexbin"))
     stop("first argument must be a hexbin object")
   if (length(colorcut) > 1) { # a sequence 0,...,1
     if(colorcut[1] != 0)
@@ -54,94 +38,149 @@ gplot.hexbin <-
   }
   else {
     colorcut <-
-      if(colorcut > 1) seq(0, 1, length = min(c(17, colorcut, maxcnt)))
+      if(colorcut > 1) seq(0, 1, length = colorcut)
     else 1
   }
   
-  ## ----- plotting starts ------------------------
-  if (newpage) grid::grid.newpage()
-  hv.ob <- hexbin::hexViewport(x, xbnds=x@xbnds, ybnds=x@ybnds,
-                       offset = grid::unit(legend,"inches"))
-  grid::pushViewport(hv.ob@hexVp.off)
-  
-  if(xaxt) grid.xaxis()
-  if(yaxt) grid.yaxis()
-  ## xlab, ylab, main :
-  if(is.null(xlab)) xlab <- x@xlab
-  if(is.null(ylab)) ylab <- x@ylab
-  if(nchar(xlab) > 0)
-    grid.text(xlab, y = grid::unit(-2, "lines"), gp = gpar(fontsize = 16))
-  if(nchar(ylab) > 0)
-    grid.text(ylab, x = grid::unit(-2, "lines"), gp = gpar(fontsize = 16), rot = 90)
-  if(nchar(main) > 0)
-    grid.text(main, y = grid::unit(1, "npc") + grid::unit(1.5, "lines"),
-              gp = gpar(fontsize = 18))
-
-  if(clip == "on") {
-    grid::upViewport()
-    grid::pushViewport(hv.ob@hexVp.on)
+  ## -----Prepare viewports ----------------------
+  screenRatio = dev.size()[1]/dev.size()[2]
+  plotsize = 1-margin*2
+  if (aspectRatio > screenRatio) {
+    w = unit(plotsize,'npc')
+    h = unit(plotsize*screenRatio/aspectRatio,'npc')
   }
-  grid.hexagons(x,
-                mincnt = mincnt, maxcnt = maxcnt, check.erosion = FALSE,
-                trans = trans, colorcut = colorcut,
+  else {
+    w = unit(plotsize*aspectRatio/screenRatio,'npc')
+    h = unit(plotsize,'npc')
+  }
+  
+  if (legend) {
+    legendWidth = unit(legendWidth*w,'npc')
+    legendDistance = unit(legendDistance*w,'npc')
+    #legend size is based on plot height, which is bigger, instead of width
+    if (aspectRatio<1) {
+      legendWidth = legendWidth/aspectRatio
+      legendDistance = legendDistance/aspectRatio
+    }
+    
+    #need rescale to maintain margin
+    if (c(w + legendWidth + legendDistance) > plotsize) {
+      # print("rescaling")
+      rescaleFactor = plotsize/c(w + legendWidth + legendDistance)
+      w = w*rescaleFactor
+      h = h*rescaleFactor
+      legendWidth = legendWidth*rescaleFactor
+      legendDistance = legendDistance*rescaleFactor
+    }
+    legendViewport = viewport(x=unit(0.5,'npc') + unit(w/2 + legendDistance/2,'npc'),
+                              width = legendWidth,
+                              height = h,
+                              yscale=range(hexDensity@count),
+                              clip=F
+      )
+  }
+  hexViewport = viewport(x=unit(0.5,'npc')-unit(as.numeric(legend)*(legendWidth+legendDistance)/2,'npc'),
+                         width=w,
+                         height=h,
+                         xscale=hexDensity@xbnds, yscale=hexDensity@ybnds,
+                         default.units = 'native',
+                         clip=F
+                         )
+  
+  ## ----- plotting starts ------------------------
+  if (newpage) grid.newpage()
+  pushViewport(hexViewport)
+  #labels
+  if(xaxt) grid.xaxis(gp=gpar(cex=lcex))
+  if(yaxt) grid.yaxis(gp=gpar(cex=lcex))
+  ## xlab, ylab, main :
+  if(is.null(xlab)) xlab <- hexDensity@xlab
+  if(is.null(ylab)) ylab <- hexDensity@ylab
+  if(nchar(xlab) > 0)
+    grid.text(xlab, y = unit(-2, "lines"), gp = gpar(fontsize = 16,cex=lcex))
+  if(nchar(ylab) > 0)
+    grid.text(ylab, x = unit(-2, "lines"), gp = gpar(fontsize = 16,cex=lcex), rot = 90)
+  if(nchar(main) > 0)
+    grid.text(main, y = unit(1, "npc") + unit(1.5, "lines"),
+              gp = gpar(fontsize = 18,cex=lcex))
+  
+  #hexagons
+  upViewport()
+  hexViewport$clip = T
+  pushViewport(hexViewport)
+  grid.hexagons(hexDensity,
+                check.erosion = FALSE,
+                colorcut = colorcut,
                 colramp = colramp, verbose = verbose,
                 test=test)
+  grid.rect(gp=gpar(fill=NA))
 
-  grid::upViewport()# plot
-
-}
-
-hexcoords <- function(dx, dy = NULL, n = 1, sep = NULL)
-{
-  stopifnot(length(dx) == 1)
-  if(is.null(dy)) dy <- dx/sqrt(3)
-  if(is.null(sep))
-    list(x = rep.int(c(dx, dx,     0, -dx, -dx,    0), n),
-         y = rep.int(c(dy,-dy, -2*dy, -dy,  dy, 2*dy), n),
-         no.sep = TRUE)
-  else
-    list(x = rep.int(c(dx, dx,     0, -dx, -dx,   0, sep), n),
-         y = rep.int(c(dy,-dy, -2*dy, -dy,	dy, 2*dy, sep), n),
-         no.sep = FALSE)
-}
-
-hexpolygon <-
-  function(x, y, hexC = hexcoords(dx, dy, n = 1), dx, dy=NULL,
-           fill = 1, hUnit = "native", ...)
-  {
-    ## Purpose: draw hexagon [grid.]polygon()'s  around  (x[i], y[i])_i
-    ## Author: Martin Maechler, Jul 2004; Nicholas for grid
-    
-    n <- length(x)
-    stopifnot(length(y) == n)
-    stopifnot(is.list(hexC) && is.numeric(hexC$x) && is.numeric(hexC$y))
-    if(hexC$no.sep) {
-      n6 <- rep.int(6:6, n)
-      if(!is.null(hUnit)) {
-        grid.polygon(x = grid::unit(rep.int(hexC$x, n) + rep.int(x, n6),hUnit),
-                     y = grid::unit(rep.int(hexC$y, n) + rep.int(y, n6),hUnit),
-                     id.lengths = n6,
-                     gp = gpar(col=F,fill= fill))
-      }
-      else {
-        grid.polygon(x = rep.int(hexC$x, n) + rep.int(x, n6),
-                     y = rep.int(hexC$y, n) + rep.int(y, n6),
-                     id.lengths = n6,
-                     gp = gpar(col=F,fill= fill))
-      }
-    }
-    else{ ## traditional graphics polygons: must be closed explicitly (+ 1 pt)
-      n7 <- rep.int(7:7, n)
-      polygon(x = rep.int(hexC$x, n) + rep.int(x, n7),
-              y = rep.int(hexC$y, n) + rep.int(y, n7), ...)
-    }
+  upViewport()
+  # ----- Legend ------------------------
+  if (legend) {
+    pushViewport(legendViewport)
+    #Make ribbon legend
+    grid.rect(y = unit(seq(0,1-1/256,length=256), "npc"),
+              height = unit(1/256, "npc"), 
+              just = "bottom",
+              gp = gpar(col = NA, fill = colramp(256)))
+    grid.yaxis(gp=gpar(cex=lcex),main=F)
+    grid.rect(gp=gpar(col="black",fill=NA))
+    upViewport()
   }
+}
+# 
+# hexcoords <- function(dx, dy = NULL, n = 1, sep = NULL)
+# {
+#   stopifnot(length(dx) == 1)
+#   if(is.null(dy)) dy <- dx/sqrt(3)
+#   if(is.null(sep))
+#     list(x = rep.int(c(dx, dx,     0, -dx, -dx,    0), n),
+#          y = rep.int(c(dy,-dy, -2*dy, -dy,  dy, 2*dy), n),
+#          no.sep = TRUE)
+#   else
+#     list(x = rep.int(c(dx, dx,     0, -dx, -dx,   0, sep), n),
+#          y = rep.int(c(dy,-dy, -2*dy, -dy,	dy, 2*dy, sep), n),
+#          no.sep = FALSE)
+# }
+
+# hexpolygon <-
+#   function(x, y, hexC = hexcoords(dx, dy, n = 1), dx, dy=NULL,
+#            fill = 1, hUnit = "native", ...)
+#   {
+#     ## Purpose: draw hexagon [grid.]polygon()'s  around  (x[i], y[i])_i
+#     ## Author: Martin Maechler, Jul 2004; Nicholas for grid
+#     
+#     n <- length(x)
+#     stopifnot(length(y) == n)
+#     stopifnot(is.list(hexC) && is.numeric(hexC$x) && is.numeric(hexC$y))
+#     if(hexC$no.sep) {
+#       n6 <- rep.int(6:6, n)
+#       if(!is.null(hUnit)) {
+#         grid.polygon(x = grid::unit(rep.int(hexC$x, n) + rep.int(x, n6),hUnit),
+#                      y = grid::unit(rep.int(hexC$y, n) + rep.int(y, n6),hUnit),
+#                      id.lengths = n6,
+#                      gp = gpar(col=F,fill= fill))
+#       }
+#       else {
+#         grid.polygon(x = rep.int(hexC$x, n) + rep.int(x, n6),
+#                      y = rep.int(hexC$y, n) + rep.int(y, n6),
+#                      id.lengths = n6,
+#                      gp = gpar(col=F,fill= fill))
+#       }
+#     }
+#     else{ ## traditional graphics polygons: must be closed explicitly (+ 1 pt)
+#       n7 <- rep.int(7:7, n)
+#       polygon(x = rep.int(hexC$x, n) + rep.int(x, n7),
+#               y = rep.int(hexC$y, n) + rep.int(y, n7), ...)
+#     }
+#   }
 
 grid.hexagons <-
   function(dat,
            use.count=TRUE, cell.at=NULL,
            check.erosion = TRUE,
-           mincnt = 1, maxcnt = max(dat@count), trans = NULL,
+           trans = NULL,
            colorcut = seq(0, 1, length = 17),
            colramp = function(n){ LinGray(n,beg = 90, end = 15) },
            def.unit = "native",
@@ -242,41 +281,20 @@ grid.hexagons <-
         else cnt <- dat@cAtt
       }
     }
-    xbins <- dat@xbins
-    shape <- dat@shape
-    tmp <- hcell2xy(dat, check.erosion = check.erosion)
-    good <- mincnt <= cnt & cnt <= maxcnt
-    xnew <- tmp$x[good]
-    ynew <- tmp$y[good]
-    cnt <- cnt[good]
-    sx <- xbins/diff(dat@xbnds)
-    sy <- (xbins * shape)/diff(dat@ybnds)
+
     
-    ##___________Transform Counts to Radius_____________________
-   if(is.null(trans)) {
-     if( min(cnt,na.rm=TRUE)< 0){
-       pcnt<- cnt + min(cnt)
-       rcnt <- {
-         if(maxcnt == mincnt) rep.int(1, length(cnt))
-         else (pcnt - mincnt)/(maxcnt - mincnt)
-       }
-     }
-     else rcnt <- {
-       if(maxcnt == mincnt) rep.int(1, length(cnt))
-       else (cnt - mincnt)/(maxcnt - mincnt)
-     }
-   }
-   else {
-     rcnt <- (trans(cnt) - trans(mincnt)) /
-       (trans(maxcnt) - trans(mincnt))
+    ##___________Transform Counts to range [0,1]_____________________
+   if(!is.null(trans)) {
+     cnt = trans(cnt) 
      if(any(is.na(rcnt)))
-       stop("bad count transformation")
+        stop("bad count transformation")
    }
-   # area <- minarea + rcnt * (maxarea - minarea)
-   # 
-   #  area <- pmin(area, maxarea)
-   #  radius <- sqrt(area)
-   #  
+   range = range(cnt)
+   rcnt <- {
+       if(range[1] == range[2]) rep.int(1, length(cnt))
+       else (cnt - range[1])/(range[2]-range[1])
+   }
+
     ##______________Set Colors_____________________________
              ## MM: Following is quite different from bin2d's
    nc <- length(colorcut)
@@ -293,27 +311,40 @@ grid.hexagons <-
    ##    and returning n colors
    clrs <- colramp(length(colorcut) - 1)
    pen <- clrs[colgrp]
+   
+   if(test){
+   # Speed up plotting setting most frequent color as background instead of 
+   # plotting those hexagons.
+   mostFreqPen = names(which.max(table(pen)))
+   grid.rect(gp=gpar(col=F,fill=mostFreqPen))
+   notMostFreq=(pen!=mostFreqPen)
+   pen = pen[notMostFreq]
+   dat@cell=dat@cell[notMostFreq] #safe to do since R do not modify the actual object
+   if (verbose) print(paste(length(pen),"hexagons drawn out of",length(dat@count),"hexagons"))
+   }
     ##__________________ Construct a hexagon___________________
+   
+   xbins <- dat@xbins
+   shape <- dat@shape
+   tmp <- hcell2xy(dat, check.erosion = check.erosion)
+   xnew <- tmp$x
+   ynew <- tmp$y
+   sx <- xbins/diff(dat@xbnds)
+   sy <- (xbins * shape)/diff(dat@ybnds)
+   
     ## The inner and outer radius for hexagon in the scaled plot
     inner <- 0.5
     outer <- (2 * inner)/sqrt(3)
     ## Now construct a point up hexagon symbol in data units
     dx <- inner/sx
     dy <- outer/(2 * sy)
-    rad <- sqrt(dx^2 + dy^2)
+    # rad <- sqrt(dx^2 + dy^2)
     hexC <- hexcoords(dx, dy, sep=NULL)
     ##_______________ Full Cell	 Plotting_____________________
-   # if (test) {
-   #   mostFreqPen = names(which.max(table(pen)))
-   #   grid::grid.rect(gp=gpar(col=F,fill=mostFreqPen))
-   #   notMostFreq=(pen!=mostFreqPen)
-   #   pen = pen[notMostFreq]
-   #   xnew = xnew[notMostFreq]
-   #   ynew = ynew[notMostFreq]
-   #   if (verbose) print(paste(length(xnew),"hexagons drawn out of",length(dat@count),"hexagons"))
-   # }
+  
+
    hexpolygon(xnew, ynew, hexC,
               fill = pen)
    ## and that's been all for these styles
    return(invisible(paste("done")))
-}
+  }

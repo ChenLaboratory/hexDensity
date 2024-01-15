@@ -6,26 +6,34 @@
 \usage{
 plotHexDensity(
   hexDensity,
-  colramp = colorRampPalette(viridis::viridis(11)),
-  mincnt = 0,
-  maxcnt = max(hexDensity@count),
   main = deparse(substitute(hexDensity)),
-  legend = F,
-  colorcut = seq(0, 1, length = 1024),
+  xlab = NULL,
+  ylab = NULL,
+  xaxt = TRUE,
+  yaxt = TRUE,
+  lcex = 1,
+  colramp = colorRampPalette(viridis::viridis(11)),
+  colorcut = 1024,
+  legend = T,
+  legendWidth = 0.05,
+  legendDistance = 0.15,
+  aspectRatio = 1/hexDensity@shape,
+  margin = 0.2,
   test = F,
-  verbose = F
+  newpage = T,
+  verbose = getOption("verbose")
 )
 }
 \arguments{
 \item{hexDensity}{hexbin object returned by hexDensity}
 
-\item{colramp}{Color function that accept an integer n and return n colors.}
-
 \item{main}{Main title}
 
-\item{legend}{Legend is currently non-functional and should be ignored.}
+\item{colramp}{Color function that accept an integer n and return n colors.}
 
-\item{colorcut}{Vector of values covering [0, 1] that determine hexagon color class boundaries and hexagon legend size boundaries. Alternatively, an integer (<= maxcnt) specifying the number of equispaced colorcut values in [0,1]. See hexbin.}
+\item{colorcut}{An integer for the number of equi-spaced colorcut in [0,1] to assign colors to values. Alternatively, a vector of custom colorcut spacing between [0, 1] (e.g. c(0,0.5,0.75,1) would assign different colors, as determined by colramp, for the bottom 50% values, the next 25%, and the top 25% values).}
+
+\item{legend}{Legend is currently non-functional and should be ignored.}
 }
 \description{
 Adapted plotting function for hexbin object.
