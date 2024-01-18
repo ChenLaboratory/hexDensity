@@ -24,10 +24,7 @@ plotHexDensity = function(hexDensity,
                       legend=T, legendWidth=0.05, legendDistance=0.15,
                       aspectRatio=1/hexDensity@shape,
                       margin=0.2,
-                      test=F,
-                      newpage=T,
-                      
-                      verbose=getOption("verbose")) {
+                      newpage=T) {
   if(!is(hexDensity,"hexbin"))
     stop("first argument must be a hexbin object")
   if (length(colorcut) > 1) { # a sequence 0,...,1
@@ -65,7 +62,6 @@ plotHexDensity = function(hexDensity,
     
     #need rescale to maintain margin
     if (c(w + legendWidth + legendDistance) > plotsize) {
-      # print("rescaling")
       rescaleFactor = plotsize/c(w + legendWidth + legendDistance)
       w = w*rescaleFactor
       h = h*rescaleFactor
@@ -111,8 +107,7 @@ plotHexDensity = function(hexDensity,
   grid.hexagons(hexDensity,
                 check.erosion = FALSE,
                 colorcut = colorcut,
-                colramp = colramp, verbose = verbose,
-                test=test)
+                colramp = colramp)
   grid.rect(gp=gpar(fill=NA))
 
   upViewport()
@@ -129,52 +124,6 @@ plotHexDensity = function(hexDensity,
     upViewport()
   }
 }
-# 
-# hexcoords <- function(dx, dy = NULL, n = 1, sep = NULL)
-# {
-#   stopifnot(length(dx) == 1)
-#   if(is.null(dy)) dy <- dx/sqrt(3)
-#   if(is.null(sep))
-#     list(x = rep.int(c(dx, dx,     0, -dx, -dx,    0), n),
-#          y = rep.int(c(dy,-dy, -2*dy, -dy,  dy, 2*dy), n),
-#          no.sep = TRUE)
-#   else
-#     list(x = rep.int(c(dx, dx,     0, -dx, -dx,   0, sep), n),
-#          y = rep.int(c(dy,-dy, -2*dy, -dy,	dy, 2*dy, sep), n),
-#          no.sep = FALSE)
-# }
-
-# hexpolygon <-
-#   function(x, y, hexC = hexcoords(dx, dy, n = 1), dx, dy=NULL,
-#            fill = 1, hUnit = "native", ...)
-#   {
-#     ## Purpose: draw hexagon [grid.]polygon()'s  around  (x[i], y[i])_i
-#     ## Author: Martin Maechler, Jul 2004; Nicholas for grid
-#     
-#     n <- length(x)
-#     stopifnot(length(y) == n)
-#     stopifnot(is.list(hexC) && is.numeric(hexC$x) && is.numeric(hexC$y))
-#     if(hexC$no.sep) {
-#       n6 <- rep.int(6:6, n)
-#       if(!is.null(hUnit)) {
-#         grid.polygon(x = grid::unit(rep.int(hexC$x, n) + rep.int(x, n6),hUnit),
-#                      y = grid::unit(rep.int(hexC$y, n) + rep.int(y, n6),hUnit),
-#                      id.lengths = n6,
-#                      gp = gpar(col=F,fill= fill))
-#       }
-#       else {
-#         grid.polygon(x = rep.int(hexC$x, n) + rep.int(x, n6),
-#                      y = rep.int(hexC$y, n) + rep.int(y, n6),
-#                      id.lengths = n6,
-#                      gp = gpar(col=F,fill= fill))
-#       }
-#     }
-#     else{ ## traditional graphics polygons: must be closed explicitly (+ 1 pt)
-#       n7 <- rep.int(7:7, n)
-#       polygon(x = rep.int(hexC$x, n) + rep.int(x, n7),
-#               y = rep.int(hexC$y, n) + rep.int(y, n7), ...)
-#     }
-#   }
 
 grid.hexagons <-
   function(dat,
@@ -183,9 +132,7 @@ grid.hexagons <-
            trans = NULL,
            colorcut = seq(0, 1, length = 17),
            colramp = function(n){ LinGray(n,beg = 90, end = 15) },
-           def.unit = "native",
-           verbose = getOption("verbose"),
-           test)
+           def.unit = "native"
   {
     ## Warning:	 presumes the plot has the right shape and scales
     ##		 See plot.hexbin()
@@ -312,15 +259,17 @@ grid.hexagons <-
    clrs <- colramp(length(colorcut) - 1)
    pen <- clrs[colgrp]
    
-   if(test){
-   # Speed up plotting setting most frequent color as background instead of 
-   # plotting those hexagons.
-   mostFreqPen = names(which.max(table(pen)))
-   grid.rect(gp=gpar(col=F,fill=mostFreqPen))
-   notMostFreq=(pen!=mostFreqPen)
-   pen = pen[notMostFreq]
-   dat@cell=dat@cell[notMostFreq] #safe to do since R do not modify the actual object
-   if (verbose) print(paste(length(pen),"hexagons drawn out of",length(dat@count),"hexagons"))
+   # Speed up plotting a bit by setting the most frequent color as background  
+   # so don't have to plot those hexagons. 
+   # Only worth if safe ~>1000 hexagons when tested.
+   mostFreqPen = which.max(table(pen))
+   if (mostFreqPen > 1000) { 
+     mostFreqPen = names(mostFreqPen)
+     grid.rect(gp=gpar(col=F,fill=mostFreqPen))
+     notMostFreq=(pen!=mostFreqPen)
+     pen = pen[notMostFreq]
+     dat@cell=dat@cell[notMostFreq] #safe since R is pass-by-value
+     # if (verbose) cat(length(pen),"hexagons drawn out of",length(dat@count),"hexagons")
    }
     ##__________________ Construct a hexagon___________________
    
