@@ -6,22 +6,48 @@
 \usage{
 plotHexDensity(
   hexDensity,
-  colramp = colorRampPalette(viridis::viridis(11)),
   main = deparse(substitute(hexDensity)),
-  legend = F,
-  colorcut = seq(0, 1, length = 1024)
+  xlab = NULL,
+  ylab = NULL,
+  xaxt = TRUE,
+  yaxt = TRUE,
+  lcex = 1,
+  colramp = colorRampPalette(viridis::viridis(11)),
+  colorcut = 1024,
+  legend = T,
+  legendWidth = 0.05,
+  legendDistance = 0.15,
+  aspectRatio = 1/hexDensity@shape,
+  margin = 0.2,
+  newpage = T
 )
 }
 \arguments{
 \item{hexDensity}{hexbin object returned by hexDensity}
 
+\item{main}{Main title}
+
+\item{xlab, ylab}{x-axis and y-axis label}
+
+\item{xaxt, yaxt}{logical for whether to plot x-axis and y-axis values}
+
+\item{lcex}{Expansion factor for all letters.}
+
 \item{colramp}{Color function that accept an integer n and return n colors.}
 
-\item{main}{Main title}
+\item{colorcut}{An integer for the number of equi-spaced colorcut in [0,1] to assign colors to values. Alternatively, a vector of custom colorcut spacing between [0, 1].}
 
 \item{legend}{Legend is currently non-functional and should be ignored.}
 
-\item{colorcut}{Vector of values covering [0, 1] that determine hexagon color class boundaries and hexagon legend size boundaries. Alternatively, an integer (<= maxcnt) specifying the number of equispaced colorcut values in [0,1]. See hexbin.}
+\item{legendWidth}{Expansion factor for legend width.}
+
+\item{legendDistance}{Expansion factor for the space between the plot and the legend.}
+
+\item{aspectRatio}{width to height ratio of the plot. Default is the (inverse of) shape value of hexDensity.}
+
+\item{margin}{Minimum guaranteed margin for the plot. Different aspect ratio between the screen and the plot means that margin can be larger on certain sides.}
+
+\item{newpage}{logical for whether to plot on a new page.}
 }
 \description{
 Adapted plotting function for hexbin object.
