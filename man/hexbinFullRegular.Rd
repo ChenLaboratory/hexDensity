@@ -12,7 +12,8 @@ hexbinFullRegular(
   ybnds = range(y),
   xlab = NULL,
   ylab = NULL,
-  IDs = FALSE
+  IDs = FALSE,
+  weight = NULL
 )
 }
 \arguments{

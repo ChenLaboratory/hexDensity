@@ -15,7 +15,8 @@
 hexbinFullRegular <-
     function(x, y = NULL, xbins = 128,
 	     xbnds = range(x), ybnds = range(y),
-	     xlab = NULL, ylab = NULL, IDs = FALSE)
+	     xlab = NULL, ylab = NULL, IDs = FALSE,
+	     weight = NULL)
 {
     call <- match.call()
     ## (x,y, xlab, ylab) dealing
@@ -58,6 +59,15 @@ hexbinFullRegular <-
     c1 <- 2 * floor((xbins *shape)/sqrt(3) + 1.5001)
     imax <- trunc((jmax*c1 -1)/jmax + 1)
     lmax <- jmax * imax
+    
+    if(is.null(weight)) {
+      weight = rep(1,length=n)
+    }
+    print(n)
+    print(x)
+    print(y)
+    print(weight)
+    
     ans <- .Fortran(`hbin`,
 	      x = as.double(x),
 	      y = as.double(y),
@@ -71,9 +81,11 @@ hexbinFullRegular <-
 	      ybnds = as.double(ybnds),
 	      dim = as.integer(c(imax, jmax)),
 	      n = as.integer(n),
-	      cID = if(IDs) integer(n) else as.integer(-1))[-(1:2)]
+	      cID = if(IDs) integer(n) else as.integer(-1),
+	      weight = as.double(weight))[-(1:2)]
     ## cut off extraneous stuff
-
+    print(ans)
+    print(ans$cnt)
     if(!IDs) ans$cID <- NULL
     if(IDs && has.na) {
       ok <- as.integer(ok)

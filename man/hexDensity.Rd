@@ -4,7 +4,7 @@
 \alias{hexDensity}
 \title{Kernel Density Estimation with Hexagonal binning.}
 \usage{
-hexDensity(x, y = NULL, xbins = 128, sigma = 1, edge = TRUE, diggle = FALSE)
+hexDensity(x, ...)
 }
 \arguments{
 \item{x, y}{Coords of the points or a single plotting structure to be used in binning. See xy.coords.}

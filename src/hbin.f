@@ -1,5 +1,5 @@
 	subroutine hbin(x,y,cell,cnt,xcm,ycm, size, shape,
-     *                  rx,ry, bnd, n, cellid)
+     *                  rx,ry, bnd, n, cellid, weight)
 
 C	Copyright 1991
 C	Version Date:	September 16, 1994
@@ -16,7 +16,7 @@ c       Copyright (2004) Nicholas Lewin-Koh and Martin Maechler
 	integer n, nc, cell(*), cnt(*), bnd(2), cellid(*)
 c       cellid(*): length 1 or n
 	double precision x(n), y(n), xcm(*),ycm(*), rx(2),ry(2), size
-        double precision shape
+        double precision shape, weight(n)
 	integer i, i1, i2, iinc
 	integer j1, j2, jinc
 	integer L, lmax, lat
@@ -40,7 +40,6 @@ C_______Constants for scaling the data_____________________________
 	lmax=bnd(1)*bnd(2)
 	con1=.25
 	con2=1.0/3.0
-
 C_______Binning loop________________________________________
 	do i=1,n
 	  sx = c1 * (x(i) - xmin)
@@ -62,11 +61,13 @@ C_______Binning loop________________________________________
 	      L=i2*iinc+ j2+lat
 	    endif
 	  endif
-
-	  cnt(L)=cnt(L)+1
+    
+	  cnt(L)=cnt(L)+weight(i)
+	  
 	  if (keepID) cellid(i)=L
-	  xcm(L)=xcm(L)+ (x(i)-xcm(L))/cnt(L)
-	  ycm(L)=ycm(L)+ (y(i)-ycm(L))/cnt(L)
+C_______Weighted average________________________________________
+	  xcm(L)=xcm(L)+ weight(i)*(x(i)-xcm(L))/cnt(L)
+	  ycm(L)=ycm(L)+ weight(i)*(y(i)-ycm(L))/cnt(L)
 	enddo
 
 C_______Compression of output________________________________________
