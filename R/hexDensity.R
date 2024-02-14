@@ -20,8 +20,7 @@ hexDensity = function(x,y=NULL,
   hbin = hexbinFullRegular(x,y,xbins=xbins) 
   row = hbin@dimen[1]
   col = hbin@dimen[2]
-  # print(paste("row is:",row))
-  # print(paste("col is:",col))
+
   hexSize = diff(hbin@xbnds)/xbins
   
   #convert hexbin representation to staggered bin
@@ -81,11 +80,14 @@ hexDensity = function(x,y=NULL,
     con = fft2D(fM * fK, inverse=TRUE)
     con = con/(2*row*(2*col+(row-1)))
     edg <- Mod(con[1:row, 1:(col+(row-1)/2)])
+
     if(diggle) {
       staggeredBin[1:row,1:(col+(row-1)/2)] = staggeredBin[1:row,1:(col+(row-1)/2)]/edg 
+      # Remove NaN (from 0/0 in the boundary of the staggered bin) for fft2D.
+      staggeredBin[is.nan(staggeredBin)] = 0
     }
   }
-  
+
   #KDE calculation
   fY = fft2D(staggeredBin)
   sm = fft2D(fY*fK,inverse = TRUE)/(2*row*(2*col+(row-1)))
@@ -93,6 +95,7 @@ hexDensity = function(x,y=NULL,
   #extract back to hexbin class
   count = c()
   if(edge & !diggle){
+    #No need to clean up the NaN since will discard them anyway
     sm[1:row,1:(col+(row-1)/2)] = Re(sm[1:row,1:(col+(row-1)/2)])/edg
   }
 
