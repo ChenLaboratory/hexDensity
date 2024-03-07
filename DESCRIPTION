@@ -1,7 +1,7 @@
 Package: hexDensity
 Type: Package
 Title: Fast kernel density calculation with hexagonal grid
-Version: 0.1.4
+Version: 0.1.5
 Author: Quoc Hoang Nguyen
 Maintainer: Quoc Hoang Nguyen <nguyen.q@wehi.edu.au>
 Description: More about what it does (maybe more than one line)
@@ -12,7 +12,6 @@ LazyData: true
 NeedsCompilation: yes
 Imports: 
     spatstat.geom,
-    viridis
-RoxygenNote: 7.3.1
-Depends: 
+    viridis,
     hexbin
+RoxygenNote: 7.3.1
