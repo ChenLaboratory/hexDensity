@@ -11,6 +11,8 @@ Encoding: UTF-8
 LazyData: true
 NeedsCompilation: yes
 Imports: 
-    hexbin,
-    spatstat.geom
-RoxygenNote: 7.2.3
+    spatstat.geom,
+    viridis
+RoxygenNote: 7.3.1
+Depends: 
+    hexbin

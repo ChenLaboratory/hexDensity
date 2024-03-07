@@ -22,12 +22,12 @@
 #' @examples
 #' 
 #' @importFrom grid grid.newpage viewport pushViewport upViewport grid.xaxis grid.yaxis grid.text grid.rect gpar unit grid.pretty
-
+#' @importFrom viridis viridis
 plotHexDensity = function(hexDensity, 
                       main=deparse(substitute(hexDensity)), xlab=NULL, ylab=NULL,
                       xaxt=TRUE, yaxt=TRUE,
                       lcex=1,
-                      colramp = colorRampPalette(viridis::viridis(11)), colorcut=1024,
+                      colramp = colorRampPalette(viridis(11)), colorcut=1024,
                       legend=T, legendWidth=0.05, legendDistance=0.15,
                       aspectRatio=1/hexDensity@shape,
                       margin=0.15,

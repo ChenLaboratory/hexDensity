@@ -12,7 +12,7 @@ plotHexDensity(
   xaxt = TRUE,
   yaxt = TRUE,
   lcex = 1,
-  colramp = colorRampPalette(viridis::viridis(11)),
+  colramp = colorRampPalette(viridis(11)),
   colorcut = 1024,
   legend = T,
   legendWidth = 0.05,

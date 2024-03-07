@@ -15,14 +15,14 @@
 #'
 #' @examples
 #' 
-#' @importFrom grid 
 #' @importFrom hexbin hexcoords hexpolygon hcell2xy
+#' @importFrom viridis viridis
 grid.hexagontile <-
   function(hexDensity,
            use.count=TRUE, cell.at=NULL,
            trans = NULL,
            colorcut = seq(0, 1, length = 1024),
-           colramp = colorRampPalette(viridis::viridis(11)),
+           colramp = colorRampPalette(viridis(11)),
            def.unit = "native")
   {
     ##____________________Initial checks_______________________
