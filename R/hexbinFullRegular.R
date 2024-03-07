@@ -63,10 +63,10 @@ hexbinFullRegular <-
     if(is.null(weight)) {
       weight = rep(1,length=n)
     }
-    print(n)
-    print(x)
-    print(y)
-    print(weight)
+    # print(n)
+    # print(x)
+    # print(y)
+    # print(weight)
     
     ans <- .Fortran(`hbin`,
 	      x = as.double(x),
@@ -84,8 +84,8 @@ hexbinFullRegular <-
 	      cID = if(IDs) integer(n) else as.integer(-1),
 	      weight = as.double(weight))[-(1:2)]
     ## cut off extraneous stuff
-    print(ans)
-    print(ans$cnt)
+    # print(ans)
+    # print(ans$cnt)
     if(!IDs) ans$cID <- NULL
     if(IDs && has.na) {
       ok <- as.integer(ok)
