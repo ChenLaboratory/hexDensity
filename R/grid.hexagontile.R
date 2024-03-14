@@ -15,14 +15,14 @@
 #'
 #' @examples
 #' 
-#' @importFrom grid 
+#' @importFrom viridis viridis 
 #' @importFrom hexbin hexcoords hexpolygon hcell2xy
 grid.hexagontile <-
   function(hexDensity,
            use.count=TRUE, cell.at=NULL,
            trans = NULL,
            colorcut = seq(0, 1, length = 1024),
-           colramp = colorRampPalette(viridis::viridis(11)),
+           colramp = colorRampPalette(viridis(11)),
            def.unit = "native")
   {
     ##____________________Initial checks_______________________
@@ -72,7 +72,7 @@ grid.hexagontile <-
     
     # Speed up plotting a bit by setting the most frequent color as background  
     # so don't have to plot those hexagons. 
-    # Only worth if safe ~>1000 hexagons when tested.
+    # Only worth if can save ~>1000 hexagons when tested.
     mostFreqPen = which.max(table(pen))
     if (mostFreqPen > 1000) { 
       mostFreqPen = names(mostFreqPen)

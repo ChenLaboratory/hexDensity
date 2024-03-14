@@ -63,16 +63,12 @@ hexbinFullRegular <-
     if(is.null(weight)) {
       weight = rep(1,length=n)
     }
-    # print(n)
-    # print(x)
-    # print(y)
-    # print(weight)
     
     ans <- .Fortran(`hbin`,
 	      x = as.double(x),
 	      y = as.double(y),
 	      cell = integer(lmax),
-	      cnt = integer(lmax),
+	      cnt = double(lmax),
 	      xcm = double(lmax),
 	      ycm = double(lmax),
 	      xbins = as.double(xbins),
@@ -84,8 +80,6 @@ hexbinFullRegular <-
 	      cID = if(IDs) integer(n) else as.integer(-1),
 	      weight = as.double(weight))[-(1:2)]
     ## cut off extraneous stuff
-    # print(ans)
-    # print(ans$cnt)
     if(!IDs) ans$cID <- NULL
     if(IDs && has.na) {
       ok <- as.integer(ok)
@@ -98,7 +92,7 @@ hexbinFullRegular <-
     length(ans$cnt) <- nc
     length(ans$xcm) <- nc
     length(ans$ycm) <- nc
-    if(sum(ans$cnt) != n) warning("Lost counts in binning")
+    if(sum(ans$cnt) != sum(weight)) warning("Lost counts in binning")
     new("hexbin",
     cell = ans$cell, count = ans$cnt,
     xcm = ans$xcm, ycm = ans$ycm, xbins = ans$xbins,

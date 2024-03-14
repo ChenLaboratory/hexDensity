@@ -13,10 +13,10 @@ c       Copyright (2004) Nicholas Lewin-Koh and Martin Maechler
 
 	implicit none
 
-	integer n, nc, cell(*), cnt(*), bnd(2), cellid(*)
+	integer n, nc, cell(*), bnd(2), cellid(*)
 c       cellid(*): length 1 or n
-	double precision x(n), y(n), xcm(*),ycm(*), rx(2),ry(2), size
-        double precision shape, weight(n)
+	double precision x(n), y(n), cnt(*), xcm(*),ycm(*), rx(2),ry(2)
+        double precision size, shape, weight(n)
 	integer i, i1, i2, iinc
 	integer j1, j2, jinc
 	integer L, lmax, lat
