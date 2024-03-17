@@ -30,7 +30,7 @@ hexbinFullRegular <-
         stop("xlab must be a character or expression")
     if(! (is.character(ylab) || is.expression(ylab)))
         stop("ylab must be a character or expression")
-    
+
     
     x <- xy$x
     y <- xy$y
@@ -62,6 +62,9 @@ hexbinFullRegular <-
     
     if(is.null(weight)) {
       weight = rep(1,length=n)
+    }
+    if(length(weight) != n) {
+      stop("weight must be a vector with same length as x")
     }
     
     ans <- .Fortran(`hbin`,

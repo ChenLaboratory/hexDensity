@@ -22,7 +22,8 @@ hexDensity.SpatialExperiment = function(x,
                                         sigma = 1,
                                         edge = TRUE,
                                         diggle = FALSE,
-                                        weight = NULL) { # value will become weight
+                                        weight = NULL, # value will become weight
+                                        weightTransform = NULL) { 
   xy = spatialCoords(x)
   
   # if weight is a strings
@@ -35,10 +36,26 @@ hexDensity.SpatialExperiment = function(x,
     else if (weight %in% colnames(colData(x))) {
       weight = colData(x)[[weight]]
     }
-    else if (weight %in% reducedDimNames(x)) {
-      #TODO: Finish this check for reduced dim
+    else {
+      stop(paste("Cannot find",weight,'in neither rownames nor colData'))
     }
   }
+  
+  if (!is.null(weightTransform)) {
+    if (is.vector(weightTransform)) {
+      weight = weight  %in% weightTransform
+    } 
+    else if (is.function(weightTransform)) {
+      tryCatch(
+        {weight = weightTransform(weight)},
+        error=function(e) {
+          message("weightTransform must be a function that can accept the weight variable")
+          print(e)
+        }
+      )
+    }
+  }
+  
   #TODO: see if I can replace this with the ...
   hexDensity.default(x=xy,
                      xbins=xbins,
@@ -138,7 +155,7 @@ hexDensity.default = function(x,y=NULL,
 
   #extract back to hexbin class
   count = c()
-  if(edge & !diggle){
+  if(edge && !diggle){
     #No need to clean up the NaN since will discard them anyway
     sm[1:row,1:(col+(row-1)/2)] = Re(sm[1:row,1:(col+(row-1)/2)])/edg
   }

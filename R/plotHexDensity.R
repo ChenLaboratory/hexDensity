@@ -24,7 +24,7 @@
 #' @importFrom grid grid.newpage viewport pushViewport upViewport grid.xaxis grid.yaxis grid.text grid.rect gpar unit grid.pretty
 
 plotHexDensity = function(hexDensity, 
-                      main=deparse(substitute(hexDensity)), xlab=NULL, ylab=NULL,
+                      main=NULL, xlab=NULL, ylab=NULL,
                       xaxt=TRUE, yaxt=TRUE,
                       lcex=1,
                       colramp = colorRampPalette(viridis::viridis(11)), colorcut=1024,
@@ -32,6 +32,7 @@ plotHexDensity = function(hexDensity,
                       aspectRatio=1/hexDensity@shape,
                       margin=0.15,
                       newpage=T) {
+  print(main)
   if(!is(hexDensity,"hexbin"))
     stop("first argument must be a hexbin object")
   if (length(colorcut) > 1) { # a sequence 0,...,1
@@ -111,7 +112,7 @@ plotHexDensity = function(hexDensity,
     grid.text(ylab, x = unit(-1.5, "lines") - 
                 unit(yaxt*1,'strwidth',as.character(yTicks[length(yTicks)]))
               , gp = gpar(fontsize = 16,cex=lcex), rot = 90)
-  if(nchar(main) > 0)
+  if(!is.null(main) && nchar(main) > 0)
     grid.text(main, y = unit(1,'npc') + unit(2, "lines"),
               gp = gpar(fontsize = 18,cex=lcex))
   
