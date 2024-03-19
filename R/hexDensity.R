@@ -5,16 +5,19 @@
 #' @param sigma Bandwidth for kernel density calculation.
 #' @param edge Logical value for whether to apply edge correction. Default is TRUE.
 #' @param diggle Logical value for apply edge correction with the more accurate Jones-Diggle methor (need 'edge' to be TRUE).
-#'
+#' @param weight numeric weight vector to be assigned to points. For SpatialExperiment, this can be a name in rownames or colData (transformation may be needed to turn data into numerical values)
 #' @return hexbin object.
 
-#'
+
 #' @examples
 #' @importFrom spatstat.geom fft2D
 #' @importClassesFrom SpatialExperiment SpatialExperiment
 #' @export
 hexDensity = function(x,...) UseMethod('hexDensity')
 
+#' @rdname hexDensity
+#' @param assay assay to be used of the SpatialExperiment object 
+#' @param weightTransform a function that can take in the weight vector to return a vector of same length. For SpatialExperiment, one may want to use this to transform string into numerical values (e.g.: transform cell_class in colData into binary boolean for selection of a specific class)
 #' @export
 hexDensity.SpatialExperiment = function(x,
                                         assay = assayNames(x)[1],
@@ -65,6 +68,7 @@ hexDensity.SpatialExperiment = function(x,
                      weight=weight)
 }
 
+#' @rdname hexDensity
 #' @export
 hexDensity.default = function(x,y=NULL, 
                      xbins = 128, #128 is the magic number in spatstat

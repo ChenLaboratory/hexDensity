@@ -2,12 +2,38 @@
 % Please edit documentation in R/hexDensity.R
 \name{hexDensity}
 \alias{hexDensity}
+\alias{hexDensity.SpatialExperiment}
+\alias{hexDensity.default}
 \title{Kernel Density Estimation with Hexagonal binning.}
 \usage{
 hexDensity(x, ...)
+
+\method{hexDensity}{SpatialExperiment}(
+  x,
+  assay = assayNames(x)[1],
+  xbins = 128,
+  sigma = 1,
+  edge = TRUE,
+  diggle = FALSE,
+  weight = NULL,
+  weightTransform = NULL
+)
+
+\method{hexDensity}{default}(
+  x,
+  y = NULL,
+  xbins = 128,
+  sigma = 1,
+  edge = TRUE,
+  diggle = FALSE,
+  weight = NULL,
+  test = TRUE
+)
 }
 \arguments{
 \item{x, y}{Coords of the points or a single plotting structure to be used in binning. See xy.coords.}
+
+\item{assay}{assay to be used of the SpatialExperiment object}
 
 \item{xbins}{Number of bins in a row.}
 
@@ -16,6 +42,10 @@ hexDensity(x, ...)
 \item{edge}{Logical value for whether to apply edge correction. Default is TRUE.}
 
 \item{diggle}{Logical value for apply edge correction with the more accurate Jones-Diggle methor (need 'edge' to be TRUE).}
+
+\item{weight}{numeric weight vector to be assigned to points. For SpatialExperiment, this can be a name in rownames or colData (transformation may be needed to turn data into numerical values)}
+
+\item{weightTransform}{a function that can take in the weight vector to return a vector of same length. For SpatialExperiment, one may want to use this to transform string into numerical values (e.g.: transform cell_class in colData into binary boolean for selection of a specific class)}
 }
 \value{
 hexbin object.

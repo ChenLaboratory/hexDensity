@@ -6,7 +6,7 @@
 \usage{
 plotHexDensity(
   hexDensity,
-  main = deparse(substitute(hexDensity)),
+  main = NULL,
   xlab = NULL,
   ylab = NULL,
   xaxt = TRUE,
