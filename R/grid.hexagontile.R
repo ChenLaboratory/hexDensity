@@ -72,7 +72,7 @@ grid.hexagontile <-
     
     # Speed up plotting a bit by setting the most frequent color as background  
     # so don't have to plot those hexagons. 
-    # Only worth if safe ~>1000 hexagons when tested.
+    # Only worth if can save ~>1000 hexagons when tested.
     mostFreqPen = which.max(table(pen))
     if (mostFreqPen > 1000) { 
       mostFreqPen = names(mostFreqPen)

@@ -30,7 +30,7 @@ hexbinFullRegular <-
         stop("xlab must be a character or expression")
     if(! (is.character(ylab) || is.expression(ylab)))
         stop("ylab must be a character or expression")
-    
+
     
     x <- xy$x
     y <- xy$y
@@ -59,20 +59,19 @@ hexbinFullRegular <-
     c1 <- 2 * floor((xbins *shape)/sqrt(3) + 1.5001)
     imax <- trunc((jmax*c1 -1)/jmax + 1)
     lmax <- jmax * imax
-    
+
     if(is.null(weight)) {
       weight = rep(1,length=n)
     }
-    # print(n)
-    # print(x)
-    # print(y)
-    # print(weight)
+    if(length(weight) != n) {
+      stop("weight must be a vector with same length as x")
+    }
     
     ans <- .Fortran(`hbin`,
 	      x = as.double(x),
 	      y = as.double(y),
 	      cell = integer(lmax),
-	      cnt = integer(lmax),
+	      cnt = double(lmax),
 	      xcm = double(lmax),
 	      ycm = double(lmax),
 	      xbins = as.double(xbins),
@@ -84,8 +83,6 @@ hexbinFullRegular <-
 	      cID = if(IDs) integer(n) else as.integer(-1),
 	      weight = as.double(weight))[-(1:2)]
     ## cut off extraneous stuff
-    # print(ans)
-    # print(ans$cnt)
     if(!IDs) ans$cID <- NULL
     if(IDs && has.na) {
       ok <- as.integer(ok)
@@ -98,7 +95,7 @@ hexbinFullRegular <-
     length(ans$cnt) <- nc
     length(ans$xcm) <- nc
     length(ans$ycm) <- nc
-    if(sum(ans$cnt) != n) warning("Lost counts in binning")
+    if(sum(ans$cnt) != sum(weight)) warning("Lost counts in binning")
     new("hexbin",
     cell = ans$cell, count = ans$cnt,
     xcm = ans$xcm, ycm = ans$ycm, xbins = ans$xbins,

@@ -11,7 +11,8 @@ Encoding: UTF-8
 LazyData: true
 NeedsCompilation: yes
 Imports: 
+    hexbin,
     spatstat.geom,
     viridis,
-    hexbin
+    grid
 RoxygenNote: 7.3.1
