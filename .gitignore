@@ -2,3 +2,8 @@
 .Rhistory
 .RData
 .Ruserdata
+test
+
+src/hbin.o
+src/hexDensity.dll
+src/reg.o
