@@ -32,7 +32,6 @@ plotHexDensity = function(hexDensity,
                       aspectRatio=1/hexDensity@shape,
                       margin=0.15,
                       newpage=T) {
-  print(main)
   if(!is(hexDensity,"hexbin"))
     stop("first argument must be a hexbin object")
   if (length(colorcut) > 1) { # a sequence 0,...,1
