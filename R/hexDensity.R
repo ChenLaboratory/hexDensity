@@ -75,8 +75,7 @@ hexDensity.default = function(x,y=NULL,
                      sigma = 1,
                      edge = TRUE,
                      diggle = FALSE,
-                     weight = NULL,
-                     test=TRUE) {
+                     weight = NULL) {
   hbin = hexbinFullRegular(x,y,xbins=xbins, weight=weight) 
   row = hbin@dimen[1]
   col = hbin@dimen[2]
