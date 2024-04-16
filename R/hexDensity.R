@@ -7,12 +7,22 @@
 #' @param diggle Logical value for apply edge correction with the more accurate Jones-Diggle methor (need 'edge' to be TRUE).
 #' @param weight numeric weight vector to be assigned to points. For SpatialExperiment, this can be a name in rownames or colData (transformation may be needed to turn data into numerical values)
 #' @return hexbin object.
-
-
-#' @examples
 #' @importFrom spatstat.geom fft2D
 #' @importClassesFrom SpatialExperiment SpatialExperiment
 #' @export
+#' 
+#' @examples
+#' 
+#' set.seed(133)
+#' d = hexDensity(x=rnorm(200),y=rnorm(200),sigma=0.15)
+#' 
+#' #For SpatialExperiment data
+#' library(MerfishData)
+#' spe = MouseHypothalamusMoffitt2018()
+#' #density for expression of Ace2 
+#' d = hexDensity(spe,assay='exprs',sigma=20,weight='Ace2')
+#' #density for Inhibitory cells in cell_class of colData
+#' d = hexDensity(spe,assay='exprs',sigma=20, weight='cell_class', weightTransform='Inhibitory')
 hexDensity = function(x,...) UseMethod('hexDensity')
 
 #' @rdname hexDensity

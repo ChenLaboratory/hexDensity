@@ -33,3 +33,9 @@ hexbin object
 \description{
 Adapted from hexbin to give a full grid (include hexagon with no count) of regular hexagon. See hexbin for more details.
 }
+\examples{
+set.seed(133)
+d=hexbinFullRegular(x=rnorm(20000),y=rnorm(20000),xbins=50)
+plotHexDensity(d)
+
+}
