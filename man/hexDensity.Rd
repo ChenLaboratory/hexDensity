@@ -2,22 +2,10 @@
 % Please edit documentation in R/hexDensity.R
 \name{hexDensity}
 \alias{hexDensity}
-\alias{hexDensity.SpatialExperiment}
 \alias{hexDensity.default}
 \title{Kernel Density Estimation with Hexagonal binning.}
 \usage{
 hexDensity(x, ...)
-
-\method{hexDensity}{SpatialExperiment}(
-  x,
-  assay = assayNames(x)[1],
-  xbins = 128,
-  sigma = 1,
-  edge = TRUE,
-  diggle = FALSE,
-  weight = NULL,
-  weightTransform = NULL
-)
 
 \method{hexDensity}{default}(
   x,
@@ -32,8 +20,6 @@ hexDensity(x, ...)
 \arguments{
 \item{x, y}{Coords of the points or a single plotting structure to be used in binning. See xy.coords.}
 
-\item{assay}{assay to be used of the SpatialExperiment object}
-
 \item{xbins}{Number of bins in a row.}
 
 \item{sigma}{Bandwidth for kernel density calculation.}
@@ -42,9 +28,7 @@ hexDensity(x, ...)
 
 \item{diggle}{Logical value for apply edge correction with the more accurate Jones-Diggle methor (need 'edge' to be TRUE).}
 
-\item{weight}{numeric weight vector to be assigned to points. For SpatialExperiment, this can be a name in rownames or colData (transformation may be needed to turn data into numerical values)}
-
-\item{weightTransform}{a function that can take in the weight vector to return a vector of same length. For SpatialExperiment, one may want to use this to transform string into numerical values (e.g.: transform cell_class in colData into binary boolean for selection of a specific class)}
+\item{weight}{numeric weight vector to be assigned to points.}
 }
 \value{
 hexbin object.
@@ -56,12 +40,4 @@ Kernel Density Estimation with Hexagonal binning.
 
 set.seed(133)
 d = hexDensity(x=rnorm(200),y=rnorm(200),sigma=0.15)
-
-#For SpatialExperiment data
-library(MerfishData)
-spe = MouseHypothalamusMoffitt2018()
-#density for expression of Ace2 
-d = hexDensity(spe,assay='exprs',sigma=20,weight='Ace2')
-#density for Inhibitory cells in cell_class of colData
-d = hexDensity(spe,assay='exprs',sigma=20, weight='cell_class', weightTransform='Inhibitory')
 }

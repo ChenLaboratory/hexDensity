@@ -23,17 +23,6 @@
 #' set.seed(133)
 #' d = hexDensity(x=rnorm(200),y=rnorm(200),sigma=0.15)
 #' plotHexDensity(d)
-#' 
-#' 
-#' ##For SpatialExperiment data
-#' library(MerfishData)
-#' spe = MouseHypothalamusMoffitt2018()
-#' #density for expression of Ace2 
-#' d = hexDensity(spe,assay='exprs',sigma=20,weight='Ace2')
-#' plotHexDensity(d)
-#' #density for Inhibitory cells in cell_class of colData
-#' d = hexDensity(spe,assay='exprs',sigma=20, weight='cell_class', weightTransform='Inhibitory')
-#' plotHexDensity(d)
 #' @importFrom grid grid.newpage viewport pushViewport upViewport grid.xaxis grid.yaxis grid.text grid.rect gpar unit grid.pretty
 #' @importFrom viridis viridis
 plotHexDensity = function(hexDensity, 

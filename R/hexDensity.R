@@ -5,78 +5,16 @@
 #' @param sigma Bandwidth for kernel density calculation.
 #' @param edge Logical value for whether to apply edge correction. Default is TRUE.
 #' @param diggle Logical value for apply edge correction with the more accurate Jones-Diggle methor (need 'edge' to be TRUE).
-#' @param weight numeric weight vector to be assigned to points. For SpatialExperiment, this can be a name in rownames or colData (transformation may be needed to turn data into numerical values)
+#' @param weight numeric weight vector to be assigned to points.
 #' @return hexbin object.
 #' @importFrom spatstat.geom fft2D
-#' @importClassesFrom SpatialExperiment SpatialExperiment
 #' @export
-#' 
 #' @examples
 #' 
 #' set.seed(133)
 #' d = hexDensity(x=rnorm(200),y=rnorm(200),sigma=0.15)
-#' 
-#' #For SpatialExperiment data
-#' library(MerfishData)
-#' spe = MouseHypothalamusMoffitt2018()
-#' #density for expression of Ace2 
-#' d = hexDensity(spe,assay='exprs',sigma=20,weight='Ace2')
-#' #density for Inhibitory cells in cell_class of colData
-#' d = hexDensity(spe,assay='exprs',sigma=20, weight='cell_class', weightTransform='Inhibitory')
-hexDensity = function(x,...) UseMethod('hexDensity')
 
-#' @rdname hexDensity
-#' @param assay assay to be used of the SpatialExperiment object 
-#' @param weightTransform a function that can take in the weight vector to return a vector of same length. For SpatialExperiment, one may want to use this to transform string into numerical values (e.g.: transform cell_class in colData into binary boolean for selection of a specific class)
-#' @export
-hexDensity.SpatialExperiment = function(x,
-                                        assay = assayNames(x)[1],
-                                        xbins = 128, #128 is the magic number in pixellate of spatstat
-                                        sigma = 1,
-                                        edge = TRUE,
-                                        diggle = FALSE,
-                                        weight = NULL, # value will become weight
-                                        weightTransform = NULL) { 
-  xy = spatialCoords(x)
-  
-  # if weight is a strings
-  if (is.character(weight)) {
-    #weight is a row 
-    if (weight %in% rownames(x)) {
-      weight = (assays(x)[[assay]])[weight,]
-    }
-    #weight is a colData
-    else if (weight %in% colnames(colData(x))) {
-      weight = colData(x)[[weight]]
-    }
-    else {
-      stop(paste("Cannot find",weight,'in neither rownames nor colData'))
-    }
-  }
-  
-  if (!is.null(weightTransform)) {
-    if (is.vector(weightTransform)) {
-      weight = weight  %in% weightTransform
-    } 
-    else if (is.function(weightTransform)) {
-      tryCatch(
-        {weight = weightTransform(weight)},
-        error=function(e) {
-          message("weightTransform must be a function that can accept the weight variable")
-          print(e)
-        }
-      )
-    }
-  }
-  
-  #TODO: see if I can replace this with the ...
-  hexDensity.default(x=xy,
-                     xbins=xbins,
-                     sigma=sigma,
-                     edge=edge,
-                     diggle = diggle,
-                     weight=weight)
-}
+hexDensity = function(x,...) UseMethod('hexDensity')
 
 #' @rdname hexDensity
 #' @export
@@ -86,50 +24,37 @@ hexDensity.default = function(x,y=NULL,
                      edge = TRUE,
                      diggle = FALSE,
                      weight = NULL) {
-  hbin = hexbinFullRegular(x,y,xbins=xbins, weight=weight) 
+  hbin = hexbinFull(x,y,xbins=xbins, weight=weight) 
   row = hbin@dimen[1]
   col = hbin@dimen[2]
 
   hexSize = diff(hbin@xbnds)/xbins
   
-  #convert hexbin representation to staggered bin
+  #convert hexbin count to staggered bin matrix representation
   staggeredBin = matrix(0,nrow = 2*row, ncol = 2*col+row-1)
   for (i in seq(1,row,by=2)) {
     staggeredBin[i,(i-i%/%2):(i-i%/%2+col-1)] = hbin@count[((row-i)*col+1):((row-i)*col+col)]
     staggeredBin[i+1,(i-i%/%2):(i-i%/%2+col-1)] = hbin@count[((row-i-1)*col+1):((row-i-1)*col+col)]
   }
-  #Make kernel
   
-  # Older,slower kernel. Keeping just in case
-  # kernel = matrix(0,nrow = 2*row, ncol = 2*col+row-1)
-  # center.r = row
-  # center.q = col+row/2
-  # for (i in seq(1, row)) {
-  #   for (j in seq(1,2*col)) {
-  #     q = j+row-i
-  #     kernel[i*2,q] = dnorm(hexSize*euclidDistance(center.q,center.r,q,2*i),sd=sigma) * dnorm(0,sd=sigma)
-  #     kernel[i*2-1,q] = dnorm(hexSize*euclidDistance(center.q,center.r,q,2*i-1),sd=sigma) * dnorm(0,sd=sigma)
-  #   }
-  # }
+  #Make kernel
   kernel.left.hori = dnorm(hexSize*c(seq(col,1),seq(0,col-1)),sd=sigma)
   kernel.left.verti = dnorm(hexSize*sqrt(3)*c(seq(row/2-1,0),seq(1,row/2)),sd=sigma)
   kernel.left=outer(kernel.left.verti,kernel.left.hori)
-
+  
   kernel.right.hori = dnorm(hexSize*(c(seq(col,1)-0.5,seq(0,col-1)+0.5)),sd=sigma)
   kernel.right.verti = dnorm(hexSize*sqrt(3)*c(seq(row/2-1,0)+0.5,seq(1,row/2)-0.5),sd=sigma)
   kernel.right=outer(kernel.right.verti,kernel.right.hori)
-
+  
+  #staggered bin
   kernel = matrix(0,nrow = 2*row, ncol = 2*col+row-1)
   for (i in seq(1, row)) {
-    kernel[i*2-1,(1+row-i):(1+row-i+2*col-1)] = rev(kernel.right[i,])
-    kernel[i*2,(1+row-i):(1+row-i+2*col-1)] = rev(kernel.left[i,])
+    kernel[i*2-1,(i:(i+2*col-1))] = kernel.right[i,]
+    kernel[i*2,(i:(i+2*col-1))] = kernel.left[i,]
   }
-  #This reverse the kernel
-  kernel = kernel[,ncol(kernel):1]
-  
   kernel = kernel/sum(kernel)
 
-  #inverse the kernel
+  #inverse the kernel for convolution
   kernel.inv = matrix(0,nrow = 2*row, ncol = 2*col+row-1)
   #going clock-wise from top-left of inverse kernel
   kernel.inv[1:(row+1),1:(col+row/2)] = kernel[row:(2*row),(col+row/2):(2*col+row-1)]
@@ -157,7 +82,7 @@ hexDensity.default = function(x,y=NULL,
     }
   }
 
-  #KDE calculation
+  #KDE calculation by convolution
   fY = fft2D(staggeredBin)
   sm = fft2D(fY*fK,inverse = TRUE)/(2*row*(2*col+(row-1)))
 

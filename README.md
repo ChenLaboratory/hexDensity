@@ -76,6 +76,13 @@ spe = MouseHypothalamusMoffitt2018()
 ```
 
 ```
+#filter for Inhibitory cells.
+cdat = data.frame(colData(spe),spatialCoords(spe))
+cdat = subset(cdat, cell_class!= "Ambiguous",select = -c(cell_id,sample_id,sex,behavior,neuron_cluster_id))
+cdat = subset(cdat,z == -0.14)
+cdat.inhibitory = subset(cdat, cell_class == ("Inhibitory"))
+
+
 #hexDensity
 plotHexDensity(hexDensity(spe,assay='exprs',sigma=20,
                weight='cell_class', #look for cell_class in either rownames or colData
