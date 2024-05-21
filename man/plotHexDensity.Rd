@@ -41,7 +41,7 @@ plotHexDensity(
 
 \item{legendWidth}{Expansion factor for legend width.}
 
-\item{legendDistance}{Expansion factor for the space between the plot and the legend.}
+\item{legendDistance}{Expansion factor for the space between the plot and the legend.s}
 
 \item{aspectRatio}{width to height ratio of the plot. Default is the (inverse of) shape value of hexDensity.}
 
@@ -54,6 +54,6 @@ Adapted plotting function for hexbin object.
 }
 \examples{
 set.seed(133)
-d = hexDensity(x=rnorm(200),y=rnorm(200),sigma=0.15)
+d = hexDensity(x=rnorm(200),y=rnorm(200),bandwidth=0.15)
 plotHexDensity(d)
 }

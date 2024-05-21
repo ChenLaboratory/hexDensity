@@ -11,7 +11,7 @@
 #' @param colorcut An integer for the number of equi-spaced colorcut in [0,1] to assign colors to values. Alternatively, a vector of custom colorcut spacing between [0, 1].
 #' @param legend Legend is currently non-functional and should be ignored.
 #' @param legendWidth Expansion factor for legend width.  
-#' @param legendDistance Expansion factor for the space between the plot and the legend.
+#' @param legendDistance Expansion factor for the space between the plot and the legend.s
 #' @param aspectRatio width to height ratio of the plot. Default is the (inverse of) shape value of hexDensity.
 #' @param margin Minimum guaranteed margin for the plot. Different aspect ratio between the screen and the plot means that margin can be larger on certain sides.
 #' @param newpage logical for whether to plot on a new page.
@@ -21,7 +21,7 @@
 #'
 #' @examples
 #' set.seed(133)
-#' d = hexDensity(x=rnorm(200),y=rnorm(200),sigma=0.15)
+#' d = hexDensity(x=rnorm(200),y=rnorm(200),bandwidth=0.15)
 #' plotHexDensity(d)
 #' @importFrom grid grid.newpage viewport pushViewport upViewport grid.xaxis grid.yaxis grid.text grid.rect gpar unit grid.pretty
 #' @importFrom viridis viridis
