@@ -2,7 +2,7 @@
 % Please edit documentation in R/hexbinFull.R
 \name{hexbinFull}
 \alias{hexbinFull}
-\title{Hexagonal binning with output of whole grid (include hexagons with 0 count).}
+\title{Hexagonal binning with whole grid output.}
 \usage{
 hexbinFull(
   x,
@@ -36,7 +36,7 @@ hexbinFull(
 hexbin object
 }
 \description{
-Adapted from hexbin to output the full grid (include hexagon with 0 count). Default to use regular hexagon. Also add support for weight. See \link[hexbin]{hexbin} for more details.
+Adapted from hexbin to output the full grid (include hexagon with 0 count). Default to use regular hexagon. Also add support for weight. See \link[hexbin]{hexbin} for extra details.
 }
 \examples{
 set.seed(133)

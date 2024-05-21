@@ -1,10 +1,12 @@
 #' Kernel Density Estimation with Hexagonal binning.
 #'
+#' Default bandwidth is the diagonal normal scale bandwidth
+#' 
 #' @param x,y Coords of the points or a single plotting structure to be used in binning. See xy.coords.
 #' @param xbins Number of bins in a row.
-#' @param sigma Bandwidth for kernel density calculation.
+#' @param bandwidth Bandwidth for the smoothing kernel. Either a single number or a vector of length 2 for the bandwidths in the x and y directions, respectively.
 #' @param edge Logical value for whether to apply edge correction. Default is TRUE.
-#' @param diggle Logical value for apply edge correction with the more accurate Jones-Diggle methor (need 'edge' to be TRUE).
+#' @param diggle Logical value for apply edge correction with the more accurate Jones-Diggle method (need 'edge' to be TRUE).
 #' @param weight numeric weight vector to be assigned to points.
 #' @return hexbin object.
 #' @importFrom spatstat.geom fft2D
@@ -12,7 +14,7 @@
 #' @examples
 #' 
 #' set.seed(133)
-#' d = hexDensity(x=rnorm(200),y=rnorm(200),sigma=0.15)
+#' d = hexDensity(x=rnorm(200),y=rnorm(200),bandwidth=0.15)
 
 hexDensity = function(x,...) UseMethod('hexDensity')
 
@@ -20,7 +22,7 @@ hexDensity = function(x,...) UseMethod('hexDensity')
 #' @export
 hexDensity.default = function(x,y=NULL, 
                      xbins = 128, #128 is the magic number in spatstat
-                     sigma = NULL,
+                     bandwidth = NULL,
                      edge = TRUE,
                      diggle = FALSE,
                      weight = NULL) {
@@ -29,16 +31,14 @@ hexDensity.default = function(x,y=NULL,
   hbin = hexbinFull(x,y,xbins=xbins, weight=weight) 
   row = hbin@dimen[1]
   col = hbin@dimen[2]
-  print("a")
+
   xy <- xy.coords(x, y)
   n=length(xy$x)
-  if (is.null(sigma)) {
-    sigma = sqrt(c(var(xy$x),var(xy$y))*(1/n)^(1/3))
-  } else if (length(sigma)==1) {
-    sigma=c(sigma,sigma)
+  if (is.null(bandwidth)) {
+    bandwidth = c(sd(xy$x),sd(xy$y))*(n)^(1/6)
+  } else if (length(bandwidth)==1) {
+    bandwidth=c(bandwidth,bandwidth)
   }
-  print("yo")
-  print(sigma)
   hexSize = diff(hbin@xbnds)/xbins
   
   #convert hexbin count to staggered bin matrix representation
@@ -49,12 +49,12 @@ hexDensity.default = function(x,y=NULL,
   }
   
   #Make kernel
-  kernel.left.hori = dnorm(hexSize*c(seq(col,1),seq(0,col-1)),sd=sigma[1])
-  kernel.left.verti = dnorm(hexSize*sqrt(3)*c(seq(row/2-1,0),seq(1,row/2)),sd=sigma[2])
+  kernel.left.hori = dnorm(hexSize*c(seq(col,1),seq(0,col-1)),sd=bandwidth[1])
+  kernel.left.verti = dnorm(hexSize*sqrt(3)*c(seq(row/2-1,0),seq(1,row/2)),sd=bandwidth[2])
   kernel.left=outer(kernel.left.verti,kernel.left.hori)
   
-  kernel.right.hori = dnorm(hexSize*(c(seq(col,1)-0.5,seq(0,col-1)+0.5)),sd=sigma[1])
-  kernel.right.verti = dnorm(hexSize*sqrt(3)*c(seq(row/2-1,0)+0.5,seq(1,row/2)-0.5),sd=sigma[2])
+  kernel.right.hori = dnorm(hexSize*(c(seq(col,1)-0.5,seq(0,col-1)+0.5)),sd=bandwidth[1])
+  kernel.right.verti = dnorm(hexSize*sqrt(3)*c(seq(row/2-1,0)+0.5,seq(1,row/2)-0.5),sd=bandwidth[2])
   kernel.right=outer(kernel.right.verti,kernel.right.hori)
   
   #staggered bin

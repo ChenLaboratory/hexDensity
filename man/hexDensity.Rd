@@ -11,7 +11,7 @@ hexDensity(x, ...)
   x,
   y = NULL,
   xbins = 128,
-  sigma = 1,
+  bandwidth = NULL,
   edge = TRUE,
   diggle = FALSE,
   weight = NULL
@@ -22,11 +22,11 @@ hexDensity(x, ...)
 
 \item{xbins}{Number of bins in a row.}
 
-\item{sigma}{Bandwidth for kernel density calculation.}
+\item{bandwidth}{Bandwidth for the smoothing kernel. Either a single number or a vector of length 2 for the bandwidths in the x and y directions, respectively.}
 
 \item{edge}{Logical value for whether to apply edge correction. Default is TRUE.}
 
-\item{diggle}{Logical value for apply edge correction with the more accurate Jones-Diggle methor (need 'edge' to be TRUE).}
+\item{diggle}{Logical value for apply edge correction with the more accurate Jones-Diggle method (need 'edge' to be TRUE).}
 
 \item{weight}{numeric weight vector to be assigned to points.}
 }
@@ -34,10 +34,10 @@ hexDensity(x, ...)
 hexbin object.
 }
 \description{
-Kernel Density Estimation with Hexagonal binning.
+Default bandwidth is the diagonal normal scale bandwidth
 }
 \examples{
 
 set.seed(133)
-d = hexDensity(x=rnorm(200),y=rnorm(200),sigma=0.15)
+d = hexDensity(x=rnorm(200),y=rnorm(200),bandwidth=0.15)
 }
