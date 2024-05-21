@@ -20,14 +20,25 @@ hexDensity = function(x,...) UseMethod('hexDensity')
 #' @export
 hexDensity.default = function(x,y=NULL, 
                      xbins = 128, #128 is the magic number in spatstat
-                     sigma = 1,
+                     sigma = NULL,
                      edge = TRUE,
                      diggle = FALSE,
                      weight = NULL) {
+  
+  print("a")
   hbin = hexbinFull(x,y,xbins=xbins, weight=weight) 
   row = hbin@dimen[1]
   col = hbin@dimen[2]
-
+  print("a")
+  xy <- xy.coords(x, y)
+  n=length(xy$x)
+  if (is.null(sigma)) {
+    sigma = sqrt(c(var(xy$x),var(xy$y))*(1/n)^(1/3))
+  } else if (length(sigma)==1) {
+    sigma=c(sigma,sigma)
+  }
+  print("yo")
+  print(sigma)
   hexSize = diff(hbin@xbnds)/xbins
   
   #convert hexbin count to staggered bin matrix representation
@@ -38,12 +49,12 @@ hexDensity.default = function(x,y=NULL,
   }
   
   #Make kernel
-  kernel.left.hori = dnorm(hexSize*c(seq(col,1),seq(0,col-1)),sd=sigma)
-  kernel.left.verti = dnorm(hexSize*sqrt(3)*c(seq(row/2-1,0),seq(1,row/2)),sd=sigma)
+  kernel.left.hori = dnorm(hexSize*c(seq(col,1),seq(0,col-1)),sd=sigma[1])
+  kernel.left.verti = dnorm(hexSize*sqrt(3)*c(seq(row/2-1,0),seq(1,row/2)),sd=sigma[2])
   kernel.left=outer(kernel.left.verti,kernel.left.hori)
   
-  kernel.right.hori = dnorm(hexSize*(c(seq(col,1)-0.5,seq(0,col-1)+0.5)),sd=sigma)
-  kernel.right.verti = dnorm(hexSize*sqrt(3)*c(seq(row/2-1,0)+0.5,seq(1,row/2)-0.5),sd=sigma)
+  kernel.right.hori = dnorm(hexSize*(c(seq(col,1)-0.5,seq(0,col-1)+0.5)),sd=sigma[1])
+  kernel.right.verti = dnorm(hexSize*sqrt(3)*c(seq(row/2-1,0)+0.5,seq(1,row/2)-0.5),sd=sigma[2])
   kernel.right=outer(kernel.right.verti,kernel.right.hori)
   
   #staggered bin
