@@ -27,7 +27,6 @@ hexDensity.default = function(x,y=NULL,
                      diggle = FALSE,
                      weight = NULL) {
   
-  print("a")
   hbin = hexbinFull(x,y,xbins=xbins, weight=weight) 
   row = hbin@dimen[1]
   col = hbin@dimen[2]
