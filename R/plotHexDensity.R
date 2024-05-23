@@ -32,7 +32,7 @@ plotHexDensity = function(hexDensity,
                       colramp = colorRampPalette(viridis(11)), colorcut=1024,
                       legend=T, legendWidth=0.05, legendDistance=0.15,
                       aspectRatio=1/hexDensity@shape,
-                      margin=0.15,
+                      margin=0.18,
                       newpage=T) {
   if(!is(hexDensity,"hexbin"))
     stop("first argument must be a hexbin object")

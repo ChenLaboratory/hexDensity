@@ -10,6 +10,7 @@
 #' @param weight numeric weight vector to be assigned to points.
 #' @return hexbin object.
 #' @importFrom spatstat.geom fft2D
+#' @importFrom ks Hns.diag
 #' @export
 #' @examples
 #' 
@@ -32,9 +33,9 @@ hexDensity.default = function(x,y=NULL,
   col = hbin@dimen[2]
 
   xy <- xy.coords(x, y)
-  n=length(xy$x)
+  n=nrow(xy)
   if (is.null(bandwidth)) {
-    bandwidth = c(sd(xy$x),sd(xy$y))*(n)^(1/6)
+    bandwidth = sqrt(diag(Hns.diag(cbind(xy$x,xy$y))))
   } else if (length(bandwidth)==1) {
     bandwidth=c(bandwidth,bandwidth)
   }
