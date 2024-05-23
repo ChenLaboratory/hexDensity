@@ -1,6 +1,6 @@
 #' Kernel Density Estimation with Hexagonal binning.
 #'
-#' Default bandwidth is the diagonal normal scale bandwidth
+#' Default bandwidth is the diagonal plug-in bandwidth calculated by the package ks
 #' 
 #' @param x,y Coords of the points or a single plotting structure to be used in binning. See xy.coords.
 #' @param xbins Number of bins in a row.

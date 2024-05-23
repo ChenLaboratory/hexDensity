@@ -34,7 +34,7 @@ hexDensity(x, ...)
 hexbin object.
 }
 \description{
-Default bandwidth is the diagonal normal scale bandwidth
+Default bandwidth is the diagonal plug-in bandwidth calculated by the package ks
 }
 \examples{
 
