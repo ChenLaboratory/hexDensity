@@ -8,6 +8,7 @@
 #' @param edge Logical value for whether to apply edge correction. Default is TRUE.
 #' @param diggle Logical value for apply edge correction with the more accurate Jones-Diggle method (need 'edge' to be TRUE).
 #' @param weight numeric weight vector to be assigned to points.
+#' @param ... arguments for hexbinFull
 #' @return hexbin object.
 #' @importFrom spatstat.geom fft2D
 #' @importFrom ks Hns.diag
@@ -26,9 +27,9 @@ hexDensity.default = function(x,y=NULL,
                      bandwidth = NULL,
                      edge = TRUE,
                      diggle = FALSE,
-                     weight = NULL) {
+                     weight = NULL,...) {
   
-  hbin = hexbinFull(x,y,xbins=xbins, weight=weight) 
+  hbin = hexbinFull(x,y,xbins=xbins, weight=weight,...) 
   row = hbin@dimen[1]
   col = hbin@dimen[2]
 
@@ -39,8 +40,8 @@ hexDensity.default = function(x,y=NULL,
   } else if (length(bandwidth)==1) {
     bandwidth=c(bandwidth,bandwidth)
   }
-  hexSize = diff(hbin@xbnds)/xbins
-  
+  xhex = diff(hbin@xbnds)/xbins
+  yhex = xhex*diff(hbin@ybnds)/(diff(hbin@xbnds)*hbin@shape)
   #convert hexbin count to staggered bin matrix representation
   staggeredBin = matrix(0,nrow = 2*row, ncol = 2*col+row-1)
   for (i in seq(1,row,by=2)) {
@@ -49,12 +50,12 @@ hexDensity.default = function(x,y=NULL,
   }
   
   #Make kernel
-  kernel.left.hori = dnorm(hexSize*c(seq(col,1),seq(0,col-1)),sd=bandwidth[1])
-  kernel.left.verti = dnorm(hexSize*sqrt(3)*c(seq(row/2-1,0),seq(1,row/2)),sd=bandwidth[2])
+  kernel.left.hori = dnorm(xhex*c(seq(col,1),seq(0,col-1)),sd=bandwidth[1])
+  kernel.left.verti = dnorm(yhex*sqrt(3)*c(seq(row/2-1,0),seq(1,row/2)),sd=bandwidth[2])
   kernel.left=outer(kernel.left.verti,kernel.left.hori)
   
-  kernel.right.hori = dnorm(hexSize*(c(seq(col,1)-0.5,seq(0,col-1)+0.5)),sd=bandwidth[1])
-  kernel.right.verti = dnorm(hexSize*sqrt(3)*c(seq(row/2-1,0)+0.5,seq(1,row/2)-0.5),sd=bandwidth[2])
+  kernel.right.hori = dnorm(xhex*(c(seq(col,1)-0.5,seq(0,col-1)+0.5)),sd=bandwidth[1])
+  kernel.right.verti = dnorm(yhex*sqrt(3)*c(seq(row/2-1,0)+0.5,seq(1,row/2)-0.5),sd=bandwidth[2])
   kernel.right=outer(kernel.right.verti,kernel.right.hori)
   
   #staggered bin
@@ -109,7 +110,7 @@ hexDensity.default = function(x,y=NULL,
     count = append(count,Re(sm[i-1,(i-i%/%2):(i-i%/%2+col-1)]))
   }
 
-  hbin@count = count/hexAreaFromWidth(hexSize)
+  hbin@count = count/(hexAreaFromWidth(xhex)*yhex/xhex)
   return(hbin)
 }
 

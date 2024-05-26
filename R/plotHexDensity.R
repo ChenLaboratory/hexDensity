@@ -31,7 +31,7 @@ plotHexDensity = function(hexDensity,
                       lcex=1,
                       colramp = colorRampPalette(viridis(11)), colorcut=1024,
                       legend=T, legendWidth=0.05, legendDistance=0.15,
-                      aspectRatio=1/hexDensity@shape,
+                      aspectRatio=diff(hexDensity@xbnds)/diff(hexDensity@ybnds),
                       margin=0.18,
                       newpage=T) {
   if(!is(hexDensity,"hexbin"))

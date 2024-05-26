@@ -17,7 +17,7 @@ plotHexDensity(
   legend = T,
   legendWidth = 0.05,
   legendDistance = 0.15,
-  aspectRatio = 1/hexDensity@shape,
+  aspectRatio = diff(hexDensity@xbnds)/diff(hexDensity@ybnds),
   margin = 0.18,
   newpage = T
 )

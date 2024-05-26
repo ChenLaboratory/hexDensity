@@ -1,6 +1,6 @@
 #' Hexagonal binning with whole grid output. 
 #'
-#' Adapted from hexbin to output the full grid (include hexagon with 0 count). Default to use regular hexagon. Also add support for weight. See \link[hexbin]{hexbin} for extra details.
+#' Adapted from hexbin to output the full grid (include hexagon with 0 count) and also to include weights. Default is to use regular hexagon. See \link[hexbin]{hexbin} for extra details.
 #' @param x,y Coords of the points or a single plotting structure to be used in binning. See xy.coords.
 #' @param xbins Number of bins in a row.
 #' @param shape shape = yheight/xwidth of the plotting regions
@@ -52,14 +52,15 @@ hexbinFull <-
     }
     if(diff(xbnds) <= 0)
 	stop("xbnds[1] < xbnds[2] is not fulfilled")
-    if(!missing(xbnds) && any(sign(xbnds - range(x)) == c(1,-1)))
+    if(any(sign(xbnds - range(x)) == c(1,-1)))
 	stop("'xbnds' must encompass range(x)")
     if(diff(ybnds) <= 0)
 	stop("ybnds[1] < ybnds[2] is not fulfilled")
-    if(!missing(ybnds) && any(sign(ybnds - range(y)) == c(1,-1)))
+    if(any(sign(ybnds - range(y)) == c(1,-1)))
 	stop("'ybnds' must encompass range(y)")
     jmax <- floor(xbins + 1.5001)
-    if (is.null(shape)) shape = diff(range(y))/diff(range(x)) #regular hex
+    #default shape to make regular hexagon
+    if (is.null(shape)) shape = diff(ybnds)/diff(xbnds)
     c1 <- 2 * floor((xbins *shape)/sqrt(3) + 1.5001)
     imax <- trunc((jmax*c1 -1)/jmax + 1)
     lmax <- jmax * imax

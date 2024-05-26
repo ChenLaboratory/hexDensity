@@ -14,11 +14,14 @@ hexDensity(x, ...)
   bandwidth = NULL,
   edge = TRUE,
   diggle = FALSE,
-  weight = NULL
+  weight = NULL,
+  ...
 )
 }
 \arguments{
 \item{x, y}{Coords of the points or a single plotting structure to be used in binning. See xy.coords.}
+
+\item{...}{arguments for hexbinFull}
 
 \item{xbins}{Number of bins in a row.}
 

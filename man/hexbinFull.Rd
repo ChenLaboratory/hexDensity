@@ -36,7 +36,7 @@ hexbinFull(
 hexbin object
 }
 \description{
-Adapted from hexbin to output the full grid (include hexagon with 0 count). Default to use regular hexagon. Also add support for weight. See \link[hexbin]{hexbin} for extra details.
+Adapted from hexbin to output the full grid (include hexagon with 0 count) and also to include weights. Default is to use regular hexagon. See \link[hexbin]{hexbin} for extra details.
 }
 \examples{
 set.seed(133)
