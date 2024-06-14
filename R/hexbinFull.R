@@ -6,7 +6,7 @@
 #' @param shape shape = yheight/xwidth of the plotting regions
 #' @param xbnds,ybnds Horizontal and vertical limits of the binning region in x or y units respectively, must encompass range(x) or range(y) respectively; Vector of length 2
 #' @param xlab,ylab Optional character strings used as labels for x and y. If NULL, sensible defaults are used.
-#' @param IDs Logical indicating if the individual cell “IDs” should be returned, see hexbin.
+#' @param IDs Logical indicating if the hexagonal cell ID for each point should be returned, see hexbin.
 #' @param weight Numeric weight vector to be assigned to points.
 #'
 #' @return hexbin object
@@ -39,17 +39,15 @@ hexbinFull <-
     
     x <- xy$x
     y <- xy$y
-    n <- length(x)
     na <- is.na(x) | is.na(y)
     has.na <- any(na)
     if (has.na) {
-	ok <- !na
-	x <- x[ok]
-	y <- y[ok]
-        n0 <- n
-        na.pos <- which(na)
-	n <- length(x)
+    	ok <- !na
+    	x <- x[ok]
+    	y <- y[ok]
     }
+    n <- length(x)
+    
     if(diff(xbnds) <= 0)
 	stop("xbnds[1] < xbnds[2] is not fulfilled")
     if(any(sign(xbnds - range(x)) == c(1,-1)))

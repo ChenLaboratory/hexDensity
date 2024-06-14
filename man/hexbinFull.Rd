@@ -28,7 +28,7 @@ hexbinFull(
 
 \item{xlab, ylab}{Optional character strings used as labels for x and y. If NULL, sensible defaults are used.}
 
-\item{IDs}{Logical indicating if the individual cell “IDs” should be returned, see hexbin.}
+\item{IDs}{Logical indicating if the hexagonal cell ID for each point should be returned, see hexbin.}
 
 \item{weight}{Numeric weight vector to be assigned to points.}
 }
