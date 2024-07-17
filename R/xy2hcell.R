@@ -33,7 +33,7 @@ xy2hcell <- function(hexbin, x, y=NULL)
   c1 <- 2 * floor((hexbin@xbins*hexbin@shape)/sqrt(3) + 1.5001)
   imax <- trunc((jmax*c1 -1)/jmax + 1)
   lmax <- jmax * imax
-  weight = rep(1,length=n)
+  weight = rep.int(1,times=n)
   
   #get cell IDs for all x,y at the same hexbin's specs
   ans <- .Fortran(`hbin`,

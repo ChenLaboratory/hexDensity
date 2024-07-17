@@ -64,7 +64,7 @@ hexbinFull <-
     lmax <- jmax * imax
 
     if(is.null(weight)) {
-      weight = rep(1,length=n)
+      weight = rep.int(1,times=n)
     }
     if(length(weight) != n) {
       stop("weight must be a vector with same length as x")
