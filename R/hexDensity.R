@@ -22,7 +22,7 @@ hexDensity = function(x,...) UseMethod('hexDensity')
 
 #' @rdname hexDensity
 #' @export
-hexDensity.default = function(x,y=NULL, 
+hexDensity.default2 = function(x,y=NULL, 
                      xbins = 128, #128 is the magic number in spatstat
                      bandwidth = NULL,
                      edge = TRUE,
@@ -43,16 +43,16 @@ hexDensity.default = function(x,y=NULL,
   xhex = diff(hbin@xbnds)/xbins
   yhex = xhex*diff(hbin@ybnds)/(diff(hbin@xbnds)*hbin@shape)
 
-  # Ensure KDE is calculated within the boundaries only since hexbin use more hexagons than needed. 
-  # Calculate as the highest row where the bottom tip is still within ybnds.
+  # Only calculate KDE for hex within the boundaries only since hexbin use more 
+  # hexagons than needed. Important for edge correction.
   # topRow = floor(((hbin@ybnds[2]-hbin@ybnds[1]+yhex/sqrt(3))*2/sqrt(3))/yhex+1)
-  # topRow = floor((2*sqrt(3)*diff(hbin@ybnds)/yhex+5)/3)
-  
-  #convert hexbin count to staggered bin matrix representation
+  topRow = floor((2*sqrt(3)*diff(hbin@ybnds)/yhex+5)/3)
+
   staggeredBin = matrix(0,nrow = 2*row, ncol = 2*col+row-1)
-  for (i in seq(1,row)) {
+  for (i in seq(row-topRow+1,row)) {
     staggeredBin[i,(i-i%/%2):(i-i%/%2+col-1)] = hbin@count[((row-i)*col+1):((row-i)*col+col)]
   }
+  
   #Make kernel
   kernel.left.hori = dnorm(xhex*c(seq(col,1),seq(0,col-1)),sd=bandwidth[1])
   kernel.left.verti = dnorm(yhex*sqrt(3)*c(seq(row/2-1,0),seq(1,row/2)),sd=bandwidth[2])
@@ -70,9 +70,9 @@ hexDensity.default = function(x,y=NULL,
   }
   kernel = kernel/sum(kernel)
 
-  #inverse the kernel for convolution
+  #inverse the kernel so that the center is now in top left for convolution.
   kernel.inv = matrix(0,nrow = 2*row, ncol = 2*col+row-1)
-  #going clock-wise from top-left of inverse kernel
+  #going clock-wise from the top-left section of inverse kernel
   kernel.inv[1:(row+1),1:(col+row/2)] = kernel[row:(2*row),(col+row/2):(2*col+row-1)]
   kernel.inv[1:(row+1),((col+row/2)+1):(2*col+row-1)] = kernel[row:(2*row),1:(col+row/2)-1]
   kernel.inv[(row+2):(2*row),((col+row/2)+1):(2*col+row-1)] = kernel[1:(row-1),1:(col+row/2)-1]
@@ -83,7 +83,7 @@ hexDensity.default = function(x,y=NULL,
   #edge correction
   if (edge) {
     mask = matrix(0,nrow = 2*row, ncol = 2*col+row-1)
-    for (i in seq(1, row, by=2)) {
+    for (i in seq(row-topRow+1, row, by=2)) {
         mask[i:(i+1),(i-i%/%2):(i-i%/%2+col-1)] = matrix(1,2,col)
     }
     fM = fft2D(mask)
@@ -102,18 +102,23 @@ hexDensity.default = function(x,y=NULL,
   fY = fft2D(staggeredBin)
   sm = fft2D(fY*fK,inverse = TRUE)/(2*row*(2*col+(row-1)))
 
-  #extract back to hexbin class
-  count = c()
+  #edge correction
   if(edge && !diggle){
     #No need to clean up the NaN since will discard them anyway
     sm[1:row,1:(col+(row-1)/2)] = Re(sm[1:row,1:(col+(row-1)/2)])/edg
   }
-
-  for (i in seq(row,1)) {
-    count = append(count2,Re(sm[i,(i-i%/%2):(i-i%/%2+col-1)]))
+  
+  #extract back to hexbin class
+  count=c()
+  for (i in seq(row,row-topRow+1)) {
+    count = append(count,Re(sm[i,(i-i%/%2):(i-i%/%2+col-1)]))
   }
   
   hbin@count = count/(hexAreaFromWidth(xhex)*yhex/xhex)
+  hbin@ncells=length(a@count)
+  hbin@cell=hbin@cell[1:hbin@ncells]
+  hbin@xcm=hbin@xcm[1:hbin@ncells]
+  hbin@ycm=hbin@ycm[1:hbin@ncells]
   return(hbin)
 }
 
