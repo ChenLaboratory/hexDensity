@@ -32,7 +32,7 @@ hexDensity.default = function(x,y=NULL,
   hbin = hexbinFull(x,y,xbins=xbins, weight=weight,...) 
   row = hbin@dimen[1]
   col = hbin@dimen[2]
-
+  
   xy <- xy.coords(x, y)
   n=nrow(xy)
   if (is.null(bandwidth)) {
@@ -42,13 +42,17 @@ hexDensity.default = function(x,y=NULL,
   }
   xhex = diff(hbin@xbnds)/xbins
   yhex = xhex*diff(hbin@ybnds)/(diff(hbin@xbnds)*hbin@shape)
+
+  # Ensure KDE is calculated within the boundaries only since hexbin use more hexagons than needed. 
+  # Calculate as the highest row where the bottom tip is still within ybnds.
+  # topRow = floor(((hbin@ybnds[2]-hbin@ybnds[1]+yhex/sqrt(3))*2/sqrt(3))/yhex+1)
+  # topRow = floor((2*sqrt(3)*diff(hbin@ybnds)/yhex+5)/3)
+  
   #convert hexbin count to staggered bin matrix representation
   staggeredBin = matrix(0,nrow = 2*row, ncol = 2*col+row-1)
-  for (i in seq(1,row,by=2)) {
+  for (i in seq(1,row)) {
     staggeredBin[i,(i-i%/%2):(i-i%/%2+col-1)] = hbin@count[((row-i)*col+1):((row-i)*col+col)]
-    staggeredBin[i+1,(i-i%/%2):(i-i%/%2+col-1)] = hbin@count[((row-i-1)*col+1):((row-i-1)*col+col)]
   }
-  
   #Make kernel
   kernel.left.hori = dnorm(xhex*c(seq(col,1),seq(0,col-1)),sd=bandwidth[1])
   kernel.left.verti = dnorm(yhex*sqrt(3)*c(seq(row/2-1,0),seq(1,row/2)),sd=bandwidth[2])
@@ -105,11 +109,10 @@ hexDensity.default = function(x,y=NULL,
     sm[1:row,1:(col+(row-1)/2)] = Re(sm[1:row,1:(col+(row-1)/2)])/edg
   }
 
-  for (i in seq(row,1,by=-2)) {
-    count = append(count,Re(sm[i,(i-i%/%2):(i-i%/%2+col-1)]))
-    count = append(count,Re(sm[i-1,(i-i%/%2):(i-i%/%2+col-1)]))
+  for (i in seq(row,1)) {
+    count = append(count2,Re(sm[i,(i-i%/%2):(i-i%/%2+col-1)]))
   }
-
+  
   hbin@count = count/(hexAreaFromWidth(xhex)*yhex/xhex)
   return(hbin)
 }
