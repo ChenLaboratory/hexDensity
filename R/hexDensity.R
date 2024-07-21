@@ -22,7 +22,7 @@ hexDensity = function(x,...) UseMethod('hexDensity')
 
 #' @rdname hexDensity
 #' @export
-hexDensity.default2 = function(x,y=NULL, 
+hexDensity.default = function(x,y=NULL, 
                      xbins = 128, #128 is the magic number in spatstat
                      bandwidth = NULL,
                      edge = TRUE,
@@ -115,7 +115,7 @@ hexDensity.default2 = function(x,y=NULL,
   }
   
   hbin@count = count/(hexAreaFromWidth(xhex)*yhex/xhex)
-  hbin@ncells=length(a@count)
+  hbin@ncells=length(hbin@count)
   hbin@cell=hbin@cell[1:hbin@ncells]
   hbin@xcm=hbin@xcm[1:hbin@ncells]
   hbin@ycm=hbin@ycm[1:hbin@ncells]
