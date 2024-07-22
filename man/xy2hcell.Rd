@@ -2,20 +2,37 @@
 % Please edit documentation in R/xy2hcell.R
 \name{xy2hcell}
 \alias{xy2hcell}
-\title{Get the hexagonal cell ID from a hexbin object at the specified xy coordinates.}
+\title{Find which hexagons the specified xy coordinates belong to in a hexbin object.}
 \usage{
-xy2hcell(hexbin, x, y = NULL)
+xy2hcell(
+  hexbin = NULL,
+  x,
+  y = NULL,
+  xbins = NULL,
+  xbnds = NULL,
+  ybnds = NULL,
+  shape = NULL
+)
 }
 \arguments{
 \item{hexbin}{hexbin object to be referenced to.}
 
 \item{x, y}{coordinates or vectors of coordinates of the points.}
+
+\item{xbins}{number of bins partitioning the range of xbnds}
+
+\item{xbnds, ybnds}{horizontal and vertical limit of the binning region. Must the numeric vector of length 2.}
+
+\item{shape}{shape =yheight/xwidth of the plotting regions.}
 }
 \value{
 a vector the same length as x with the hexagonal cell ID for each point
 }
 \description{
-Get the hexagonal cell ID from a hexbin object at the specified xy coordinates.
+Find which hexagons the specified xy coordinates belong to in a hexbin object.
+}
+\details{
+If a hexbin object is not provided, parameters of the binning region (xbins, xbnds, ybnds, shape) will be used instead.
 }
 \examples{
 set.seed(133)
