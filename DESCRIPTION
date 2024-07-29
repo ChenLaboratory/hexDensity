@@ -15,5 +15,6 @@ Imports:
     spatstat.geom,
     viridis,
     grid,
-    ks
+    ks,
+    collections
 RoxygenNote: 7.3.2
