@@ -2,7 +2,6 @@
 
 S3method(hexDensity,default)
 export(grid.hexagontile)
-export(hcell2colrow)
 export(hexContour)
 export(hexDensity)
 export(hexbinFull)
