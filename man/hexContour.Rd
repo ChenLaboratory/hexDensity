@@ -4,7 +4,7 @@
 \alias{hexContour}
 \title{Generate contour using a hexagonal grid.}
 \usage{
-hexContour(hexDensity, levels)
+hexContour(hexDensity, levels, test = F)
 }
 \arguments{
 \item{hexDensity}{hexDensity object to be contoured.}
@@ -28,7 +28,7 @@ cutoff=quantile(d@count,0.9)
 lines = hexContour(d,cutoff)
 
 library(ggplot2)
-
+library(hexbin)
 #plot against density
 ggplot()+
   geom_point(
