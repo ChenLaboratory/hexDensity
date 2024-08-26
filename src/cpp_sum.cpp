@@ -39,6 +39,7 @@ bool operator<(const edge& l, const edge& r) {
   // compare first edge then second edge
   return (l.e[0]<r.e[0] || (!(r.e[0]<l.e[0])) && l.e[1]<r.e[1]);
 }
+
 // for set intersection with &&
 template <class T, class CMP = std::less<T>, class ALLOC = std::allocator<T> >
 std::set<T, CMP, ALLOC> operator && (
@@ -50,13 +51,7 @@ std::set<T, CMP, ALLOC> operator && (
   return s;
 }
 
-struct isoline {
-  double *x;
-  double *y;
-  int *id;
-};
 //format isoline output as an R list with x,y, and id.
-SEXP format_output(double* x, double* y, int* id, int n);
 SEXP format_output(double* x, double* y, int* id, int n) {
   SEXP out = PROTECT(Rf_allocVector(VECSXP,3));
   SEXP names = PROTECT(Rf_allocVector(STRSXP,3));
@@ -81,44 +76,6 @@ SEXP format_output(double* x, double* y, int* id, int n) {
   return out;
 }
 
-// Test matrix and output
-extern "C" SEXP expSmooth(SEXP y, SEXP ys, SEXP z, SEXP levels);
-SEXP expSmooth(SEXP x, SEXP y, SEXP z, SEXP levels) {
-  x = PROTECT(coerceVector(x,REALSXP));
-  y = PROTECT(coerceVector(y,REALSXP));
-  z = PROTECT(coerceVector(z,REALSXP));
-  
-  int levels_n = Rf_length(levels);
-  int z_nrows = Rf_nrows(z);
-  // int z_ncols = Rf_ncols(z);
-  double *x_p, *y_p, *r_p;
-  
-  x_p = REAL(x);
-  y_p = REAL(y);
-  r_p = REAL(z);
-
-  SEXP out = PROTECT(Rf_allocVector(VECSXP,levels_n));
-  
-  // Test data
-  double x_out[3] = {r_p[0+0*z_nrows],r_p[1+0*z_nrows],r_p[2+0*z_nrows]};
-  double y_out[3] = {r_p[2+0*z_nrows],r_p[2+1*z_nrows],r_p[2+2*z_nrows]};
-  int id[3] = {0,0,1};
-  
-  for (int i=0;i<levels_n;i++) {
-
-    SET_VECTOR_ELT(out,i,format_output(x_out,y_out,id,3));
-  }
-  UNPROTECT(4);
-  return out;
-}
-
-#include <iostream>
-extern "C" {
-  void expSmooth2() {
-    std::map<int,std::set<int>>test_map;
-  }
-}
-
 extern "C" {
   SEXP meanderingTrianglesC(SEXP x, SEXP y,SEXP z,SEXP levels) {
     // Not sure if actually need to coerce all these to REALSXP
@@ -132,9 +89,6 @@ extern "C" {
     ry = REAL(y);
     rz = REAL(z);
     rlevels = REAL(levels);
-    for(int i =0;i<length(z);i++) {
-      std::cout<<rz[i]<<std::endl;
-    }
     // Get triangles
     int n = (length(x)-1)*(length(y)-1)*2;
     std::vector<triangle> triangles(n);
@@ -152,27 +106,20 @@ extern "C" {
         }
       }
     }
-    std::cout << "There are " << triangles.size() << " triangles" << std::endl;
-    
-    // isoline res[length(levels)];
+
     SEXP out = PROTECT(allocVector(VECSXP, length(levels)));
     int out_i=0;
     
     for (int l=0;l<length(levels);l++) {
       std::map<point_d,point_d> interpolatedPos;
       std::vector<edge> contour_segments;
-      std::cout << "level is " << rlevels[l] <<std::endl;
       for(triangle t:triangles) {
-        std::cout << "Triangle " <<t.v[0].x<<t.v[0].y<<t.v[1].x<<t.v[1].y<<t.v[2].x<<t.v[2].y<<std::endl;
         // Find contour line in the triangle
         int score = 0;
         for (int i=0;i<3;i++) {
-          // Matrix is row-major alignment
-          std::cout << "At index " << t.v[i].x+t.v[i].y*Rf_nrows(z) << " z is " << (rz[t.v[i].x+t.v[i].y*Rf_nrows(z)]) << std::endl;
-          // score += (rz[t.v[i].y+t.v[i].x*Rf_nrows(z)]>=rlevels[l])*pow(2,i);
-          score += (rz[t.v[i].x+t.v[i].y*Rf_nrows(z)]>=rlevels[l])*pow(2,i);
+          // R matrix is col-major alignment
+          score += (rz[t.v[i].y+t.v[i].x*Rf_nrows(z)]>=rlevels[l])*pow(2,i);
         }
-        std::cout << "score is: " << score <<std::endl;
         point minority;
         point majority[2];
         
@@ -207,8 +154,8 @@ extern "C" {
         for (int m=0;m<2;m++) {
           crossing_point = {(minority.x-majority[m].x)*0.5+majority[m].x,
                             (minority.y-majority[m].y)*0.5+majority[m].y};
-          how_far = (rlevels[l]-rz[majority[m].x+majority[m].y*Rf_nrows(z)])/
-            (rz[minority.x+minority.y*Rf_nrows(z)]-rz[majority[m].x+majority[m].y*Rf_nrows(z)]);
+          how_far = (rlevels[l]-rz[majority[m].y+majority[m].x*Rf_nrows(z)])/
+            (rz[minority.y+minority.x*Rf_nrows(z)]-rz[majority[m].y+majority[m].x*Rf_nrows(z)]);
           interpolated_point = {(minority.x-majority[m].x)*how_far+majority[m].x,
                                 (minority.y-majority[m].y)*how_far+majority[m].y};
           interpolatedPos[crossing_point] = interpolated_point;
@@ -226,9 +173,7 @@ extern "C" {
         out_i++;
         continue;
       }
-      std::cout << "Number of contour segments is: " << contour_segments.size() << std::endl;
       // Joining up
-      std::cout << "Start joining up" << std::endl; 
       std::set<edge> unused_segments(contour_segments.begin(),contour_segments.end());
       std::map<point_d,std::set<edge>> segments_by_point;
       for(edge segment:contour_segments) {
@@ -237,9 +182,7 @@ extern "C" {
       }
       std::vector<std::deque<point_d>> contour_lines;
       int n_out = 0;
-      std::cout << "Number of unused segments is: " << unused_segments.size() << std::endl;
       while (!unused_segments.empty()) {
-        std::cout <<  unused_segments.size() << " unused segments left" << std::endl;
         std::deque<point_d> line;
         // Pop a random segment
         line.push_back((*unused_segments.begin()).e[0]);
@@ -248,7 +191,6 @@ extern "C" {
         
         while (true) {
           std::set<edge> tail_candidates = segments_by_point[line.back()]&&unused_segments;
-          // std::cout <<  tail_candidates.size() << " tail_candiates" << std::endl;
           if (tail_candidates.size()>0) {
             edge tail = *tail_candidates.begin();
             tail_candidates.erase(tail_candidates.begin()); // TODO: Might not need this
@@ -269,19 +211,18 @@ extern "C" {
           }
         }
       }
-      std::cout << "There are " << contour_lines.size() << " contour lines" << std::endl; 
-      std::cout << "Finish joining up" << std::endl; 
-      std::cout << n_out << std::endl; 
       double x_out[n_out];
       double y_out[n_out];
       int id_out[n_out];
       n_out = 0;
-      std::cout << "Start convert to R" << std::endl; 
       for (int i=0;i<contour_lines.size();i++) {
         for(point_d p:contour_lines[i]) {
-          x_out[n_out] = p.x;
-          y_out[n_out] = p.y;
-          id_out[n_out] = i+1; //TODO: not sure if need +1 here
+          // Scale to correct xy.
+          point_d correct_point = interpolatedPos[p];
+          x_out[n_out] = (correct_point.x)*(rx[1]-rx[0])+rx[0];
+          y_out[n_out] = (correct_point.y)*(ry[1]-ry[0])+ry[0];
+          
+          id_out[n_out] = i+1;
           n_out++;
         }
       }
@@ -293,24 +234,3 @@ extern "C" {
     return out;
   }
 }
-
-// TODO: delete this
-// Making & naming list
-// library(inline)
-//   named <- cfunction(signature(), '
-//                        /* allocate and populate list */
-//                        SEXP OS = PROTECT(allocVector(VECSXP, 2));
-//                        SET_VECTOR_ELT(OS, 0, allocMatrix(REALSXP, 5, 5));
-//                        SET_VECTOR_ELT(OS, 1, allocVector(REALSXP, 5));
-// 
-//                        /* create names */
-//                        SEXP nms = PROTECT(allocVector(STRSXP, 2));
-//                        SET_STRING_ELT(nms, 0, mkChar("foo"));
-//                        SET_STRING_ELT(nms, 1, mkChar("bar"));
-// 
-//                        /* assign names to list */
-//                        setAttrib(OS, R_NamesSymbol, nms);
-// 
-//                        /* cleanup and return */
-//                        UNPROTECT(2);
-//                        return OS;')

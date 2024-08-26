@@ -56,7 +56,6 @@ hexContour = function(hexDensity,levels,test=F) {
   shift_amount = diff(x.coords[1:2])/2
   for(i in 1:length(levels)) {
     isolines[[i]]$x=isolines[[i]]$x+shift_amount*(1-abs(((isolines[[i]]$y-y.coords[1])/diff(y.coords[1:2]))%%2-1))
-    
   }
   return(isolines)
 }
@@ -78,8 +77,8 @@ meanderingTriangles = function(x.coords,y.coords,z,levels) {
       i=i+2
     }
   }
-  print("Number of triangles is: ")
-  print(length(triangles))
+  # print("Number of triangles is: ")
+  # print(length(triangles))
 
 
   ## Find triangles that intersect contour lines
@@ -133,8 +132,8 @@ meanderingTriangles = function(x.coords,y.coords,z,levels) {
       res[[as.character(level)]]=list(x=numeric(0),y=numeric(0),id=integer(0))
       next
     }
-    print("number of contour segment is")
-    print(length(contour_segments))
+    # print("number of contour segment is")
+    # print(length(contour_segments))
     
     ## Joining up
     unused_segments = ordered_dict(rep(NA,length(contour_segments)),contour_segments)
@@ -157,8 +156,8 @@ meanderingTriangles = function(x.coords,y.coords,z,levels) {
         segments_by_point$set(segment$e2,list(segment))
       }
     }
-    print("number of unused segment is")
-    print(unused_segments$size())
+    # print("number of unused segment is")
+    # print(unused_segments$size())
     n_unused_segments = length(contour_segments)
     contour_lines=list()
     while(n_unused_segments) {
@@ -201,8 +200,6 @@ meanderingTriangles = function(x.coords,y.coords,z,levels) {
         isoline_format$x[n]=temp[1]
         isoline_format$y[n]=temp[2]
 
-        # isoline_format$x[n]=contour_lines[[i]][[j]][1]
-        # isoline_format$y[n]=contour_lines[[i]][[j]][2]
         isoline_format$id[n]=i
         n=n+1
       }
@@ -222,25 +219,3 @@ meanderingTriangles2 = function(x.coords,y.coords,z,levels) {
   names(res) = as.character(levels)
   return(res)
 }
-
-#TODO: delete this
-#making & naming list in C
-
-library(inline)
-named <- cfunction(signature(), '
-                       /* allocate and populate list */
-                       SEXP OS = PROTECT(allocVector(VECSXP, 2));
-                       SET_VECTOR_ELT(OS, 0, allocMatrix(REALSXP, 5, 5));
-                       SET_VECTOR_ELT(OS, 1, allocVector(REALSXP, 5));
-
-                       /* create names */
-                       SEXP nms = PROTECT(allocVector(STRSXP, 2));
-                       SET_STRING_ELT(nms, 0, mkChar("foo"));
-                       SET_STRING_ELT(nms, 1, mkChar("bar"));
-
-                       /* assign names to list */
-                       setAttrib(OS, R_NamesSymbol, nms);
-
-                       /* cleanup and return */
-                       UNPROTECT(2);
-                       return OS;')

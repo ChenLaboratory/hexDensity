@@ -9,11 +9,9 @@ static const R_FortranMethodDef FortranEntries[] = {
 };
 
 SEXP expSmooth(SEXP y, SEXP ys, SEXP n, SEXP a);
-void expSmooth2();
 SEXP meanderingTrianglesC(SEXP x, SEXP y,SEXP z,SEXP levels);
 static const R_CallMethodDef CallEntries[] = {
   {"expSmooth", (DL_FUNC) &expSmooth, 4},
-  {"expSmooth2", (DL_FUNC) &expSmooth2, 0},
   {"meanderingTrianglesC", (DL_FUNC) &meanderingTrianglesC,4},
   {NULL, NULL, 0}
 };
