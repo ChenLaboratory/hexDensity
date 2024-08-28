@@ -2,12 +2,9 @@
 #include <Rinternals.h>
 #include <map>
 #include <vector>
-#include <algorithm> 
-#include <numeric>
 #include <set>
 #include <deque>
-#include <cmath>
-#include <iostream>
+#include <algorithm> //for set_intersection
 struct point {
   int x;
   int y;
@@ -235,27 +232,3 @@ extern "C" {
   }
 }
 
-// R code for testing
-// set.seed(133)
-//   x=rnorm(200)
-//   y=rnorm(200)
-//   d = hexDensity(x=x,y=y,bandwidth=0.4,xbins=2)
-//   cutoff=quantile(d@count,0.9)
-//   d@count = as.double(d@count>cutoff)
-//   lines = hexContour(d,0.5,test=T)
-//   
-//   library(ggplot2)
-//   library(hexbin)
-// #plot against density
-//   ggplot()+
-//     geom_point(
-//       aes(x=hcell2xy(d)$x,
-//           y=hcell2xy(d)$y,
-//           col=d@count)
-//     ) +
-//       scale_color_viridis_c()+
-//       geom_path(
-//         aes(
-//           x = lines[[1]]$x, y = lines[[1]]$y, group = lines[[1]]$id
-//         )
-//       )
