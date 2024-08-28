@@ -17,11 +17,13 @@ struct point_d {
   double x;
   double y;
 };
+
 // for map of point_d
 bool operator<(const point_d& l, const point_d& r) {
   // compare x then y
   return (l.x<r.x || (l.x==r.x && l.y<r.y));
 }
+
 bool operator==(const point_d& l, const point_d& r) {
   // compare x then y
   return (l.x==r.x && (l.y==r.y));
@@ -193,14 +195,12 @@ extern "C" {
           std::set<edge> tail_candidates = segments_by_point[line.back()]&&unused_segments;
           if (tail_candidates.size()>0) {
             edge tail = *tail_candidates.begin();
-            tail_candidates.erase(tail_candidates.begin()); // TODO: Might not need this
             line.push_back(tail.e[1] == line.back() ? tail.e[0] : tail.e[1]);
             unused_segments.erase(tail);
           }
           std::set<edge> head_candidates = segments_by_point[line.front()]&&unused_segments;
           if (head_candidates.size()>0) {
             edge head = *head_candidates.begin();
-            head_candidates.erase(head_candidates.begin()); // TODO: might not need this
             line.push_front(head.e[1] == line.front() ? head.e[0] : head.e[1]);
             unused_segments.erase(head);
           }
@@ -234,3 +234,28 @@ extern "C" {
     return out;
   }
 }
+
+// R code for testing
+// set.seed(133)
+//   x=rnorm(200)
+//   y=rnorm(200)
+//   d = hexDensity(x=x,y=y,bandwidth=0.4,xbins=2)
+//   cutoff=quantile(d@count,0.9)
+//   d@count = as.double(d@count>cutoff)
+//   lines = hexContour(d,0.5,test=T)
+//   
+//   library(ggplot2)
+//   library(hexbin)
+// #plot against density
+//   ggplot()+
+//     geom_point(
+//       aes(x=hcell2xy(d)$x,
+//           y=hcell2xy(d)$y,
+//           col=d@count)
+//     ) +
+//       scale_color_viridis_c()+
+//       geom_path(
+//         aes(
+//           x = lines[[1]]$x, y = lines[[1]]$y, group = lines[[1]]$id
+//         )
+//       )
