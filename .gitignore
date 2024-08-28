@@ -4,6 +4,5 @@
 .Ruserdata
 test
 
-src/hbin.o
+src/*.o
 src/hexDensity.dll
-src/reg.o
