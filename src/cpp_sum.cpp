@@ -1,10 +1,10 @@
-#include <R.h>
 #include <Rinternals.h>
 #include <map>
 #include <vector>
 #include <set>
 #include <deque>
-#include <algorithm> //for set_intersection
+#include <cmath> //for std::pow
+#include <algorithm> //for std::set_intersection
 struct point {
   int x;
   int y;
@@ -36,7 +36,7 @@ struct edge {
 // for set of edge
 bool operator<(const edge& l, const edge& r) {
   // compare first edge then second edge
-  return (l.e[0]<r.e[0] || (!(r.e[0]<l.e[0])) && l.e[1]<r.e[1]);
+  return (l.e[0]<r.e[0] || ((!(r.e[0]<l.e[0])) && l.e[1]<r.e[1]));
 }
 
 // for set intersection with &&
@@ -77,18 +77,18 @@ SEXP format_output(double* x, double* y, int* id, int n) {
 
 extern "C" {
   SEXP meanderingTrianglesC(SEXP x, SEXP y,SEXP z,SEXP levels) {
-    // Not sure if actually need to coerce all these to REALSXP
     x = PROTECT(coerceVector(x,REALSXP));
     y = PROTECT(coerceVector(y,REALSXP));
     z = PROTECT(coerceVector(z,REALSXP));
     levels = PROTECT(coerceVector(levels,REALSXP));
     
-    double *rx,*ry,*rlevels,*rz;
-    rx = REAL(x);
-    ry = REAL(y);
-    rz = REAL(z);
-    rlevels = REAL(levels);
-    // Get triangles
+    double *x_p,*y_p,*levels_p,*z_p;
+    x_p = REAL(x);
+    y_p = REAL(y);
+    z_p = REAL(z);
+    int z_nrows=Rf_nrows(z);
+    levels_p = REAL(levels);
+    // Get triangles. TODO: Could probably do away with this.
     int n = (length(x)-1)*(length(y)-1)*2;
     std::vector<triangle> triangles(n);
     int i_triangle = 0;
@@ -107,8 +107,6 @@ extern "C" {
     }
 
     SEXP out = PROTECT(allocVector(VECSXP, length(levels)));
-    int out_i=0;
-    
     for (int l=0;l<length(levels);l++) {
       std::map<point_d,point_d> interpolatedPos;
       std::vector<edge> contour_segments;
@@ -117,7 +115,7 @@ extern "C" {
         int score = 0;
         for (int i=0;i<3;i++) {
           // R matrix is col-major alignment
-          score += (rz[t.v[i].y+t.v[i].x*Rf_nrows(z)]>=rlevels[l])*pow(2,i);
+          score += (z_p[t.v[i].y+t.v[i].x*z_nrows]>=levels_p[l])*std::pow(2,i);
         }
         point minority;
         point majority[2];
@@ -153,8 +151,8 @@ extern "C" {
         for (int m=0;m<2;m++) {
           crossing_point = {(minority.x-majority[m].x)*0.5+majority[m].x,
                             (minority.y-majority[m].y)*0.5+majority[m].y};
-          how_far = (rlevels[l]-rz[majority[m].y+majority[m].x*Rf_nrows(z)])/
-            (rz[minority.y+minority.x*Rf_nrows(z)]-rz[majority[m].y+majority[m].x*Rf_nrows(z)]);
+          how_far = (levels_p[l]-z_p[majority[m].y+majority[m].x*z_nrows])/
+            (z_p[minority.y+minority.x*z_nrows]-z_p[majority[m].y+majority[m].x*z_nrows]);
           interpolated_point = {(minority.x-majority[m].x)*how_far+majority[m].x,
                                 (minority.y-majority[m].y)*how_far+majority[m].y};
           interpolatedPos[crossing_point] = interpolated_point;
@@ -162,14 +160,12 @@ extern "C" {
         }
         contour_segments.push_back({contour_point[0],contour_point[1]});
       }
-      
+      // No contour line at this level
       if (contour_segments.size()==0) {
-        // cpp doesnt allow temporary array
         double x_out[0] = {};
         double y_out[0] = {};
         int id[0] = {};
-        SET_VECTOR_ELT(out,out_i,format_output(x_out,y_out,id,0));
-        out_i++;
+        SET_VECTOR_ELT(out,l,format_output(x_out,y_out,id,0));
         continue;
       }
       // Joining up
@@ -179,6 +175,7 @@ extern "C" {
         segments_by_point[segment.e[0]].insert(segment);
         segments_by_point[segment.e[1]].insert(segment);
       }
+      
       std::vector<std::deque<point_d>> contour_lines;
       int n_out = 0;
       while (!unused_segments.empty()) {
@@ -187,7 +184,7 @@ extern "C" {
         line.push_back((*unused_segments.begin()).e[0]);
         line.push_back((*unused_segments.begin()).e[1]);
         unused_segments.erase(unused_segments.begin());
-        
+        // Extend line both ways
         while (true) {
           std::set<edge> tail_candidates = segments_by_point[line.back()]&&unused_segments;
           if (tail_candidates.size()>0) {
@@ -208,6 +205,8 @@ extern "C" {
           }
         }
       }
+      
+      // Collect result to isoline format
       double x_out[n_out];
       double y_out[n_out];
       int id_out[n_out];
@@ -216,15 +215,14 @@ extern "C" {
         for(point_d p:contour_lines[i]) {
           // Scale to correct xy.
           point_d correct_point = interpolatedPos[p];
-          x_out[n_out] = (correct_point.x)*(rx[1]-rx[0])+rx[0];
-          y_out[n_out] = (correct_point.y)*(ry[1]-ry[0])+ry[0];
+          x_out[n_out] = (correct_point.x)*(x_p[1]-x_p[0])+x_p[0];
+          y_out[n_out] = (correct_point.y)*(y_p[1]-y_p[0])+y_p[0];
           
           id_out[n_out] = i+1;
           n_out++;
         }
       }
-      SET_VECTOR_ELT(out,out_i,format_output(x_out,y_out,id_out,n_out));
-      out_i++;
+      SET_VECTOR_ELT(out,l,format_output(x_out,y_out,id_out,n_out));
     }
     
     UNPROTECT(5);
