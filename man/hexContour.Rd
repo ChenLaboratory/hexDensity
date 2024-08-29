@@ -4,7 +4,7 @@
 \alias{hexContour}
 \title{Generate contour using a hexagonal grid.}
 \usage{
-hexContour(hexDensity, levels, test = F)
+hexContour(hexDensity, levels)
 }
 \arguments{
 \item{hexDensity}{hexDensity object to be contoured.}
