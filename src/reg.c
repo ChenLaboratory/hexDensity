@@ -1,20 +1,22 @@
 #include <R.h>
+#include <Rinternals.h>
 #include <R_ext/Rdynload.h>
 
 extern void F77_NAME(hbin  )(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
-// extern void F77_NAME(herode)(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
-// extern void F77_NAME(hsm   )(void *, void *, void *, void *, void *, void *, void *);
-
-
 static const R_FortranMethodDef FortranEntries[] = {
 	{"hbin", (DL_FUNC) &F77_NAME(hbin), 14},
-	// {"herode", (DL_FUNC) &F77_NAME(herode), 10},
-	// {"hsm", (DL_FUNC) &F77_NAME(hsm), 7},
 	{NULL, NULL, 0}
 };
 
+SEXP meanderingTrianglesC(SEXP x, SEXP y,SEXP z,SEXP levels);
+static const R_CallMethodDef CallEntries[] = {
+  {"meanderingTrianglesC", (DL_FUNC) &meanderingTrianglesC,4},
+  {NULL, NULL, 0}
+};
+
+
 void R_init_hexDensity(DllInfo *info) {
-	R_registerRoutines(info, NULL, NULL, FortranEntries, NULL);
+	R_registerRoutines(info, NULL, CallEntries, FortranEntries, NULL);
 	R_useDynamicSymbols(info, FALSE);
 	R_forceSymbols(info, TRUE);
 }
