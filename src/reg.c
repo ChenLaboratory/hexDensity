@@ -8,9 +8,9 @@ static const R_FortranMethodDef FortranEntries[] = {
 	{NULL, NULL, 0}
 };
 
-SEXP meanderingTrianglesC(SEXP x, SEXP y,SEXP z,SEXP levels);
+SEXP meanderingTrianglesC(SEXP xleft,SEXP xright,SEXP y,SEXP z,SEXP levels);
 static const R_CallMethodDef CallEntries[] = {
-  {"meanderingTrianglesC", (DL_FUNC) &meanderingTrianglesC,4},
+  {"meanderingTrianglesC", (DL_FUNC) &meanderingTrianglesC,5},
   {NULL, NULL, 0}
 };
 

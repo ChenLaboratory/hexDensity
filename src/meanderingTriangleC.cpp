@@ -6,8 +6,8 @@
 #include <cmath> //for std::pow
 #include <algorithm> //for std::set_intersection
 struct point {
-  int x;
-  int y;
+  int x = -1;
+  int y = -1;
 };
 
 struct point_d {
@@ -76,24 +76,26 @@ SEXP format_output(double* x, double* y, int* id, int n) {
 }
 
 extern "C" {
-  SEXP meanderingTrianglesC(SEXP x, SEXP y,SEXP z,SEXP levels) {
-    x = PROTECT(coerceVector(x,REALSXP));
+  SEXP meanderingTrianglesC(SEXP xleft, SEXP xright, SEXP y,SEXP z,SEXP levels) {
+    xleft = PROTECT(coerceVector(xleft,REALSXP));
+    xright = PROTECT(coerceVector(xright,REALSXP));
     y = PROTECT(coerceVector(y,REALSXP));
     z = PROTECT(coerceVector(z,REALSXP));
     levels = PROTECT(coerceVector(levels,REALSXP));
     
-    double *x_p,*y_p,*levels_p,*z_p;
-    x_p = REAL(x);
+    double *xleft_p,*xright_p,*y_p,*levels_p,*z_p;
+    xleft_p = REAL(xleft);
+    xright_p = REAL(xright);
     y_p = REAL(y);
     z_p = REAL(z);
     int z_nrows=Rf_nrows(z);
     levels_p = REAL(levels);
     // Get triangles. TODO: Could probably do away with this.
-    int n = (length(x)-1)*(length(y)-1)*2;
+    int n = (length(xleft)-1)*(length(y)-1)*2;
     std::vector<triangle> triangles(n);
     int i_triangle = 0;
     
-    for (int i=0;i<(length(x)-1);i++) {
+    for (int i=0;i<(length(xleft)-1);i++) {
       for (int j=0;j<(length(y)-1);j++) {
         if (j%2==0) {
 
@@ -117,8 +119,8 @@ extern "C" {
           // R matrix is col-major alignment
           score += (z_p[t.v[i].y+t.v[i].x*z_nrows]>=levels_p[l])*std::pow(2,i);
         }
-        point minority;
-        point majority[2];
+        point minor;
+        point major[2];
         
         switch (score) {
           case 0: // [0,0,0] No contour line
@@ -126,21 +128,21 @@ extern "C" {
             continue;
           case 1: // [1,0,0]
           case 6: // [0,1,1]
-            minority = t.v[0];
-            majority[0] = t.v[1];
-            majority[1] = t.v[2];
+            minor = t.v[0];
+            major[0] = t.v[1];
+            major[1] = t.v[2];
             break;
           case 2: // [0,1,0]
           case 5: // [1,0,1]
-            minority = t.v[1];
-            majority[0] = t.v[0];
-            majority[1] = t.v[2];
+            minor = t.v[1];
+            major[0] = t.v[0];
+            major[1] = t.v[2];
             break;
           case 3: // [1,1,0]
           case 4: // [0,0,1]
-            minority = t.v[2];
-            majority[0] = t.v[0];
-            majority[1] = t.v[1];
+            minor = t.v[2];
+            major[0] = t.v[0];
+            major[1] = t.v[1];
             break;
         }
         
@@ -149,12 +151,20 @@ extern "C" {
         double how_far;
         point_d contour_point[2];
         for (int m=0;m<2;m++) {
-          crossing_point = {(minority.x-majority[m].x)*0.5+majority[m].x,
-                            (minority.y-majority[m].y)*0.5+majority[m].y};
-          how_far = (levels_p[l]-z_p[majority[m].y+majority[m].x*z_nrows])/
-            (z_p[minority.y+minority.x*z_nrows]-z_p[majority[m].y+majority[m].x*z_nrows]);
-          interpolated_point = {(minority.x-majority[m].x)*how_far+majority[m].x,
-                                (minority.y-majority[m].y)*how_far+majority[m].y};
+          /* temp coordinates based on row & col to avoid floating point error 
+          when joining*/
+          crossing_point = {(minor.x-major[m].x)*0.5+major[m].x,
+                            (minor.y-major[m].y)*0.5+major[m].y};
+          how_far = (levels_p[l]-z_p[major[m].y+major[m].x*z_nrows])/
+            (z_p[minor.y+minor.x*z_nrows]-z_p[major[m].y+major[m].x*z_nrows]);
+          
+          // Actual coordinates
+          double minor_x = minor.y%2==0 ? xleft_p[minor.x] : xright_p[minor.x];
+          double major_x = major[m].y%2==0 ? xleft_p[major[m].x]:xright_p[major[m].x];
+          interpolated_point = {
+            (minor_x-major_x)*how_far+major_x,
+            (y_p[minor.y]-y_p[major[m].y])*how_far+y_p[major[m].y]
+          };
           interpolatedPos[crossing_point] = interpolated_point;
           contour_point[m] = crossing_point;
         }
@@ -211,12 +221,12 @@ extern "C" {
       double y_out[n_out];
       int id_out[n_out];
       n_out = 0;
-      for (int i=0;i<contour_lines.size();i++) {
+      for (std::size_t i=0;i<contour_lines.size();i++) {
         for(point_d p:contour_lines[i]) {
           // Scale to correct xy.
           point_d correct_point = interpolatedPos[p];
-          x_out[n_out] = (correct_point.x)*(x_p[1]-x_p[0])+x_p[0];
-          y_out[n_out] = (correct_point.y)*(y_p[1]-y_p[0])+y_p[0];
+          x_out[n_out] = (correct_point.x);
+          y_out[n_out] = (correct_point.y);
           
           id_out[n_out] = i+1;
           n_out++;
@@ -225,7 +235,7 @@ extern "C" {
       SET_VECTOR_ELT(out,l,format_output(x_out,y_out,id_out,n_out));
     }
     
-    UNPROTECT(5);
+    UNPROTECT(6);
     return out;
   }
 }

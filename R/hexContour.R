@@ -45,34 +45,31 @@
 # Essentially treat the hexagonal grid as a rectangular grid for calculation then
 # shift every other rows by half bin width afterwards to get back the hexagonal grid.
 hexContour = function(hexDensity,levels) {
+  # Prepping values
   coords = hcell2xy(hexDensity)
-  x.coords = coords$x[1:hexDensity@dimen[2]]
+  x.coords.left = coords$x[1:hexDensity@dimen[2]]
+  x.coords.right = coords$x[(hexDensity@dimen[2]+1):(2*hexDensity@dimen[2])]
   y.coords = coords$y[((1:length(coords$y))-1)%%hexDensity@dimen[2]==0]
   z=matrix(hexDensity@count,ncol=hexDensity@dimen[2],byrow=T)
-
-  isolines=meanderingTriangles(x.coords,y.coords,z,levels)
-
-  shift_amount = diff(x.coords[1:2])/2
-  for(i in 1:length(levels)) {
-    isolines[[i]]$x=isolines[[i]]$x+shift_amount*(1-abs(((isolines[[i]]$y-y.coords[1])/diff(y.coords[1:2]))%%2-1))
-  }
+  
+  isolines=meanderingTriangles(x.coords.left,x.coords.right,y.coords,z,levels)
   return(isolines)
 }
 
 #Meandering triangles c++
-meanderingTriangles = function(x.coords,y.coords,z,levels) {
-  res = .Call(`meanderingTrianglesC`,x.coords,y.coords,z,levels)
+meanderingTriangles = function(x.coords.left,x.coords.right,y.coords,z,levels) {
+  res = .Call(`meanderingTrianglesC`,x.coords.left,x.coords.right,y.coords,z,levels)
   names(res) = as.character(levels)
   return(res)
 }
 
 #Keep for posterity
-# meanderingTriangles = function(x.coords,y.coords,z,levels) {
-#   n = (length(x.coords)-1)*(length(y.coords)-1)*2
+# meanderingTriangles2 = function(x.coords.left,x.coords.right,y.coords,z,levels) {
+#   n = (length(x.coords.left)-1)*(length(y.coords)-1)*2
 #   triangles = vector(mode='list', length=n)
 # 
 #   i=1
-#   for (x in 1:(length(x.coords)-1)) {
+#   for (x in 1:(length(x.coords.left)-1)) {
 #     for (y in 1:(length(y.coords)-1)) {
 #       if(y%%2==1) {
 #         triangles[[i]]=list(v1=c(x,y),v2=c(x+1,y),v3=c(x,y+1))
@@ -84,8 +81,6 @@ meanderingTriangles = function(x.coords,y.coords,z,levels) {
 #       i=i+2
 #     }
 #   }
-#   # print("Number of triangles is: ")
-#   # print(length(triangles))
 # 
 # 
 #   ## Find triangles that intersect contour lines
@@ -102,7 +97,7 @@ meanderingTriangles = function(x.coords,y.coords,z,levels) {
 #       if (length(below)==0 || length(above)==0){
 #         next
 #       }
-#       
+# 
 #       minority = `if`(length(above) < length(below),above,below)
 #       majority = `if`(length(above) > length(below),above,below)
 # 
@@ -122,9 +117,12 @@ meanderingTriangles = function(x.coords,y.coords,z,levels) {
 #         #interpolation. Doing this roundabout way to avoid calculation error
 #         how_far = ((level - z[e2[2],e2[1]]) /
 #                      (z[e1[2],e1[1]] - z[e2[2],e2[1]]))
+#         e1.x = `if`(e1[2]%%2==1,x.coords.left[e1[1]],x.coords.right[e1[1]])
+#         e2.x = `if`(e2[2]%%2==1,x.coords.left[e2[1]],x.coords.right[e2[1]])
 #         interpolated=c(
-#           (e1[1]-e2[1])*how_far+e2[1],
-#           (e1[2]-e2[2])*how_far+e2[2]
+#           # (x.coords[e1[1]]-x.coords[e2[1]])*how_far+x.coords[e2[1]],
+#           (e1.x-e2.x)*how_far+e2.x,
+#           (y.coords[e1[2]]-y.coords[e2[2]])*how_far+y.coords[e2[2]]
 #         )
 #         interpolatedPos$set(crossing_point,interpolated)
 # 
@@ -133,15 +131,13 @@ meanderingTriangles = function(x.coords,y.coords,z,levels) {
 #       contour_segments[[length(contour_segments)+1]]=list(e1=contour_points[[1]],e2=contour_points[[2]])
 # 
 #     }
-#     
+# 
 #     #no contour. Can probably save time by checking this earlier
 #     if (length(contour_segments)==0){
 #       res[[as.character(level)]]=list(x=numeric(0),y=numeric(0),id=integer(0))
 #       next
 #     }
-#     # print("number of contour segment is")
-#     # print(length(contour_segments))
-#     
+# 
 #     ## Joining up
 #     unused_segments = ordered_dict(rep(NA,length(contour_segments)),contour_segments)
 #     segments_by_point = dict()
@@ -163,8 +159,6 @@ meanderingTriangles = function(x.coords,y.coords,z,levels) {
 #         segments_by_point$set(segment$e2,list(segment))
 #       }
 #     }
-#     # print("number of unused segment is")
-#     # print(unused_segments$size())
 #     n_unused_segments = length(contour_segments)
 #     contour_lines=list()
 #     while(n_unused_segments) {
@@ -212,9 +206,6 @@ meanderingTriangles = function(x.coords,y.coords,z,levels) {
 #       }
 #     }
 # 
-#     #scale back
-#     isoline_format$x = (isoline_format$x-1)*diff(x.coords[1:2])+x.coords[1]
-#     isoline_format$y = (isoline_format$y-1)*diff(y.coords[1:2])+y.coords[1]
 #   res[[as.character(level)]]=isoline_format
 #   }
 #   return(res)
