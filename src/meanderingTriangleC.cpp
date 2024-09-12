@@ -116,6 +116,11 @@ extern "C" {
         // Find contour line in the triangle
         int score = 0;
         for (int i=0;i<3;i++) {
+          // No contour if any corners are NA
+          if (!R_finite(z_p[t.v[i].y+t.v[i].x*z_nrows])) {
+            score = 0;
+            break;
+          }
           // R matrix is col-major alignment
           score += (z_p[t.v[i].y+t.v[i].x*z_nrows]>=levels_p[l])*std::pow(2,i);
         }
