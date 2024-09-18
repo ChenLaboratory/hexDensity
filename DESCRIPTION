@@ -15,5 +15,10 @@ Imports:
     spatstat.geom,
     viridis,
     grid,
-    ks
+    ks,
+    grDevices,
+    stats,
+    methods
+Suggests:
+    ggplot2
 RoxygenNote: 7.3.2

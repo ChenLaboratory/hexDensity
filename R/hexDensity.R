@@ -12,6 +12,8 @@
 #' @return hexbin object.
 #' @importFrom spatstat.geom fft2D
 #' @importFrom ks Hns.diag
+#' @importFrom grDevices xy.coords
+#' @importFrom stats dnorm
 #' @export
 #' @examples
 #' 

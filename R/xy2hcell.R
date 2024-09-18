@@ -10,6 +10,7 @@
 #' If a hexbin object is not provided, parameters of the binning region (xbins, xbnds, ybnds, shape) will be used instead.
 #' 
 #' @export
+#' @importFrom grDevices xy.coords
 #'
 #' @examples
 #' library(hexbin)

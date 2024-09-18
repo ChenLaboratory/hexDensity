@@ -24,6 +24,8 @@
 #' plotHexDensity(d)
 #' @importFrom grid grid.newpage viewport pushViewport upViewport grid.xaxis grid.yaxis grid.text grid.rect gpar unit grid.pretty
 #' @importFrom viridis viridis
+#' @importFrom grDevices dev.size
+#' @importFrom methods is
 plotHexDensity = function(hexDensity, 
                       main=NULL, xlab=NULL, ylab=NULL,
                       xaxt=TRUE, yaxt=TRUE,

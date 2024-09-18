@@ -15,6 +15,7 @@
 #' @importFrom hexbin hexcoords hexpolygon hcell2xy
 #' @importFrom viridis viridis
 #' @importFrom grDevices colorRampPalette
+#' @importFrom methods is
 grid.hexagontile <-
   function(hexDensity,
            use.count=TRUE, cell.at=NULL,

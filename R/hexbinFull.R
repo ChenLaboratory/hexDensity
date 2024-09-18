@@ -18,6 +18,8 @@
 #' plotHexDensity(d)
 #' 
 #' @importClassesFrom hexbin hexbin
+#' @importFrom grDevices xy.coords
+#' @importFrom methods new
 hexbinFull <-
     function(x, y = NULL, xbins = 128, shape = NULL,
 	     xbnds = range(x), ybnds = range(y),
