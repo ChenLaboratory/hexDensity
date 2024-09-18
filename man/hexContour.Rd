@@ -15,7 +15,7 @@ hexContour(hexDensity, levels)
 list of x, y, and ID, for the lines contouring each levels.
 }
 \description{
-This is made to follow the same output format as the isoband package. A dedicated plotting function is in the work. In the mean time, see example of how to plot the output with ggplot2::geom_path
+This is made to follow the same behaviour as the isoband package. A dedicated plotting function is in the work. In the mean time, see example of how to plot the output with ggplot2::geom_path
 Algorithm is a modification of the meandering triangles as described here https://blog.bruce-hill.com/meandering-triangles
 }
 \examples{

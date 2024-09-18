@@ -35,6 +35,7 @@ Find which hexagons the specified xy coordinates belong to in a hexbin object.
 If a hexbin object is not provided, parameters of the binning region (xbins, xbnds, ybnds, shape) will be used instead.
 }
 \examples{
+library(hexbin)
 set.seed(133)
 d=hexbin(x=rnorm(20000),y=rnorm(20000),xbins=50)
 xy2hcell(d,x=0.5,y=0.2)

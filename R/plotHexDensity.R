@@ -16,7 +16,6 @@
 #' @param margin Minimum guaranteed margin for the plot. Different aspect ratio between the screen and the plot means that margin can be larger on certain sides.
 #' @param newpage logical for whether to plot on a new page.
 #'
-#' @return
 #' @export
 #'
 #' @examples

@@ -10,13 +10,11 @@
 #' @param colramp Color function that accept an integer n and return n colors.
 #' @param def.unit Default \link[grid]{unit} to be used.
 #'
-#' @return
 #' @export
-#'
-#' @examples
 #' 
 #' @importFrom hexbin hexcoords hexpolygon hcell2xy
 #' @importFrom viridis viridis
+#' @importFrom grDevices colorRampPalette
 grid.hexagontile <-
   function(hexDensity,
            use.count=TRUE, cell.at=NULL,
