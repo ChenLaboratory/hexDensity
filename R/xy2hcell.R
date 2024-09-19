@@ -1,4 +1,4 @@
-#' Find which hexagons the specified xy coordinates belong to in a hexbin object.
+#' Find the hexagon cells the specified xy coordinates fall into for a hexbin object.
 #' 
 #' @param hexbin hexbin object to be referenced to.
 #' @param x,y coordinates or vectors of coordinates of the points. 
@@ -7,8 +7,8 @@
 #' @param shape shape =yheight/xwidth of the plotting regions.
 #' @return a vector the same length as x with the hexagonal cell ID for each point
 #' @details
-#' If a hexbin object is not provided, parameters of the binning region (xbins, xbnds, ybnds, shape) will be used instead.
-#' 
+#' If a hexbin object is not provided, parameters of the binning region (xbins, xbnds, ybnds, shape) can be used instead.
+#' For finding the xy coordinates of the hexagons for a hexbin object, see  \link[hexbin]{hcell2xy}.
 #' @export
 #' @importFrom grDevices xy.coords
 #'

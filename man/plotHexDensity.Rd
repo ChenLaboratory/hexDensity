@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotHexDensity.R
 \name{plotHexDensity}
 \alias{plotHexDensity}
-\title{Plot method for hexDensity}
+\title{Plotting method for hexagonal Kernel Density Estimation}
 \usage{
 plotHexDensity(
   hexDensity,
@@ -12,7 +12,7 @@ plotHexDensity(
   xaxt = TRUE,
   yaxt = TRUE,
   lcex = 1,
-  colramp = colorRampPalette(viridis(11)),
+  colramp = colorRampPalette(col.viridis),
   colorcut = 1024,
   legend = T,
   legendWidth = 0.05,
@@ -28,8 +28,6 @@ plotHexDensity(
 \item{main}{Main title}
 
 \item{xlab, ylab}{x-axis and y-axis label}
-
-\item{xaxt, yaxt}{logical for whether to plot x-axis and y-axis values}
 
 \item{lcex}{Expansion factor for all letters.}
 
@@ -50,7 +48,9 @@ plotHexDensity(
 \item{newpage}{logical for whether to plot on a new page.}
 }
 \description{
-Adapted plotting function for hexbin object.
+Adapted the plotting function from \link[hexbin]{hexbin}. X and Y axes now
+have the same scale with option for different aspect ratio. Ribbon legend 
+for continuous data.
 }
 \examples{
 set.seed(133)

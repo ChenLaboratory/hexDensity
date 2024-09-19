@@ -2,7 +2,7 @@
 % Please edit documentation in R/xy2hcell.R
 \name{xy2hcell}
 \alias{xy2hcell}
-\title{Find which hexagons the specified xy coordinates belong to in a hexbin object.}
+\title{Find the hexagon cells the specified xy coordinates fall into for a hexbin object.}
 \usage{
 xy2hcell(
   hexbin = NULL,
@@ -29,10 +29,11 @@ xy2hcell(
 a vector the same length as x with the hexagonal cell ID for each point
 }
 \description{
-Find which hexagons the specified xy coordinates belong to in a hexbin object.
+Find the hexagon cells the specified xy coordinates fall into for a hexbin object.
 }
 \details{
-If a hexbin object is not provided, parameters of the binning region (xbins, xbnds, ybnds, shape) will be used instead.
+If a hexbin object is not provided, parameters of the binning region (xbins, xbnds, ybnds, shape) can be used instead.
+For finding the xy coordinates of the hexagons for a hexbin object, see  \link[hexbin]{hcell2xy}.
 }
 \examples{
 library(hexbin)

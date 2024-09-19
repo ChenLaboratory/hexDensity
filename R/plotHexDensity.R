@@ -1,11 +1,12 @@
-#' Plot method for hexDensity
-#'
-#' Adapted plotting function for hexbin object. 
+#' Plotting method for hexagonal Kernel Density Estimation 
+#' 
+#' Adapted the plotting function from \link[hexbin]{hexbin}. X and Y axes now
+#' have the same scale with option for different aspect ratio. Ribbon legend 
+#' for continuous data. 
 #' 
 #' @param hexDensity hexbin object returned by hexDensity
 #' @param main Main title
 #' @param xlab,ylab x-axis and y-axis label
-#' @param xaxt,yaxt logical for whether to plot x-axis and y-axis values
 #' @param lcex Expansion factor for all letters.
 #' @param colramp Color function that accept an integer n and return n colors.
 #' @param colorcut An integer for the number of equi-spaced colorcut in [0,1] to assign colors to values. Alternatively, a vector of custom colorcut spacing between [0, 1].
@@ -23,14 +24,13 @@
 #' d = hexDensity(x=rnorm(200),y=rnorm(200),bandwidth=0.15)
 #' plotHexDensity(d)
 #' @importFrom grid grid.newpage viewport pushViewport upViewport grid.xaxis grid.yaxis grid.text grid.rect gpar unit grid.pretty
-#' @importFrom viridis viridis
-#' @importFrom grDevices dev.size
+#' @importFrom grDevices dev.size colorRampPalette
 #' @importFrom methods is
 plotHexDensity = function(hexDensity, 
                       main=NULL, xlab=NULL, ylab=NULL,
                       xaxt=TRUE, yaxt=TRUE,
                       lcex=1,
-                      colramp = colorRampPalette(viridis(11)), colorcut=1024,
+                      colramp = colorRampPalette(col.viridis), colorcut=1024,
                       legend=T, legendWidth=0.05, legendDistance=0.15,
                       aspectRatio=diff(hexDensity@xbnds)/diff(hexDensity@ybnds),
                       margin=0.18,

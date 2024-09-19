@@ -1,11 +1,19 @@
-#' Generate contour using a hexagonal grid.
+#' Generate contour for a hexagonal grid.
 #'
-#' This is made to follow the same behaviour as the isoband package. A dedicated plotting function is in the work. In the mean time, see example of how to plot the output with ggplot2::geom_path
-#' Algorithm is a modification of the meandering triangles as described here https://blog.bruce-hill.com/meandering-triangles
+#' Algorithm is a modification of the meandering triangles as described in 
+#' https://blog.bruce-hill.com/meandering-triangles. See 
+#' \link[isoband]{isolines} for details about the output.
+#' 
 #' @param hexDensity hexDensity object to be contoured.
 #' @param levels Numeric vector for which contour lines should be generated
-#' @return list of x, y, and ID, for the lines contouring each levels. 
+#' @return list of x, y, and ID, for the contour line at each levels. 
 #' @importFrom hexbin hcell2xy
+#' 
+#' @details
+#' This function is made to follow the same behaviour as
+#' \link[isoband]{isolines}. A dedicated plotting function is in the work. 
+#' Meanwhile, see example of how to plot the output with ggplot2::geom_path.
+#' 
 #' @export 
 #' @examples
 #' 
@@ -56,14 +64,23 @@ hexContour = function(hexDensity,levels) {
   return(isolines)
 }
 
-#Meandering triangles c++
+#' Meandering triangles c++
+#' @param x.coords.left Vector for x coords of left-aligned rows (row 1,3,5,...)
+#' @param x.coords.right Vector for x coords of right-aligned rows (row 2,4,6,...)
+#' @param y.coords Vector for y coords of all rows.
+#' @param z Matrix for elevation values for the grid point
+#' @param levels Vector of z value cutoffs for contouring.
+#' @details
+#' This function is not meant to be used as is, unless you are very familiar 
+#' with how hexContour works.
+#' @export 
 meanderingTriangles = function(x.coords.left,x.coords.right,y.coords,z,levels) {
   res = .Call(`meanderingTrianglesC`,x.coords.left,x.coords.right,y.coords,z,levels)
   names(res) = as.character(levels)
   return(res)
 }
 
-#Keep for posterity
+# Meandering triangles in R. Kept for posterity
 # meanderingTriangles2 = function(x.coords.left,x.coords.right,y.coords,z,levels) {
 #   n = (length(x.coords.left)-1)*(length(y.coords)-1)*2
 #   triangles = vector(mode='list', length=n)

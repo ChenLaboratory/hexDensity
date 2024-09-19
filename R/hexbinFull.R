@@ -1,6 +1,8 @@
 #' Hexagonal binning with whole grid output. 
 #'
-#' Adapted from hexbin to output the full grid (include hexagon with 0 count) and also to include weights. Default is to use regular hexagon. See \link[hexbin]{hexbin} for extra details.
+#' Adapted from \link[hexbin]{hexbin} to output hexagons with 0 count, and also 
+#' to allow points with different weights. Default to use regular hexagon. See 
+#' \link[hexbin]{hexbin} for extra detail on the output.
 #' @param x,y Coords of the points or a single plotting structure to be used in binning. See xy.coords.
 #' @param xbins Number of bins in a row.
 #' @param shape shape = yheight/xwidth of the plotting regions

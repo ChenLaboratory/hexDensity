@@ -2,7 +2,7 @@
 % Please edit documentation in R/hexContour.R
 \name{hexContour}
 \alias{hexContour}
-\title{Generate contour using a hexagonal grid.}
+\title{Generate contour for a hexagonal grid.}
 \usage{
 hexContour(hexDensity, levels)
 }
@@ -12,11 +12,17 @@ hexContour(hexDensity, levels)
 \item{levels}{Numeric vector for which contour lines should be generated}
 }
 \value{
-list of x, y, and ID, for the lines contouring each levels.
+list of x, y, and ID, for the contour line at each levels.
 }
 \description{
-This is made to follow the same behaviour as the isoband package. A dedicated plotting function is in the work. In the mean time, see example of how to plot the output with ggplot2::geom_path
-Algorithm is a modification of the meandering triangles as described here https://blog.bruce-hill.com/meandering-triangles
+Algorithm is a modification of the meandering triangles as described in 
+https://blog.bruce-hill.com/meandering-triangles. See 
+\link[isoband]{isolines} for details about the output.
+}
+\details{
+This function is made to follow the same behaviour as
+\link[isoband]{isolines}. A dedicated plotting function is in the work. 
+Meanwhile, see example of how to plot the output with ggplot2::geom_path.
 }
 \examples{
 

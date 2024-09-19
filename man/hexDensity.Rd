@@ -3,7 +3,7 @@
 \name{hexDensity}
 \alias{hexDensity}
 \alias{hexDensity.default}
-\title{Kernel Density Estimation with Hexagonal binning.}
+\title{Kernel Density Estimation with Hexagonal grid.}
 \usage{
 hexDensity(x, ...)
 
@@ -37,7 +37,10 @@ hexDensity(x, ...)
 hexbin object.
 }
 \description{
-Default bandwidth is the diagonal plug-in bandwidth calculated by the package ks
+Kernel Density Estimation with Hexagonal grid.
+}
+\details{
+Default bandwidth is 1/8 of the range of the smaller dimensions.
 }
 \examples{
 

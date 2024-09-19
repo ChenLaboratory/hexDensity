@@ -1,6 +1,4 @@
-#' Kernel Density Estimation with Hexagonal binning.
-#'
-#' Default bandwidth is the diagonal plug-in bandwidth calculated by the package ks
+#' Kernel Density Estimation with Hexagonal grid.
 #' 
 #' @param x,y Coords of the points or a single plotting structure to be used in binning. See xy.coords.
 #' @param xbins Number of bins in a row.
@@ -11,9 +9,11 @@
 #' @param ... arguments for hexbinFull
 #' @return hexbin object.
 #' @importFrom spatstat.geom fft2D
-#' @importFrom ks Hns.diag
 #' @importFrom grDevices xy.coords
 #' @importFrom stats dnorm
+#' 
+#' @details Default bandwidth is 1/8 of the range of the smaller dimensions.
+#' 
 #' @export
 #' @examples
 #' 
@@ -37,11 +37,15 @@ hexDensity.default = function(x,y=NULL,
   
   xy <- xy.coords(x, y)
   n=nrow(xy)
+  
+  # bandwidth
   if (is.null(bandwidth)) {
-    bandwidth = sqrt(diag(Hns.diag(cbind(xy$x,xy$y))))
-  } else if (length(bandwidth)==1) {
+    bandwidth = min(diff(range(xy$x)),diff(range(xy$y)))/8
+  } 
+  if (length(bandwidth)==1) {
     bandwidth=c(bandwidth,bandwidth)
   }
+  
   xhex = diff(hbin@xbnds)/xbins
   yhex = xhex*diff(hbin@ybnds)/(diff(hbin@xbnds)*hbin@shape)
   
@@ -123,24 +127,3 @@ hexDensity.default = function(x,y=NULL,
   hbin@ycm=hbin@ycm[1:hbin@ncells]
   return(hbin)
 }
-
-
-distance = function(q1,r1,q2,r2) {
-  return((abs(q1-q2)
-         + abs(q1+r1-q2-r2)
-         +abs(r1-r2))/2)
-}
-
-euclidDistance = function(q1,r1,q2,r2) {
-  x1 = sqrt(3)*q1 +(sqrt(3)/2) *r1
-  y1 = (3/2)*r1
-  
-  x2 = sqrt(3)*q2 +(sqrt(3)/2) *r2
-  y2 = (3/2)*r2
-  return (sqrt(((x1-x2)**2 + (y1-y2)**2)/3))
-}
-
-hexAreaFromWidth = function(w) {
-  return((w)**2*sqrt(3)/2)
-}
-

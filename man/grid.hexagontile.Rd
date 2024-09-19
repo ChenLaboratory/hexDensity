@@ -10,7 +10,7 @@ grid.hexagontile(
   cell.at = NULL,
   trans = NULL,
   colorcut = seq(0, 1, length = 1024),
-  colramp = colorRampPalette(viridis(11)),
+  colramp = colorRampPalette(col.viridis),
   def.unit = "native"
 )
 }
@@ -30,5 +30,7 @@ grid.hexagontile(
 \item{def.unit}{Default \link[grid]{unit} to be used.}
 }
 \description{
-Adapted of grid.hexagons from hexbin with some speedup specific for hexagonal tiling.
+Adapted from grid.hexagons by \link[hexbin]{hexbin} with speedup specific 
+for hexagonal tiling (avoid plotting the most abundance hexagons by setting 
+its color as background).
 }

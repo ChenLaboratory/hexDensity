@@ -1,6 +1,8 @@
 #' Draw hexagon tiles with grid package
 #'
-#' Adapted of grid.hexagons from hexbin with some speedup specific for hexagonal tiling.
+#' Adapted from grid.hexagons by \link[hexbin]{hexbin} with speedup specific 
+#' for hexagonal tiling (avoid plotting the most abundance hexagons by setting 
+#' its color as background).
 #'
 #' @param hexDensity \link[hexbin]{hexbin} object returned by hexDensity.
 #' @param use.count logical specifying if counts from hexbin object should be used.
@@ -13,7 +15,6 @@
 #' @export
 #' 
 #' @importFrom hexbin hexcoords hexpolygon hcell2xy
-#' @importFrom viridis viridis
 #' @importFrom grDevices colorRampPalette
 #' @importFrom methods is
 grid.hexagontile <-
@@ -21,7 +22,7 @@ grid.hexagontile <-
            use.count=TRUE, cell.at=NULL,
            trans = NULL,
            colorcut = seq(0, 1, length = 1024),
-           colramp = colorRampPalette(viridis(11)),
+           colramp = colorRampPalette(col.viridis),
            def.unit = "native")
   {
     ##____________________Initial checks_______________________
@@ -79,7 +80,6 @@ grid.hexagontile <-
       notMostFreq=(pen!=mostFreqPen)
       pen = pen[notMostFreq]
       hexDensity@cell=hexDensity@cell[notMostFreq] #safe since R is pass-by-value
-      # if (verbose) cat(length(pen),"hexagons drawn out of",length(hexDensity@count),"hexagons")
     }
     ##__________________ Construct a hexagon___________________
     

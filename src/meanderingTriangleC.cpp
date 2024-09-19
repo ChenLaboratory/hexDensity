@@ -177,9 +177,9 @@ extern "C" {
       }
       // No contour line at this level
       if (contour_segments.size()==0) {
-        double x_out[0] = {};
-        double y_out[0] = {};
-        int id[0] = {};
+        double x_out[1] = {-1};
+        double y_out[1] = {-1};
+        int id[1] = {-1};
         SET_VECTOR_ELT(out,l,format_output(x_out,y_out,id,0));
         continue;
       }
@@ -222,9 +222,9 @@ extern "C" {
       }
       
       // Collect result to isoline format
-      double x_out[n_out];
-      double y_out[n_out];
-      int id_out[n_out];
+      double *x_out = new double[n_out];
+      double *y_out = new double[n_out];
+      int *id_out = new int[n_out];
       n_out = 0;
       for (std::size_t i=0;i<contour_lines.size();i++) {
         for(point_d p:contour_lines[i]) {
@@ -238,6 +238,9 @@ extern "C" {
         }
       }
       SET_VECTOR_ELT(out,l,format_output(x_out,y_out,id_out,n_out));
+      delete [] x_out;
+      delete [] y_out;
+      delete [] id_out;
     }
     
     UNPROTECT(6);
