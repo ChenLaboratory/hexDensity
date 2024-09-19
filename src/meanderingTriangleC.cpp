@@ -77,11 +77,11 @@ SEXP format_output(double* x, double* y, int* id, int n) {
 
 extern "C" {
   SEXP meanderingTrianglesC(SEXP xleft, SEXP xright, SEXP y,SEXP z,SEXP levels) {
-    xleft = PROTECT(coerceVector(xleft,REALSXP));
-    xright = PROTECT(coerceVector(xright,REALSXP));
-    y = PROTECT(coerceVector(y,REALSXP));
-    z = PROTECT(coerceVector(z,REALSXP));
-    levels = PROTECT(coerceVector(levels,REALSXP));
+    xleft = PROTECT(Rf_coerceVector(xleft,REALSXP));
+    xright = PROTECT(Rf_coerceVector(xright,REALSXP));
+    y = PROTECT(Rf_coerceVector(y,REALSXP));
+    z = PROTECT(Rf_coerceVector(z,REALSXP));
+    levels = PROTECT(Rf_coerceVector(levels,REALSXP));
     
     double *xleft_p,*xright_p,*y_p,*levels_p,*z_p;
     xleft_p = REAL(xleft);
@@ -91,12 +91,12 @@ extern "C" {
     int z_nrows=Rf_nrows(z);
     levels_p = REAL(levels);
     // Get triangles. TODO: Could probably do away with this.
-    int n = (length(xleft)-1)*(length(y)-1)*2;
+    int n = (Rf_length(xleft)-1)*(Rf_length(y)-1)*2;
     std::vector<triangle> triangles(n);
     int i_triangle = 0;
     
-    for (int i=0;i<(length(xleft)-1);i++) {
-      for (int j=0;j<(length(y)-1);j++) {
+    for (int i=0;i<(Rf_length(xleft)-1);i++) {
+      for (int j=0;j<(Rf_length(y)-1);j++) {
         if (j%2==0) {
 
           triangles[i_triangle++] = {{{i,j},{i+1,j},{i,j+1}}};
@@ -108,8 +108,8 @@ extern "C" {
       }
     }
 
-    SEXP out = PROTECT(allocVector(VECSXP, length(levels)));
-    for (int l=0;l<length(levels);l++) {
+    SEXP out = PROTECT(Rf_allocVector(VECSXP, Rf_length(levels)));
+    for (int l=0;l<Rf_length(levels);l++) {
       std::map<point_d,point_d> interpolatedPos;
       std::vector<edge> contour_segments;
       for(triangle t:triangles) {
