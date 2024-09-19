@@ -29,7 +29,7 @@ xy2hcell(
 a vector the same length as x with the hexagonal cell ID for each point
 }
 \description{
-Find the hexagon cells the specified xy coordinates fall into for a hexbin object.
+Also useful if you want to get the KDE value at a certain coordinate.
 }
 \details{
 If a hexbin object is not provided, parameters of the binning region (xbins, xbnds, ybnds, shape) can be used instead.
@@ -38,6 +38,8 @@ For finding the xy coordinates of the hexagons for a hexbin object, see  \link[h
 \examples{
 library(hexbin)
 set.seed(133)
-d=hexbin(x=rnorm(20000),y=rnorm(20000),xbins=50)
-xy2hcell(d,x=0.5,y=0.2)
+d=hexDensity(x=rnorm(20000),y=rnorm(20000),xbins=50)
+#Get KDE value at the coordinate x=0,y=0
+loc = xy2hcell(d,x=0,y=0)
+d@count[loc]
 }

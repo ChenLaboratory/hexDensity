@@ -1,5 +1,6 @@
 #' Find the hexagon cells the specified xy coordinates fall into for a hexbin object.
 #' 
+#' Also useful if you want to get the KDE value at a certain coordinate. 
 #' @param hexbin hexbin object to be referenced to.
 #' @param x,y coordinates or vectors of coordinates of the points. 
 #' @param xbins number of bins partitioning the range of xbnds
@@ -15,8 +16,10 @@
 #' @examples
 #' library(hexbin)
 #' set.seed(133)
-#' d=hexbin(x=rnorm(20000),y=rnorm(20000),xbins=50)
-#' xy2hcell(d,x=0.5,y=0.2)
+#' d=hexDensity(x=rnorm(20000),y=rnorm(20000),xbins=50)
+#' #Get KDE value at the coordinate x=0,y=0
+#' loc = xy2hcell(d,x=0,y=0)
+#' d@count[loc]
 xy2hcell <- function(hexbin = NULL, x, y=NULL, xbins = NULL, xbnds=NULL, ybnds=NULL, shape=NULL) 
 {
   if(!is.null(hexbin)) {
