@@ -29,6 +29,8 @@ plotHexDensity(
 
 \item{xlab, ylab}{x-axis and y-axis label}
 
+\item{xaxt, yaxt}{Logical. Whether to plot x,y axes}
+
 \item{lcex}{Expansion factor for all letters.}
 
 \item{colramp}{Color function that accept an integer n and return n colors.}

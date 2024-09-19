@@ -7,6 +7,7 @@
 #' @param hexDensity hexbin object returned by hexDensity
 #' @param main Main title
 #' @param xlab,ylab x-axis and y-axis label
+#' @param xaxt,yaxt Logical. Whether to plot x,y axes 
 #' @param lcex Expansion factor for all letters.
 #' @param colramp Color function that accept an integer n and return n colors.
 #' @param colorcut An integer for the number of equi-spaced colorcut in [0,1] to assign colors to values. Alternatively, a vector of custom colorcut spacing between [0, 1].
