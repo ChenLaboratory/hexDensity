@@ -1,15 +1,16 @@
-#' Find the hexagon cells the specified xy coordinates fall into for a hexbin object.
+#' Find the hexagon cells from xy coordinates given a hexbin object.
 #' 
-#' Also useful if you want to get the KDE value at a certain coordinate. 
+#' Find the hexagon cells IDs from xy coordinates given a hexbin object. Useful 
+#' if you want to get the KDE value at a certain coordinate. 
 #' @param hexbin hexbin object to be referenced to.
 #' @param x,y coordinates or vectors of coordinates of the points. 
 #' @param xbins number of bins partitioning the range of xbnds
-#' @param xbnds,ybnds horizontal and vertical limit of the binning region. Must the numeric vector of length 2. 
-#' @param shape shape =yheight/xwidth of the plotting regions.
+#' @param xbnds,ybnds horizontal and vertical limit of the binning region. Must be numeric vector of length 2. 
+#' @param shape shape = yheight/xwidth of the plotting regions.
 #' @return a vector the same length as x with the hexagonal cell ID for each point
 #' @details
 #' If a hexbin object is not provided, parameters of the binning region (xbins, xbnds, ybnds, shape) can be used instead.
-#' For finding the xy coordinates of the hexagons for a hexbin object, see  \link[hexbin]{hcell2xy}.
+#' For finding the xy coordinates of the hexagons for a hexbin object, see \link[hexbin]{hcell2xy}.
 #' @export
 #' @importFrom grDevices xy.coords
 #'

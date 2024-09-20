@@ -46,3 +46,12 @@ d=hexbinFull(x=rnorm(20000),y=rnorm(20000),xbins=50)
 plotHexDensity(d)
 
 }
+\references{
+Carr, D. B. et al. (1987) Scatterplot Matrix Techniques for Large 
+N. JASA 83, 398, 424--436.
+}
+\author{
+Dan Carr <dcarr@voxel.galaxy.gmu.edu>; ported and extended by 
+Nicholas Lewin-Koh nikko@hailmail.net. Modified by Quoc Hoang Nguyen for 
+hexDensity.
+}

@@ -12,6 +12,10 @@
 #' @param weight Numeric weight vector to be assigned to points.
 #'
 #' @return an S4 object of class \link[hexbin]{hexbin}.
+#' 
+#' @references Carr, D. B. et al. (1987) Scatterplot Matrix Techniques for Large 
+#' N. JASA 83, 398, 424--436.
+#' 
 #' @export
 #'
 #' @examples
@@ -22,6 +26,9 @@
 #' @importClassesFrom hexbin hexbin
 #' @importFrom grDevices xy.coords
 #' @importFrom methods new
+#' @author Dan Carr <dcarr@voxel.galaxy.gmu.edu>; ported and extended by 
+#' Nicholas Lewin-Koh nikko@hailmail.net. Modified by Quoc Hoang Nguyen for 
+#' hexDensity.
 hexbinFull <-
     function(x, y = NULL, xbins = 128, shape = NULL,
 	     xbnds = range(x), ybnds = range(y),

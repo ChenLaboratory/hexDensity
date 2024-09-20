@@ -27,3 +27,7 @@ Meandering triangles for hexagonal grid in C++
 This function is not meant to be used as is, unless you are very familiar 
 with how hexContour works.
 }
+\references{
+Hill, B. (2017) Meandering triangles. Naming Things. 
+https://blog.bruce-hill.com/meandering-triangles
+}

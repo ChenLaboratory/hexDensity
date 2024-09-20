@@ -29,6 +29,9 @@
 #' @importFrom grid grid.newpage viewport pushViewport upViewport grid.xaxis grid.yaxis grid.text grid.rect gpar unit grid.pretty
 #' @importFrom grDevices dev.size colorRampPalette
 #' @importFrom methods is
+#' @author Dan Carr <dcarr@voxel.galaxy.gmu.edu>; ported and extended by 
+#' Nicholas Lewin-Koh nikko@hailmail.net. Modified by Quoc Hoang Nguyen for 
+#' hexDensity.
 plotHexDensity = function(hexDensity, 
                       main=NULL, xlab=NULL, ylab=NULL,
                       xaxt=TRUE, yaxt=TRUE,

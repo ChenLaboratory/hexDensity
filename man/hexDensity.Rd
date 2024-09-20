@@ -28,7 +28,7 @@ hexDensity(
 
 \item{weight}{numeric weight vector to be assigned to points.}
 
-\item{...}{arguments for hexbinFull}
+\item{...}{arguments for \link[hexDensity]{hexbinFull}}
 }
 \value{
 an S4 object of class \link[hexbin]{hexbin}.
@@ -40,7 +40,14 @@ Kernel Density Estimation with Hexagonal grid.
 Default bandwidth is 1/8 of the range of the smaller dimensions.
 }
 \examples{
-
 set.seed(133)
 d = hexDensity(x=rnorm(200),y=rnorm(200),bandwidth=0.15)
+}
+\references{
+Diggle, P. J. (2010) Nonparametric methods. Chapter 18, pp. 
+299--316 in A.E. Gelfand, P.J. Diggle, M. Fuentes and P. Guttorp (eds.) 
+Handbook of Spatial Statistics, CRC Press, Boca Raton, FL.
+
+Jones, M. C. (1993) Simple boundary corrections for kernel 
+density estimation. Statistics and Computing 3, 135--146.
 }

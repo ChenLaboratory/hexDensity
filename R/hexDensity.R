@@ -6,7 +6,7 @@
 #' @param edge Logical value for whether to apply edge correction. Default is TRUE.
 #' @param diggle Logical value for apply edge correction with the more accurate Jones-Diggle method (need 'edge' to be TRUE).
 #' @param weight numeric weight vector to be assigned to points.
-#' @param ... arguments for hexbinFull
+#' @param ... arguments for \link[hexDensity]{hexbinFull}
 #' @return an S4 object of class \link[hexbin]{hexbin}.
 #' @importFrom spatstat.geom fft2D
 #' @importFrom grDevices xy.coords
@@ -14,9 +14,14 @@
 #' 
 #' @details Default bandwidth is 1/8 of the range of the smaller dimensions.
 #' 
+#' @references Diggle, P. J. (2010) Nonparametric methods. Chapter 18, pp. 
+#' 299--316 in A.E. Gelfand, P.J. Diggle, M. Fuentes and P. Guttorp (eds.) 
+#' Handbook of Spatial Statistics, CRC Press, Boca Raton, FL.
+#' @references Jones, M. C. (1993) Simple boundary corrections for kernel 
+#' density estimation. Statistics and Computing 3, 135--146.
+#' 
 #' @export
 #' @examples
-#' @references reference
 #' set.seed(133)
 #' d = hexDensity(x=rnorm(200),y=rnorm(200),bandwidth=0.15)
 hexDensity = function(x,y=NULL, 

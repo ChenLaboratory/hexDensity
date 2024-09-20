@@ -66,3 +66,8 @@ set.seed(133)
 d = hexDensity(x=rnorm(200),y=rnorm(200),bandwidth=0.15)
 plotHexDensity(d)
 }
+\author{
+Dan Carr <dcarr@voxel.galaxy.gmu.edu>; ported and extended by 
+Nicholas Lewin-Koh nikko@hailmail.net. Modified by Quoc Hoang Nguyen for 
+hexDensity.
+}

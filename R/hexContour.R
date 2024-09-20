@@ -1,22 +1,23 @@
 #' Generate contour for a hexagonal grid.
 #'
 #' Algorithm is a modification of the meandering triangles as described in 
-#' https://blog.bruce-hill.com/meandering-triangles. See 
+#' https://blog.bruce-hill.com/meandering-triangles to work with hexagons. See 
 #' \link[isoband]{isolines} for details about the output.
 #' 
 #' @param hexDensity hexDensity object to be contoured.
 #' @param levels Numeric vector for which contour lines should be generated
-#' @return A list of x, y, and ID, for the contour line at each levels. ID indicates the different line segments making up the contour.
+#' @return A list of x, y, and ID, for the contour line at each levels. 
+#' ID indicates the different line segments making up the contour.
 #' @importFrom hexbin hcell2xy
 #' 
 #' @details
 #' This function is made to follow the same behaviour as
 #' \link[isoband]{isolines}. A dedicated plotting function is in the work. 
-#' Meanwhile, see example of how to plot the output with ggplot2's \link[ggplot2]{geom_path}.
+#' Meanwhile, see example of how to plot the output with ggplot2's 
+#' \link[ggplot2]{geom_path}.
 #' 
 #' @export 
 #' @examples
-#' 
 #' set.seed(133)
 #' x=rnorm(200)
 #' y=rnorm(200)
@@ -71,6 +72,9 @@ hexContour = function(hexDensity,levels) {
 #' with how hexContour works.
 #' @return list of x, y, and ID, for the contour line at each levels. 
 #' @export 
+#' 
+#' @references Hill, B. (2017) Meandering triangles. Naming Things. 
+#' https://blog.bruce-hill.com/meandering-triangles
 meanderingTriangles = function(x.coords.left,x.coords.right,y.coords,z,levels) {
   res = .Call(`meanderingTrianglesC`,x.coords.left,x.coords.right,y.coords,z,levels)
   names(res) = as.character(levels)

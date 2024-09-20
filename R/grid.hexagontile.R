@@ -1,6 +1,6 @@
 #' Draw hexagon tiles with grid package
 #'
-#' Adapted from grid.hexagons by \link[hexbin]{hexbin} with speedup specific 
+#' Adapted from \link[hexbin]{grid.hexagons} by hexbin with speedup specific 
 #' for hexagonal tiling (avoid plotting the most abundance hexagons by setting 
 #' its color as background).
 #'
@@ -20,6 +20,9 @@
 #' @section SIDE EFFECTS: Adds hexagons to plot 
 #' 
 #' @returns No return value
+#' @author Dan Carr <dcarr@voxel.galaxy.gmu.edu>; ported and extended by 
+#' Nicholas Lewin-Koh nikko@hailmail.net. Modified by Quoc Hoang Nguyen for 
+#' hexDensity.
 grid.hexagontile <-
   function(hexDensity,
            use.count=TRUE, cell.at=NULL,
