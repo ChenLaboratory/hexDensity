@@ -2,7 +2,7 @@
 % Please edit documentation in R/hexContour.R
 \name{meanderingTriangles}
 \alias{meanderingTriangles}
-\title{Meandering triangles c++}
+\title{Meandering triangles for hexagonal grid in C++}
 \usage{
 meanderingTriangles(x.coords.left, x.coords.right, y.coords, z, levels)
 }
@@ -18,7 +18,7 @@ meanderingTriangles(x.coords.left, x.coords.right, y.coords, z, levels)
 \item{levels}{Vector of z value cutoffs for contouring.}
 }
 \description{
-Meandering triangles c++
+Meandering triangles for hexagonal grid in C++
 }
 \details{
 This function is not meant to be used as is, unless you are very familiar 

@@ -55,12 +55,12 @@ hexContour = function(hexDensity,levels) {
   x.coords.left = coords$x[1:hexDensity@dimen[2]]
   x.coords.right = coords$x[(hexDensity@dimen[2]+1):(2*hexDensity@dimen[2])]
   y.coords = coords$y[((1:length(coords$y))-1)%%hexDensity@dimen[2]==0]
-  z=matrix(hexDensity@count,ncol=hexDensity@dimen[2],byrow=T)
+  z=matrix(hexDensity@count,ncol=hexDensity@dimen[2],byrow=TRUE)
   
   return(meanderingTriangles(x.coords.left,x.coords.right,y.coords,z,levels))
 }
 
-#' Meandering triangles c++
+#' Meandering triangles for hexagonal grid in C++
 #' @param x.coords.left Vector for x coords of left-aligned rows (row 1,3,5,...)
 #' @param x.coords.right Vector for x coords of right-aligned rows (row 2,4,6,...)
 #' @param y.coords Vector for y coords of all rows.

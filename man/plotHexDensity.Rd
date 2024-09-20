@@ -14,12 +14,12 @@ plotHexDensity(
   lcex = 1,
   colramp = colorRampPalette(col.viridis),
   colorcut = 1024,
-  legend = T,
+  legend = TRUE,
   legendWidth = 0.05,
   legendDistance = 0.15,
   aspectRatio = diff(hexDensity@xbnds)/diff(hexDensity@ybnds),
   margin = 0.18,
-  newpage = T
+  newpage = TRUE
 )
 }
 \arguments{

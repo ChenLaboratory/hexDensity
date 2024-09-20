@@ -8,10 +8,10 @@ Authors@R: c(person(given = "Quoc Hoang",
                email = "nguyen.q@wehi.edu.au",
                comment = c(ORCID = "0009-0007-2828-7567")))
 Maintainer: Quoc Hoang Nguyen <nguyen.q@wehi.edu.au>
-Description: Kernel density estimation with hexagonal grid for bivariate data. 
-    Hexagonal grid has many beneficial properties like equidistant neighbours 
-    and less edge bias, making it better for spatial analyses than the more 
-    commonly used rectangular grid.
+Description: Kernel density estimation with hexagonal grid for bivariate data.
+      Hexagonal grid has many beneficial properties like equidistant neighbours
+      and less edge bias, making it better for spatial analyses than the more
+      commonly used rectangular grid.
 URL: https://github.com/ChenLaboratory/hexDensity
 License: GPL
 Encoding: UTF-8

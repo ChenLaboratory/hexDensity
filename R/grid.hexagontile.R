@@ -76,7 +76,7 @@ grid.hexagontile <-
     mostFreqPen = which.max(table(pen))
     if (mostFreqPen > 1000) { 
       mostFreqPen = names(mostFreqPen)
-      grid.rect(gp=gpar(col=F,fill=mostFreqPen))
+      grid.rect(gp=gpar(col=FALSE,fill=mostFreqPen))
       notMostFreq=(pen!=mostFreqPen)
       pen = pen[notMostFreq]
       hexDensity@cell=hexDensity@cell[notMostFreq] #safe since R is pass-by-value

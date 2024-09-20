@@ -32,10 +32,10 @@ plotHexDensity = function(hexDensity,
                       xaxt=TRUE, yaxt=TRUE,
                       lcex=1,
                       colramp = colorRampPalette(col.viridis), colorcut=1024,
-                      legend=T, legendWidth=0.05, legendDistance=0.15,
+                      legend=TRUE, legendWidth=0.05, legendDistance=0.15,
                       aspectRatio=diff(hexDensity@xbnds)/diff(hexDensity@ybnds),
                       margin=0.18,
-                      newpage=T) {
+                      newpage=TRUE) {
   if(!is(hexDensity,"hexbin"))
     stop("first argument must be a hexbin object")
   if (length(colorcut) > 1) { # a sequence 0,...,1
@@ -83,7 +83,7 @@ plotHexDensity = function(hexDensity,
                               width = legendWidth,
                               height = h,
                               yscale=range(hexDensity@count),
-                              clip=F
+                              clip=FALSE
       )
   }
   hexViewport = viewport(x=unit(0.5,'npc')-unit(as.numeric(legend)*(legendWidth+legendDistance)/2,'npc'),
@@ -91,7 +91,7 @@ plotHexDensity = function(hexDensity,
                          height=h,
                          xscale=hexDensity@xbnds, yscale=hexDensity@ybnds,
                          default.units = 'native',
-                         clip=F
+                         clip=FALSE
                          )
   
   ## ----- plotting starts ------------------------
@@ -121,7 +121,7 @@ plotHexDensity = function(hexDensity,
   
   #hexagons
   upViewport()
-  hexViewport$clip = T
+  hexViewport$clip = TRUE
   pushViewport(hexViewport)
   grid.hexagontile(hexDensity,
                 colorcut = colorcut,
@@ -137,7 +137,7 @@ plotHexDensity = function(hexDensity,
               height = unit(1/256, "npc"), 
               just = "bottom",
               gp = gpar(col = NA, fill = colramp(256)))
-    grid.yaxis(gp=gpar(cex=lcex),main=F)
+    grid.yaxis(gp=gpar(cex=lcex),main=FALSE)
     grid.rect(gp=gpar(col="black",fill=NA))
     upViewport()
   }
