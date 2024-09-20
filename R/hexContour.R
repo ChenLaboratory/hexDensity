@@ -6,13 +6,13 @@
 #' 
 #' @param hexDensity hexDensity object to be contoured.
 #' @param levels Numeric vector for which contour lines should be generated
-#' @return list of x, y, and ID, for the contour line at each levels. 
+#' @return A list of x, y, and ID, for the contour line at each levels. ID indicates the different line segments making up the contour.
 #' @importFrom hexbin hcell2xy
 #' 
 #' @details
 #' This function is made to follow the same behaviour as
 #' \link[isoband]{isolines}. A dedicated plotting function is in the work. 
-#' Meanwhile, see example of how to plot the output with ggplot2::geom_path.
+#' Meanwhile, see example of how to plot the output with ggplot2's \link[ggplot2]{geom_path}.
 #' 
 #' @export 
 #' @examples

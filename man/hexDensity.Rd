@@ -2,12 +2,9 @@
 % Please edit documentation in R/hexDensity.R
 \name{hexDensity}
 \alias{hexDensity}
-\alias{hexDensity.default}
 \title{Kernel Density Estimation with Hexagonal grid.}
 \usage{
-hexDensity(x, ...)
-
-\method{hexDensity}{default}(
+hexDensity(
   x,
   y = NULL,
   xbins = 128,
@@ -19,9 +16,7 @@ hexDensity(x, ...)
 )
 }
 \arguments{
-\item{x, y}{Coords of the points or a single plotting structure to be used in binning. See xy.coords.}
-
-\item{...}{arguments for hexbinFull}
+\item{x, y}{Coords of the points or a single plotting structure to be used in binning. See \link[grDevices]{xy.coords}.}
 
 \item{xbins}{Number of bins in a row.}
 
@@ -32,9 +27,11 @@ hexDensity(x, ...)
 \item{diggle}{Logical value for apply edge correction with the more accurate Jones-Diggle method (need 'edge' to be TRUE).}
 
 \item{weight}{numeric weight vector to be assigned to points.}
+
+\item{...}{arguments for hexbinFull}
 }
 \value{
-hexbin object.
+an S4 object of class \link[hexbin]{hexbin}.
 }
 \description{
 Kernel Density Estimation with Hexagonal grid.

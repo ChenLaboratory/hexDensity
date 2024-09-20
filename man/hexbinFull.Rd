@@ -33,7 +33,7 @@ hexbinFull(
 \item{weight}{Numeric weight vector to be assigned to points.}
 }
 \value{
-hexbin object
+an S4 object of class \link[hexbin]{hexbin}.
 }
 \description{
 Adapted from \link[hexbin]{hexbin} to output hexagons with 0 count, and also 

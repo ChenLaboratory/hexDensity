@@ -12,7 +12,7 @@ hexContour(hexDensity, levels)
 \item{levels}{Numeric vector for which contour lines should be generated}
 }
 \value{
-list of x, y, and ID, for the contour line at each levels.
+A list of x, y, and ID, for the contour line at each levels. ID indicates the different line segments making up the contour.
 }
 \description{
 Algorithm is a modification of the meandering triangles as described in 
@@ -22,7 +22,7 @@ https://blog.bruce-hill.com/meandering-triangles. See
 \details{
 This function is made to follow the same behaviour as
 \link[isoband]{isolines}. A dedicated plotting function is in the work. 
-Meanwhile, see example of how to plot the output with ggplot2::geom_path.
+Meanwhile, see example of how to plot the output with ggplot2's \link[ggplot2]{geom_path}.
 }
 \examples{
 

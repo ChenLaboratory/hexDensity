@@ -16,7 +16,7 @@
 #' 
 #' @export
 #' @examples
-#' 
+#' @references reference
 #' set.seed(133)
 #' d = hexDensity(x=rnorm(200),y=rnorm(200),bandwidth=0.15)
 hexDensity = function(x,y=NULL, 

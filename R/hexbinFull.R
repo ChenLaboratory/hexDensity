@@ -11,7 +11,7 @@
 #' @param IDs Logical indicating if the hexagonal cell ID for each point should be returned, see hexbin.
 #' @param weight Numeric weight vector to be assigned to points.
 #'
-#' @return hexbin object
+#' @return an S4 object of class \link[hexbin]{hexbin}.
 #' @export
 #'
 #' @examples
