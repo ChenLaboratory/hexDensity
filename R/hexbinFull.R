@@ -27,8 +27,8 @@
 #' @importFrom grDevices xy.coords
 #' @importFrom methods new
 #' @author Dan Carr <dcarr@voxel.galaxy.gmu.edu>; ported and extended by 
-#' Nicholas Lewin-Koh nikko@hailmail.net. Modified by Quoc Hoang Nguyen for 
-#' hexDensity.
+#' Nicholas Lewin-Koh <nikko@hailmail.net>. Modified by Quoc Hoang Nguyen 
+#' <nguyen.q@wehi.edu.au> for hexDensity.
 hexbinFull <-
     function(x, y = NULL, xbins = 128, shape = NULL,
 	     xbnds = range(x), ybnds = range(y),
