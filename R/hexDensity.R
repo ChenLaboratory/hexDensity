@@ -1,13 +1,13 @@
 #' Kernel Density Estimation with Hexagonal grid.
 #' 
-#' @param x,y Coords of the points or a single plotting structure to be used in binning. See xy.coords.
+#' @param x,y Coords of the points or a single plotting structure to be used in binning. See \link[grDevices]{xy.coords}.
 #' @param xbins Number of bins in a row.
 #' @param bandwidth Bandwidth for the smoothing kernel. Either a single number or a vector of length 2 for the bandwidths in the x and y directions, respectively.
 #' @param edge Logical value for whether to apply edge correction. Default is TRUE.
 #' @param diggle Logical value for apply edge correction with the more accurate Jones-Diggle method (need 'edge' to be TRUE).
 #' @param weight numeric weight vector to be assigned to points.
 #' @param ... arguments for hexbinFull
-#' @return hexbin object.
+#' @return an S4 object of class \link[hexbin]{hexbin}.
 #' @importFrom spatstat.geom fft2D
 #' @importFrom grDevices xy.coords
 #' @importFrom stats dnorm
@@ -19,12 +19,7 @@
 #' 
 #' set.seed(133)
 #' d = hexDensity(x=rnorm(200),y=rnorm(200),bandwidth=0.15)
-
-hexDensity = function(x,...) UseMethod('hexDensity')
-
-#' @rdname hexDensity
-#' @export
-hexDensity.default = function(x,y=NULL, 
+hexDensity = function(x,y=NULL, 
                               xbins = 128, #128 is the magic number in spatstat
                               bandwidth = NULL,
                               edge = TRUE,
