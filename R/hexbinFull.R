@@ -107,6 +107,6 @@ hexbinFull <-
     cell = ans$cell, count = ans$cnt,
     xcm = ans$xcm, ycm = ans$ycm, xbins = ans$xbins,
     shape = ans$shape, xbnds = ans$xbnds , ybnds = ans$ybnds,
-    dimen = c(imax, jmax), n = n, ncells = ans$n,
+    dimen = c(imax, jmax), n = n, ncells = imax*jmax,
     call = call, xlab = xlab, ylab = ylab, cID = ans$cID, cAtt = integer(0))
     }

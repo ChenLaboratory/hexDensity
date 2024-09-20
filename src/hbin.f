@@ -19,14 +19,13 @@ c     cellid(*): length 1 or n
       double precision  size, shape, weight(n)
       integer i, i1, i2, iinc
       integer j1, j2, jinc
-      integer L, lmax, lat
+      integer L, lat
       double precision c1, c2, con1, con2, dist1
       double precision sx, sy, xmin, ymin, xr, yr
       logical keepID
 
       keepID = (cellid(1) .eq. 0)
 C_______Constants for scaling the data_____________________________
-
       xmin = rx(1)
       ymin = ry(1)
       xr = rx(2)-xmin
@@ -37,7 +36,6 @@ C_______Constants for scaling the data_____________________________
       jinc= bnd(2)
       lat=jinc+1
       iinc= 2*jinc
-      lmax=bnd(1)*bnd(2)
       con1=.25
       con2=1.0/3.0
 C_______Binning loop________________________________________
@@ -69,17 +67,5 @@ C_______Weighted average________________________________________
         xcm(L)=xcm(L)+ weight(i)*(x(i)-xcm(L))/cnt(L)
         ycm(L)=ycm(L)+ weight(i)*(y(i)-ycm(L))/cnt(L)
       enddo
-
-C_______Compression of output________________________________________
-      nc=0
-      do L=1,lmax
-        nc=nc+1
-        cell(nc)=L
-        cnt(nc)=cnt(L)
-        xcm(nc)=xcm(L)
-        ycm(nc)=ycm(L)
-      enddo
-      n=nc
-      bnd(1)=(cell(nc)-1)/bnd(2)+1
       return
       end
