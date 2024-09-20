@@ -29,8 +29,15 @@ grid.hexagontile(
 
 \item{def.unit}{Default \link[grid]{unit} to be used.}
 }
+\value{
+No return value
+}
 \description{
 Adapted from grid.hexagons by \link[hexbin]{hexbin} with speedup specific 
 for hexagonal tiling (avoid plotting the most abundance hexagons by setting 
 its color as background).
 }
+\section{SIDE EFFECTS}{
+ Adds hexagons to plot
+}
+

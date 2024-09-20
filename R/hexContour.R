@@ -69,6 +69,7 @@ hexContour = function(hexDensity,levels) {
 #' @details
 #' This function is not meant to be used as is, unless you are very familiar 
 #' with how hexContour works.
+#' @return list of x, y, and ID, for the contour line at each levels. 
 #' @export 
 meanderingTriangles = function(x.coords.left,x.coords.right,y.coords,z,levels) {
   res = .Call(`meanderingTrianglesC`,x.coords.left,x.coords.right,y.coords,z,levels)

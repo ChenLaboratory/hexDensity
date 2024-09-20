@@ -17,7 +17,9 @@
 #' @param aspectRatio width to height ratio of the plot. Default is the (inverse of) shape value of hexDensity.
 #' @param margin Minimum guaranteed margin for the plot. Different aspect ratio between the screen and the plot means that margin can be larger on certain sides.
 #' @param newpage logical for whether to plot on a new page.
-#'
+#' 
+#' @section SIDE EFFECTS: Create kernel density estimate plot with hexagons
+#' @returns No return value
 #' @export
 #'
 #' @examples
@@ -141,4 +143,5 @@ plotHexDensity = function(hexDensity,
     grid.rect(gp=gpar(col="black",fill=NA))
     upViewport()
   }
+  return(invisible())
 }

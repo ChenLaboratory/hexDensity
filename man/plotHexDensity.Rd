@@ -49,11 +49,18 @@ plotHexDensity(
 
 \item{newpage}{logical for whether to plot on a new page.}
 }
+\value{
+No return value
+}
 \description{
 Adapted the plotting function from \link[hexbin]{hexbin}. X and Y axes now
 have the same scale with option for different aspect ratio. Ribbon legend 
 for continuous data.
 }
+\section{SIDE EFFECTS}{
+ Create kernel density estimate plot with hexagons
+}
+
 \examples{
 set.seed(133)
 d = hexDensity(x=rnorm(200),y=rnorm(200),bandwidth=0.15)

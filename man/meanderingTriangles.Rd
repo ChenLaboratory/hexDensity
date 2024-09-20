@@ -17,6 +17,9 @@ meanderingTriangles(x.coords.left, x.coords.right, y.coords, z, levels)
 
 \item{levels}{Vector of z value cutoffs for contouring.}
 }
+\value{
+list of x, y, and ID, for the contour line at each levels.
+}
 \description{
 Meandering triangles for hexagonal grid in C++
 }

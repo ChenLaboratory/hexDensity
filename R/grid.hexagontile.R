@@ -17,6 +17,9 @@
 #' @importFrom hexbin hexcoords hexpolygon hcell2xy
 #' @importFrom grDevices colorRampPalette
 #' @importFrom methods is
+#' @section SIDE EFFECTS: Adds hexagons to plot 
+#' 
+#' @returns No return value
 grid.hexagontile <-
   function(hexDensity,
            use.count=TRUE, cell.at=NULL,
@@ -104,6 +107,6 @@ grid.hexagontile <-
     
     hexpolygon(xnew, ynew, hexC,
                fill = pen)
-    ## and that's been all for these styles
-    return(invisible(paste("done")))
+    
+    return(invisible())
   }
