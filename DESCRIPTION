@@ -1,12 +1,17 @@
 Package: hexDensity
 Type: Package
 Title: Fast Kernel Density Estimation with Hexagonal Grid
-Version: 1.4.4
+Version: 1.4.5
 Authors@R: c(person(given = "Quoc Hoang",
                   family = "Nguyen",
                   role = c("aut","cre"),
                   email = "nguyen.q@wehi.edu.au",
                   comment = c(ORCID = "0009-0007-2828-7567")),
+             person(given = "Yunshun",
+                  family = "Chen",
+                  role = c("aut"),
+                  email = "yuchen@wehi.edu.au",
+                  comment = c(ORCID = "0000-0003-4911-5653")),
              person(given = "Dan",
                   family = "Carr",
                   role = "ctb",
