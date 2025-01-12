@@ -43,6 +43,6 @@ its color as background).
 
 \author{
 Dan Carr <dcarr@voxel.galaxy.gmu.edu>; ported and extended by 
-Nicholas Lewin-Koh nikko@hailmail.net. Modified by Quoc Hoang Nguyen for 
-hexDensity.
+Nicholas Lewin-Koh nikko@hailmail.net. Modified by Quoc Hoang Nguyen 
+<nguyen.q@wehi.edu.au> for hexDensity.
 }

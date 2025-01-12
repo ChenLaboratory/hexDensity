@@ -20,7 +20,7 @@ hexDensity(
 
 \item{xbins}{Number of bins in a row.}
 
-\item{bandwidth}{Bandwidth for the smoothing kernel. Either a single number or a vector of length 2 for the bandwidths in the x and y directions, respectively.}
+\item{bandwidth}{Bandwidth for the smoothing kernel. Either a scalar, a vector of length 2, or a 2x2 variance-covariance matrix for the bandwidths in the x and y directions.}
 
 \item{edge}{Logical value for whether to apply edge correction. Default is TRUE.}
 
