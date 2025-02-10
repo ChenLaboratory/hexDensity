@@ -10,7 +10,7 @@
 #' @return an S4 object of class \link[hexbin]{hexbin}.
 #' @importFrom spatstat.geom fft2D
 #' @importFrom grDevices xy.coords
-#' @importFrom stats dnorm
+#' @importFrom stats dnorm var
 #' 
 #' @details Default bandwidth is the normal scale bandwidth selector n^(-1/3)*var where n is sample size and var is the variance-covariance matrix.
 #' 
