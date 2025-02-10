@@ -12,7 +12,7 @@
 #' @importFrom grDevices xy.coords
 #' @importFrom stats dnorm
 #' 
-#' @details Default bandwidth is 1/8 of the range of the smaller dimensions.
+#' @details Default bandwidth is the normal scale bandwidth selector n^(-1/3)*var where n is sample size and var is the variance-covariance matrix.
 #' 
 #' @references Diggle, P. J. (2010) Nonparametric methods. Chapter 18, pp. 
 #' 299--316 in A.E. Gelfand, P.J. Diggle, M. Fuentes and P. Guttorp (eds.) 
@@ -23,7 +23,7 @@
 #' @export
 #' @examples
 #' set.seed(133)
-#' d = hexDensity(x=rnorm(200),y=rnorm(200),bandwidth=0.15)
+#' d = hexDensity(x=rnorm(200),y=rnorm(200))
 hexDensity = function(x,y=NULL,
                       xbins = 128, #128 is the magic number in spatstat
                       bandwidth = NULL,
@@ -38,7 +38,7 @@ hexDensity = function(x,y=NULL,
   
   # bandwidth
   if (is.null(bandwidth)) {
-    bandwidth = min(diff(range(xy$x)),diff(range(xy$y)))/8
+    bandwidth = length(xy$x)^(-1/3)*var(cbind(xy$x,xy$y))
   }
   if (length(bandwidth)==1) {
     bandwidth=c(bandwidth,bandwidth)
