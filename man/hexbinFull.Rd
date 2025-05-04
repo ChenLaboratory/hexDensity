@@ -14,7 +14,8 @@ hexbinFull(
   xlab = NULL,
   ylab = NULL,
   IDs = FALSE,
-  weight = NULL
+  weight = NULL,
+  fractional = 1
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ hexbinFull(
 \item{IDs}{Logical indicating if the hexagonal cell ID for each point should be returned, see hexbin.}
 
 \item{weight}{Numeric weight vector to be assigned to points.}
+
+\item{fractional}{Fractional binning scheme. Testing}
 }
 \value{
 an S4 object of class \link[hexbin]{hexbin}.

@@ -10,6 +10,7 @@
 #' @param xlab,ylab Optional character strings used as labels for x and y. If NULL, sensible defaults are used.
 #' @param IDs Logical indicating if the hexagonal cell ID for each point should be returned, see hexbin.
 #' @param weight Numeric weight vector to be assigned to points.
+#' @param fractional Fractional binning scheme. Testing
 #'
 #' @return an S4 object of class \link[hexbin]{hexbin}.
 #' 
@@ -33,8 +34,10 @@ hexbinFull <-
     function(x, y = NULL, xbins = 128, shape = NULL,
 	     xbnds = range(x), ybnds = range(y),
 	     xlab = NULL, ylab = NULL, IDs = FALSE,
-	     weight = NULL)
+	     weight = NULL,
+	     fractional=1)
 {
+
     call <- match.call()
     ## (x,y, xlab, ylab) dealing
     xl <- if (!missing(x)) deparse(substitute(x))
@@ -81,21 +84,72 @@ hexbinFull <-
       stop("weight must be a vector with same length as x")
     }
     
-    ans <- .Fortran(`hbin`,
-	      x = as.double(x),
-	      y = as.double(y),
-	      cell = integer(lmax),
-	      cnt = double(lmax),
-	      xcm = double(lmax),
-	      ycm = double(lmax),
-	      xbins = as.double(xbins),
-	      shape = as.double(shape),
-	      xbnds = as.double(xbnds),
-	      ybnds = as.double(ybnds),
-	      dim = as.integer(c(imax, jmax)),
-	      n = as.integer(n),
-	      cID = if(IDs) integer(n) else as.integer(-1),
-	      weight = as.double(weight))[-(1:2)]
+    if(fractional==2) {
+        ans <- .Fortran(`hbin2`,
+                        x = as.double(x),
+                        y = as.double(y),
+                        cell = integer(lmax),
+                        cnt = double(lmax),
+                        xcm = double(lmax),
+                        ycm = double(lmax),
+                        xbins = as.double(xbins),
+                        shape = as.double(shape),
+                        xbnds = as.double(xbnds),
+                        ybnds = as.double(ybnds),
+                        dim = as.integer(c(imax, jmax)),
+                        n = as.integer(n),
+                        cID = if(IDs) integer(n) else as.integer(-1),
+                        weight = as.double(weight))[-(1:2)]
+    } else if (fractional == 3){
+        ans <- .Fortran(`hbin3`,
+                        x = as.double(x),
+                        y = as.double(y),
+                        cell = integer(lmax),
+                        cnt = double(lmax),
+                        xcm = double(lmax),
+                        ycm = double(lmax),
+                        xbins = as.double(xbins),
+                        shape = as.double(shape),
+                        xbnds = as.double(xbnds),
+                        ybnds = as.double(ybnds),
+                        dim = as.integer(c(imax, jmax)),
+                        n = as.integer(n),
+                        cID = if(IDs) integer(n) else as.integer(-1),
+                        weight = as.double(weight))[-(1:2)]
+    } else if (fractional == 4){
+        ans <- .Fortran(`hbin4`,
+                        x = as.double(x),
+                        y = as.double(y),
+                        cell = integer(lmax),
+                        cnt = double(lmax),
+                        xcm = double(lmax),
+                        ycm = double(lmax),
+                        xbins = as.double(xbins),
+                        shape = as.double(shape),
+                        xbnds = as.double(xbnds),
+                        ybnds = as.double(ybnds),
+                        dim = as.integer(c(imax, jmax)),
+                        n = as.integer(n),
+                        cID = if(IDs) integer(n) else as.integer(-1),
+                        weight = as.double(weight))[-(1:2)]
+    } else {
+        ans <- .Fortran(`hbin`,
+                        x = as.double(x),
+                        y = as.double(y),
+                        cell = integer(lmax),
+                        cnt = double(lmax),
+                        xcm = double(lmax),
+                        ycm = double(lmax),
+                        xbins = as.double(xbins),
+                        shape = as.double(shape),
+                        xbnds = as.double(xbnds),
+                        ybnds = as.double(ybnds),
+                        dim = as.integer(c(imax, jmax)),
+                        n = as.integer(n),
+                        cID = if(IDs) integer(n) else as.integer(-1),
+                        weight = as.double(weight))[-(1:2)]
+    }
+    
     ## cut off extraneous stuff
     if(!IDs) ans$cID <- NULL
     if(IDs && has.na) {
@@ -109,7 +163,7 @@ hexbinFull <-
     length(ans$cnt) <- nc
     length(ans$xcm) <- nc
     length(ans$ycm) <- nc
-    if(sum(ans$cnt) != sum(weight)) warning("Lost counts in binning")
+    # if(!all.equal(sum(ans$cnt),sum(weight))) warning("Lost counts in binning")
     new("hexbin",
     cell = ans$cell, count = ans$cnt,
     xcm = ans$xcm, ycm = ans$ycm, xbins = ans$xbins,

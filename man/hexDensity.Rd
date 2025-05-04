@@ -37,11 +37,11 @@ an S4 object of class \link[hexbin]{hexbin}.
 Kernel Density Estimation with Hexagonal grid.
 }
 \details{
-Default bandwidth is 1/8 of the range of the smaller dimensions.
+Default bandwidth is the normal scale bandwidth selector n^(-1/3)*var where n is sample size and var is the variance-covariance matrix.
 }
 \examples{
 set.seed(133)
-d = hexDensity(x=rnorm(200),y=rnorm(200),bandwidth=0.15)
+d = hexDensity(x=rnorm(200),y=rnorm(200))
 }
 \references{
 Diggle, P. J. (2010) Nonparametric methods. Chapter 18, pp. 
