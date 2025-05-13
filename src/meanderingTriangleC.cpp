@@ -92,21 +92,14 @@ extern "C" {
     z_p = REAL(z);
     int z_nrows=Rf_nrows(z);
     levels_p = REAL(levels);
+    
     // Get triangles. TODO: Could probably do away with this.
     int n = (Rf_length(xleft)-1)*(Rf_length(y)-1)*2;
     std::vector<triangle> triangles(n);
-    int i_triangle = 0;
-    
     for (int i=0;i<(Rf_length(xleft)-1);i++) {
       for (int j=0;j<(Rf_length(y)-1);j++) {
-        if (j%2==0) {
-
-          triangles[i_triangle++] = {{{i,j},{i+1,j},{i,j+1}}};
-          triangles[i_triangle++] = {{{i+1,j},{i,j+1},{i+1,j+1}}};
-        } else{
-          triangles[i_triangle++] = {{{i,j},{i+1,j+1},{i,j+1}}};
-          triangles[i_triangle++] = {{{i,j},{i+1,j+1},{i+1,j}}};
-        }
+        triangles[--n] = {{{i,j},{i+1,j+j%2},{i,j+1}}};
+        triangles[--n] = {{{i+1,j},{i,j+!(j%2)},{i+1,j+1}}};
       }
     }
 

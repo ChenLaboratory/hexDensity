@@ -3,15 +3,11 @@
 #include <R_ext/Rdynload.h>
 
 extern void F77_NAME(hbin  )(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
-extern void F77_NAME(hbin2  )(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
-extern void F77_NAME(hbin3  )(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
-extern void F77_NAME(hbin4  )(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
+extern void F77_NAME(hbin_frac  )(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 
 static const R_FortranMethodDef FortranEntries[] = {
 	{"hbin", (DL_FUNC) &F77_NAME(hbin), 14},
-	{"hbin2", (DL_FUNC) &F77_NAME(hbin2), 14},
-	{"hbin3", (DL_FUNC) &F77_NAME(hbin3), 14},
-	{"hbin4", (DL_FUNC) &F77_NAME(hbin4), 14},
+	{"hbin_frac", (DL_FUNC) &F77_NAME(hbin_frac), 14},
 	{NULL, NULL, 0}
 };
 
