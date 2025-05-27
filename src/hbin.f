@@ -65,8 +65,10 @@ C_______Binning loop________________________________________
 
         if (keepID) cellid(i)=L
 C_______Weighted average________________________________________
-        xcm(L)=xcm(L)+ weight(i)*(x(i)-xcm(L))/cnt(L)
-        ycm(L)=ycm(L)+ weight(i)*(y(i)-ycm(L))/cnt(L)
+        if (cnt(L).gt.0) then
+          xcm(L)=xcm(L)+ weight(i)*(x(i)-xcm(L))/cnt(L)
+          ycm(L)=ycm(L)+ weight(i)*(y(i)-ycm(L))/cnt(L)
+        endif
       enddo
 C_______Compression of output________________________________________
       nc=0

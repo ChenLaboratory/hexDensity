@@ -43,7 +43,7 @@ C_______Binning loop________________________________________
         i2 = int(sy)
         L2 = i2*iinc + j2 + lat
 
-        !__Determine third candidate as in original code
+        !__Determine third candidate
         i3 = i1
         i4 = i2
         if (j2 .lt. j1) then
@@ -70,7 +70,7 @@ C_______Binning loop________________________________________
           endif
         endif
 
-        !— compute hex-center coordinates in scaled space —
+        !__compute hex-center coordinates in scaled space
         xA = j1
         yA = i1
         xB = j2 + .5
@@ -83,7 +83,7 @@ C_______Binning loop________________________________________
           yC = i4 + .5
         endif
 
-        !— barycentric weights —
+        !__barycentric weights
         denom = (yB - yC)*(xA - xC) + (xC - xB)*(yA - yC)
         w1 = ((yB - yC)*(sx - xC) + (xC - xB)*(sy - yC)) / denom
         w2 = ((yC - yA)*(sx - xC) + (xA - xC)*(sy - yC)) / denom
@@ -96,14 +96,14 @@ C_______Binning loop________________________________________
           w3 = 0
         endif
 
-        !— distribute into bins —
+        !__distribute into bins
         cnt(L1) = cnt(L1) + w1 * weight(i)
         cnt(L2) = cnt(L2) + w2 * weight(i)
         if (L3 .ne. -1) then
           cnt(L3) = cnt(L3) + w3 * weight(i)
         endif
        
-        !— assign primary id —
+        !__assign primary id
         if (keepID) then
           if (w1 >= w2 .and. w1 >= w3) then
             cellid(i) = L1
@@ -113,6 +113,21 @@ C_______Binning loop________________________________________
             cellid(i) = L3
           endif
         endif
+        
+C_______Weighted average________________________________________
+        if (cnt(L1) .gt. 0) then
+          xcm(L1)=xcm(L1)+ w1*weight(i)*(x(i)-xcm(L1))/cnt(L1)
+          ycm(L1)=ycm(L1)+ w1*weight(i)*(y(i)-ycm(L1))/cnt(L1)
+        endif
+        
+        if (cnt(L2) .gt. 0) then
+          xcm(L2)=xcm(L2)+ w2*weight(i)*(x(i)-xcm(L2))/cnt(L2)
+          ycm(L2)=ycm(L2)+ w2*weight(i)*(y(i)-ycm(L2))/cnt(L2)
+        endif
+        if(L3 .ne. -1 .and. cnt(L3) .gt. 0) then
+          xcm(L3)=xcm(L3)+ w3*weight(i)*(x(i)-xcm(L3))/cnt(L3)
+          ycm(L3)=ycm(L3)+ w3*weight(i)*(y(i)-ycm(L3))/cnt(L3)
+    	endif    
       enddo
 
 C_____ Output

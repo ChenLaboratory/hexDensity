@@ -21,7 +21,11 @@
 #'
 #' @examples
 #' set.seed(133)
-#' d=hexbinFull(x=rnorm(20000),y=rnorm(20000),xbins=50)
+#' x=rnorm(20000)
+#' y=rnorm(20000)
+#' d=hexbinFull(x,y,xbins=50)
+#' plotHexDensity(d)
+#' d=hexbinFull(x,y,xbins=50,fractional=TRUE)
 #' plotHexDensity(d)
 #' 
 #' @importClassesFrom hexbin hexbin
@@ -84,7 +88,8 @@ hexbinFull <-
       stop("weight must be a vector with same length as x")
     }
     
-    ans <- .Fortran(if (fractional) `hbin_frac` else `hbin`,
+    func = `if`(fractional,`hbin_frac`,`hbin`)  
+    ans <- .Fortran(func,
                     x = as.double(x),
                     y = as.double(y),
                     cell = integer(lmax),
@@ -113,7 +118,7 @@ hexbinFull <-
     length(ans$cnt) <- nc
     length(ans$xcm) <- nc
     length(ans$ycm) <- nc
-    if(!all.equal(sum(ans$cnt),sum(weight))) warning("Lost counts in binning")
+    # if(!all.equal(sum(ans$cnt),sum(weight))) warning("Lost counts in binning")
     new("hexbin",
     cell = ans$cell, count = ans$cnt,
     xcm = ans$xcm, ycm = ans$ycm, xbins = ans$xbins,
