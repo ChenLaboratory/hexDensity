@@ -84,7 +84,7 @@ grid.hexagontile <- function(hexDensity,
         grid.rect(gp=gpar(col=FALSE,fill=mostFreqPen))
         notMostFreq=(pen!=mostFreqPen)
         pen = pen[notMostFreq]
-        hexDensity@cell=hexDensity@cell[notMostFreq] #safe since R is pass-by-value
+        hexDensity@cell=hexDensity@cell[notMostFreq]
     }
     ##__________________ Construct a hexagon___________________
 

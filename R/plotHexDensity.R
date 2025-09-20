@@ -84,10 +84,13 @@ plotHexDensity = function(hexDensity,
       legendWidth = legendWidth*rescaleFactor
       legendDistance = legendDistance*rescaleFactor
     }
+    dens_range <- range(hexDensity@count)
+    simpleLegend <- dens_range[1] == dens_range[2]
+	if (simpleLegend) dens_range <- c(0,1)
     legendViewport = viewport(x=unit(0.5,'npc') + unit(w/2 + legendDistance/2,'npc'),
                               width = legendWidth,
                               height = h,
-                              yscale=range(hexDensity@count),
+                              yscale=dens_range,
                               clip=FALSE
       )
   }
@@ -138,11 +141,21 @@ plotHexDensity = function(hexDensity,
   if (legend) {
     pushViewport(legendViewport)
     #Make ribbon legend
-    grid.rect(y = unit(seq(0,1-1/256,length=256), "npc"),
-              height = unit(1/256, "npc"), 
-              just = "bottom",
-              gp = gpar(col = NA, fill = colramp(256)))
-    grid.yaxis(gp=gpar(cex=lcex),main=FALSE)
+  	if (simpleLegend) {
+  	  grid.rect(y = unit(0, "npc"),
+  	  		    height = unit(1, "npc"),
+  	  		    just = "bottom",
+  	  		    gp = gpar(col = NA, fill = colramp(2)[2]))
+  	  grid.yaxis(at=unit(0.5,"npc"),
+  	  		     label=hexDensity@count[[1]],
+  	  		     gp=gpar(cex=lcex),main=FALSE)
+  	} else {
+  	  grid.rect(y = unit(seq(0,1-1/256,length=256), "npc"),
+  	  		    height = unit(1/256, "npc"),
+  	  		    just = "bottom",
+  	  		    gp = gpar(col = NA, fill = colramp(256)))
+  	  grid.yaxis(gp=gpar(cex=lcex),main=FALSE)
+  	}
     grid.rect(gp=gpar(col="black",fill=NA))
     upViewport()
   }
