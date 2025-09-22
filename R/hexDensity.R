@@ -114,8 +114,8 @@ hexDensity = function(x,y=NULL,
   #edge correction
   if (edge) {
     mask = matrix(0,nrow = 2*row, ncol = 2*col+row-1)
-    for (i in seq(row-topRow+1, row, by=2)) {
-      mask[i:(i+1),(i-i%/%2):(i-i%/%2+col-1)] = matrix(1,2,col)
+    for (i in seq(row-topRow+1, row)) {
+    	mask[i,(i-i%/%2):(i-i%/%2+col-1)] = matrix(1,1,col)
     }
     fM = fft2D(mask)
     con = fft2D(fM * fK, inverse=TRUE)
