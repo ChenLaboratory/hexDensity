@@ -45,7 +45,7 @@ xy2hcell <- function(hexbin = NULL, x, y=NULL, xbins = NULL, xbnds=NULL, ybnds=N
   }
   n <- length(x)
   
-  jmax <- floor(xbins + 1.5001)
+  jmax <- ceiling(xbins + 0.5)
   #default shape to make regular hexagon
   c1 <- 2 * floor((xbins*shape)/sqrt(3) + 1.5001)
   imax <- trunc((jmax*c1 -1)/jmax + 1)
