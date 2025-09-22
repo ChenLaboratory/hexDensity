@@ -35,11 +35,11 @@ C_______Binning loop________________________________________
         sy = c2 * (y(i) - ymin)
 
         !__Two original candidates
-        j1 = int(sx + .5)
+        j1 = min(int(sx + .5),jinc-1)
         i1 = int(sy + .5)
         L1 = i1*iinc + j1 + 1
 
-        j2 = int(sx)
+        j2 = min(int(sx),jinc-1)
         i2 = int(sy)
         L2 = i2*iinc + j2 + lat
 
@@ -57,12 +57,14 @@ C_______Binning loop________________________________________
         dist3 = (sx-j3)**2+3.*(sy-i3)**2
         dist4 = (sx-j4-.5)**2+3.*(sy-i4-.5)**2
         if (dist3 .gt. dist4) then
+          !__check if in bound
           if((j4>=0).and.(j4<jinc).and.(i4>=0).and.(2*i4<bnd(1)))then
             L3 = i4*iinc + j4 + lat
           else
             L3 = -1
           endif
         else
+          !__check if in bound
           if((j3>=0).and.(j3<jinc).and.(i3>=0).and.(2*i3<bnd(1)))then
             L3 = i3*iinc + j3 + 1
           else
