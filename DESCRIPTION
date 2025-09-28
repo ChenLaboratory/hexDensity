@@ -1,7 +1,7 @@
 Package: hexDensity
 Type: Package
 Title: Fast Kernel Density Estimation with Hexagonal Grid
-Version: 1.4.9
+Version: 1.4.10
 Authors@R: c(person(given = "Quoc Hoang",
                   family = "Nguyen",
                   role = c("aut","cre"),
